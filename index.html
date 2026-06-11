@@ -190,7 +190,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
       <div class="table-scroll">
         <table>
           <thead><tr>
-            <th>État</th><th>Stock</th><th>Année</th><th>Marque</th><th>Modèle</th><th>Couleur</th><th>KM</th><th>VIN</th><th>Actions</th>
+            <th>État</th><th>Stock</th><th>Année</th><th>Marque</th><th>Modèle</th><th>Trim</th><th>Couleur</th><th>KM</th><th>VIN</th><th>Actions</th>
           </tr></thead>
           <tbody id="table-body"></tbody>
         </table>
@@ -478,7 +478,8 @@ function renderTable(vv){
       <td><strong>${v.s}</strong></td>
       <td>${v.y}</td>
       <td>${v.b}</td>
-      <td style="font-weight:600">${v.m}</td>
+      <td style="font-weight:600">${splitModel(v.m).base}</td>
+      <td style="color:#475569;font-size:11px">${splitModel(v.m).trim||'—'}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></td>
       <td style="font-size:11px;color:#64748b">${fmKm(v.km)}</td>
       <td style="font-family:monospace;font-size:10px;color:#64748b">${v.v}</td>
@@ -495,7 +496,8 @@ function renderCards(vv){
     <div class="vcard${v.vendu?' card-vendu':''}">
       <div class="vcard-header">
         <div>
-          <div class="vcard-title">${v.y} ${v.b} ${v.m}</div>
+          <div class="vcard-title">${v.y} ${v.b} ${splitModel(v.m).base}</div>
+          <div class="vcard-sub" style="font-size:11px;color:#475569;margin-top:1px">${splitModel(v.m).trim}</div>
           <div class="vcard-sub">${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</div>
         </div>
         <div class="vcard-km">${fmKm(v.km)}</div>
@@ -612,6 +614,22 @@ function copyAnnonce(){
 }
 function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
+
+function splitModel(m){
+  // RAM: extract base (1500/2500/3500/PROMASTER etc) and trim
+  const ramMatch = m.match(/^(1500|2500|3500|4500|5500|PROMASTER\s*\d*)\s*(.*)/i);
+  if(ramMatch) return {base: ramMatch[1].trim(), trim: ramMatch[2].trim()};
+  // JEEP/DODGE: extract base model and trim
+  const models = ['WRANGLER','GLADIATOR','GRAND CHEROKEE','CHEROKEE','COMPASS','RENEGADE','DURANGO','GRAND CARAVAN','PACIFICA','JOURNEY'];
+  for(const base of models){
+    if(m.toUpperCase().startsWith(base)){
+      const trim = m.substring(base.length).trim();
+      return {base, trim};
+    }
+  }
+  // Others: just use full model
+  return {base: m, trim: ''};
+}
 
 initSelects();
 applyFilters();
