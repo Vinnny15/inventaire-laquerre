@@ -440,7 +440,7 @@ function applyFilters(){
   const so=document.getElementById('sort').value;
   let r=INVENTORY.filter(v=>{
     const ms=!q||[v.b,v.m,v.y,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
-    const me=!activeType||(activeType==='USED'?(v.e==='USED'):v.e===activeType);
+    const me=!activeType||(activeType==='USED'?(v.e==='USED'):activeType==='DEMO'?(v.e==='DÉMO'):v.e===activeType);
     return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me;
   });
   if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
