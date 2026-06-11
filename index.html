@@ -9,8 +9,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:13px;min-height:100vh;}
-
-/* HEADER */
 .header{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:10px;}
 .logo-oval{background:#003DA5;border-radius:50%;width:36px;height:26px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0;}
 .brand-name{font-size:11px;font-weight:700;color:#003DA5;}
@@ -20,11 +18,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:1
 .header-title p{font-size:10px;color:#64748b;}
 .sales-tag{background:#dcfce7;color:#15803d;font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px;flex-shrink:0;}
 .header-divider{width:1px;height:28px;background:#e2e8f0;flex-shrink:0;}
-
-/* LAYOUT */
 .layout{display:flex;min-height:calc(100vh - 56px);}
-
-/* SIDEBAR desktop */
 .sidebar{width:185px;background:#fff;border-right:1px solid #e2e8f0;padding:14px 0;flex-shrink:0;}
 .nav-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:500;color:#64748b;position:relative;transition:all .12s;}
 .nav-item:hover{background:#f8fafc;color:#1a1a2e;}
@@ -33,24 +27,16 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:1
 .nav-icon{font-size:14px;width:17px;text-align:center;}
 .nav-arrow{margin-left:auto;font-size:10px;color:#cbd5e1;}
 .nav-sub .nav-item{font-size:11px;padding:5px 12px 5px 28px;}
-
-/* MAIN */
 .main{flex:1;padding:14px 16px;overflow:auto;min-width:0;}
-
-/* PAGE HEADER */
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
 .page-title{font-size:15px;font-weight:700;color:#1a1a2e;}
 .ts-badge{font-size:10px;color:#94a3b8;background:#f1f5f9;padding:3px 8px;border-radius:4px;white-space:nowrap;}
-
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.stat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.stat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color .15s;}
 .stat-card:hover{border-color:#93c5fd;}
 .stat-card.active{border-color:#003DA5;background:#eff6ff;}
-.stat-num{font-size:22px;font-weight:700;color:#003DA5;line-height:1.1;}
-.stat-label{font-size:10px;color:#64748b;margin-top:3px;}
-
-/* FILTERS */
+.stat-num{font-size:20px;font-weight:700;color:#003DA5;line-height:1.1;}
+.stat-label{font-size:9px;color:#64748b;margin-top:3px;}
 .filters-bar{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;}
 .search-wrap{position:relative;}
 .search-input{width:100%;padding:9px 10px 9px 34px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;outline:none;background:#f8fafc;color:#1a1a2e;-webkit-appearance:none;}
@@ -59,14 +45,11 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:1
 select.filter-sel{flex:1;min-width:90px;border:1px solid #e2e8f0;border-radius:7px;padding:8px 6px;font-family:'Inter',sans-serif;font-size:12px;color:#1a1a2e;background:#fff;outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;}
 .btn-reset{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:7px;padding:8px 12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;flex-shrink:0;}
 .btn-reset:hover{background:#e2e8f0;}
-
-/* BADGES */
 .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;}
-.badge-dispo{background:#dcfce7;color:#15803d;}
-.badge-transit{background:#fef9c3;color:#854d0e;}
-.badge-prod{background:#f0f9ff;color:#0369a1;}
-
-/* TABLE desktop */
+.badge-neuf{background:#dcfce7;color:#15803d;}
+.badge-used{background:#f1f5f9;color:#475569;}
+.badge-demo{background:#ede9fe;color:#6d28d9;}
+.badge-vendu{background:#fee2e2;color:#991b1b;}
 .table-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;}
@@ -75,15 +58,37 @@ th{padding:8px 10px;text-align:left;font-size:10px;font-weight:600;color:#94a3b8
 th:hover{color:#475569;}
 tbody tr{border-bottom:.5px solid #f1f5f9;transition:background .1s;}
 tbody tr:hover{background:#f8fafc;}
-tbody tr.row-transit{background:#fffbeb;}
-tbody tr.row-prod{background:#f0f9ff;}
+tbody tr.row-vendu{opacity:.5;}
+tbody tr.row-vendu td{text-decoration:line-through;}
 tbody tr:last-child{border-bottom:none;}
 td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .color-dot{width:10px;height:10px;border-radius:50%;border:1px solid #e2e8f0;display:inline-block;flex-shrink:0;}
-.action-btn{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none;background:#059669;color:#fff;}
-.btn-annonce-sm{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;background:#e8401c;color:#fff;transition:opacity .15s;}
-.btn-annonce-sm:hover{opacity:.8;}
+.action-btn{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none;transition:opacity .15s;}
+.action-btn:hover{opacity:.8;}
+.btn-site{background:#059669;color:#fff;}
+.btn-vitre{background:#7c3aed;color:#fff;}
+.btn-annonce{background:#e8401c;color:#fff;}
+.btn-dis{background:#e2e8f0;color:#cbd5e1;cursor:default;}
+/* CARDS mobile */
+.cards-list{display:none;flex-direction:column;gap:10px;}
+.vcard{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;}
+.vcard.card-vendu{opacity:.5;}
+.vcard-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px;}
+.vcard-title{font-size:14px;font-weight:700;color:#1a1a2e;line-height:1.2;}
+.vcard-sub{font-size:11px;color:#64748b;margin-top:2px;}
+.vcard-km{font-size:14px;font-weight:600;color:#475569;white-space:nowrap;text-align:right;}
+.vcard-body{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-bottom:10px;}
+.vcard-row{display:flex;flex-direction:column;}
+.vcard-lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px;}
+.vcard-val{font-size:11px;color:#1a1a2e;font-weight:500;}
+.vcard-val.mono{font-family:monospace;font-size:10px;color:#64748b;}
+.vcard-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:.5px solid #f1f5f9;gap:6px;flex-wrap:wrap;}
+.btn-fiche{background:#003DA5;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
 .btn-annonce-mobile{background:#e8401c;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.btn-vitre-mobile{background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:9px 12px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;}
+.empty{padding:48px 24px;text-align:center;color:#94a3b8;}
+.empty i{font-size:36px;display:block;margin-bottom:12px;}
+/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:flex-end;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
@@ -91,71 +96,38 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .modal-header{padding:16px 18px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 .modal-title{font-size:14px;font-weight:700;color:#1a1a2e;}
 .modal-sub{font-size:11px;color:#64748b;margin-top:2px;}
-.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#64748b;}
-.modal-close:hover{background:#e2e8f0;}
+.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer;font-size:16px;color:#64748b;}
 .modal-body{flex:1;overflow-y:auto;padding:14px 18px;}
-.annonce-text{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:12px;line-height:1.7;color:#1a1a2e;white-space:pre-wrap;font-family:'Inter',sans-serif;min-height:200px;}
+.annonce-text{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:12px;line-height:1.7;color:#1a1a2e;white-space:pre-wrap;font-family:'Inter',sans-serif;}
 .modal-footer{padding:12px 18px;border-top:1px solid #e2e8f0;display:flex;gap:8px;flex-shrink:0;}
 .btn-copy{flex:1;background:#003DA5;color:#fff;border:none;border-radius:8px;padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
-.btn-copy:hover{background:#0052cc;}
 .btn-copy.copied{background:#059669;}
 .generating{text-align:center;padding:32px;color:#64748b;font-size:13px;}
-.gen-spin{display:inline-block;width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#003DA5;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px;}
-.action-btn:hover{opacity:.8;}
-
-/* CARDS mobile */
-.cards-list{display:none;flex-direction:column;gap:10px;}
-.vcard{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;}
-.vcard.card-transit{border-left:3px solid #f59e0b;background:#fffbeb;}
-.vcard.card-prod{border-left:3px solid #0ea5e9;background:#f0f9ff;}
-.vcard-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px;}
-.vcard-title{font-size:14px;font-weight:700;color:#1a1a2e;line-height:1.2;}
-.vcard-trim{font-size:11px;color:#64748b;margin-top:2px;}
-.vcard-price{font-size:17px;font-weight:700;color:#003DA5;white-space:nowrap;}
-.vcard-reg{font-size:10px;color:#94a3b8;text-decoration:line-through;text-align:right;}
-.vcard-body{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-bottom:10px;}
-.vcard-row{display:flex;flex-direction:column;}
-.vcard-lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px;}
-.vcard-val{font-size:11px;color:#1a1a2e;font-weight:500;}
-.vcard-val.mono{font-family:monospace;font-size:10px;color:#64748b;}
-.vcard-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:.5px solid #f1f5f9;gap:8px;}
-.vcard-eco{font-size:11px;font-weight:600;color:#15803d;}
-.btn-fiche{background:#003DA5;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
-
-/* EMPTY */
-.empty{padding:48px 24px;text-align:center;color:#94a3b8;}
-.empty i{font-size:36px;display:block;margin-bottom:12px;}
-
-/* BOTTOM NAV mobile */
+.spin{display:inline-block;width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#003DA5;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* BOTTOM NAV */
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #e2e8f0;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:200;}
 .bottom-nav-items{display:flex;justify-content:space-around;}
 .bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 10px;cursor:pointer;color:#94a3b8;font-size:10px;font-weight:500;}
 .bnav-item.active{color:#003DA5;}
 .bnav-item i{font-size:20px;}
-
-/* RESPONSIVE */
 @media(max-width:768px){
   .sidebar,.header-divider,.header-title p{display:none;}
   .bottom-nav{display:block;}
   .main{padding:10px 10px calc(80px + env(safe-area-inset-bottom));}
   .table-wrap{display:none;}
   .cards-list{display:flex;}
-  .stat-num{font-size:20px;}
-  .stat-label{font-size:9px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
   .filters-row{flex-wrap:nowrap;overflow-x:auto;}
   select.filter-sel{min-width:110px;}
 }
 </style>
 </head>
 <body>
-
 <div class="header">
   <div style="display:flex;align-items:center;gap:8px;min-width:0;">
     <div class="logo-oval">CDJ</div>
-    <div style="min-width:0;">
-      <div class="brand-name">LAQUERRE</div>
-      <div class="brand-sub">CHRYSLER · DODGE · JEEP · RAM</div>
-    </div>
+    <div><div class="brand-name">LAQUERRE</div><div class="brand-sub">CHRYSLER · DODGE · JEEP · RAM</div></div>
   </div>
   <div class="header-divider"></div>
   <div class="header-title" style="min-width:0;">
@@ -164,7 +136,6 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   </div>
   <span class="sales-tag">Sales</span>
 </div>
-
 <div class="layout">
   <div class="sidebar">
     <div class="nav-item"><span class="nav-icon">🏠</span> Tableau de bord</div>
@@ -176,29 +147,29 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div class="nav-item"><span class="nav-icon">📊</span> Performance <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
     <div class="nav-item"><span class="nav-icon">⚖️</span> Comparateur</div>
   </div>
-
   <div class="main">
     <div class="page-header">
       <div class="page-title">Inventaire des véhicules</div>
       <span class="ts-badge">11 juin 2026 · <span id="total-count">0</span> véhicules</span>
     </div>
-
     <div class="stats-grid">
-      <div class="stat-card active" id="stat-all" onclick="filterByStatus('')">
+      <div class="stat-card active" id="stat-all" onclick="filterByType('')">
         <div class="stat-num" id="num-all">—</div><div class="stat-label">Total</div>
       </div>
-      <div class="stat-card" id="stat-dispo" onclick="filterByStatus('Disponible')">
-        <div class="stat-num" id="num-dispo">—</div><div class="stat-label">En stock</div>
+      <div class="stat-card" id="stat-neuf" onclick="filterByType('NEUF')">
+        <div class="stat-num" id="num-neuf">—</div><div class="stat-label">Neufs</div>
       </div>
-      <div class="stat-card" id="stat-transit" onclick="filterByStatus('En transit')">
-        <div class="stat-num" id="num-transit">—</div><div class="stat-label">En transit</div>
+      <div class="stat-card" id="stat-used" onclick="filterByType('USED')">
+        <div class="stat-num" id="num-used">—</div><div class="stat-label">Usagés</div>
+      </div>
+      <div class="stat-card" id="stat-demo" onclick="filterByType('DEMO')">
+        <div class="stat-num" id="num-demo">—</div><div class="stat-label">Démos</div>
       </div>
     </div>
-
     <div class="filters-bar">
       <div class="search-wrap">
         <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:15px;pointer-events:none;"></i>
-        <input class="search-input" type="text" id="search" placeholder="Stock, VIN, modèle, couleur..." oninput="applyFilters()">
+        <input class="search-input" type="text" id="search" placeholder="Stock, VIN, modèle, couleur, marque..." oninput="applyFilters()">
       </div>
       <div class="filters-row">
         <select class="filter-sel" id="filter-brand" onchange="applyFilters()"><option value="">Toutes marques</option></select>
@@ -206,42 +177,33 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
         <select class="filter-sel" id="sort" onchange="applyFilters()">
           <option value="stock-asc">Stock ↑</option>
           <option value="stock-desc">Stock ↓</option>
-          <option value="price-asc">Prix ↑</option>
-          <option value="price-desc">Prix ↓</option>
+          <option value="km-asc">KM ↑</option>
+          <option value="km-desc">KM ↓</option>
+          <option value="year-desc">Année ↓</option>
           <option value="name">Modèle A→Z</option>
         </select>
         <button class="btn-reset" onclick="resetFilters()"><i class="ti ti-refresh" style="font-size:12px"></i> Reset</button>
       </div>
     </div>
-
     <!-- TABLE desktop -->
     <div class="table-wrap">
       <div class="table-scroll">
         <table>
           <thead><tr>
-            <th>Statut</th><th>Stock</th><th>Véhicule</th><th>Trim</th><th>An</th>
-            <th>Moteur</th><th>Trans.</th><th>Couleur</th><th>VIN</th>
-            <th>Prix</th><th>Rég.</th><th>Écon.</th><th>Fiche</th>
+            <th>État</th><th>Stock</th><th>Année</th><th>Marque</th><th>Modèle</th><th>Couleur</th><th>KM</th><th>VIN</th><th>Actions</th>
           </tr></thead>
           <tbody id="table-body"></tbody>
         </table>
       </div>
     </div>
-
     <!-- CARDS mobile -->
     <div class="cards-list" id="cards-list"></div>
-
     <div id="empty-state" style="display:none" class="empty">
       <i class="ti ti-search"></i><p>Aucun véhicule trouvé.</p>
     </div>
-
-    <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">
-      Source : laquerrechrysler.com · 11 juin 2026
-    </div>
+    <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">Source : Inventaire neuf et usagé · 11 juin 2026</div>
   </div>
 </div>
-
-<!-- BOTTOM NAV mobile -->
 <div class="bottom-nav">
   <div class="bottom-nav-items">
     <div class="bnav-item"><i class="ti ti-home"></i>Accueil</div>
@@ -250,456 +212,6 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div class="bnav-item"><i class="ti ti-chart-bar"></i>Perf.</div>
   </div>
 </div>
-
-<script>
-// ── INVENTAIRE COMPLET — 11 juin 2026 ──────────────────────────────────
-const INVENTORY = [
-  // CHRYSLER
-  {b:'Chrysler',m:'Grand Caravan',y:'2026',t:'SXT',c:'Blanc',e:'3.6L V6',tr:'Auto. 9 vit.',s:'26036',v:'2C4RC1ZG8TR187454',p:49995,r:null,st:'Disponible',url:'Chrysler-Grand_Caravan-2026-id12930894'},
-  {b:'Chrysler',m:'Grand Caravan',y:'2026',t:'SXT',c:'Blanc',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13724849',v:'2C4RC1ZG3TR286179',p:49995,r:null,st:'En transit',url:'Chrysler-Grand_Caravan-2026-id13724849'},
-  {b:'Chrysler',m:'Grand Caravan',y:'2026',t:'SXT',c:'Noir',e:'3.6L V6',tr:'Auto. 9 vit.',s:'26073',v:'2C4RC1ZG5TR206607',p:50590,r:null,st:'Disponible',url:'Chrysler-Grand_Caravan-2026-id13084459'},
-  {b:'Chrysler',m:'Grand Caravan',y:'2027',t:'SXT',c:'Rouge',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13851272',v:'2C4RC1ZG0VR561431',p:50490,r:null,st:'En transit',url:'Chrysler-Grand_Caravan-2027-id13851272'},
-  {b:'Chrysler',m:'Grand Caravan',y:'2027',t:'SXT',c:'Noir',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13857359',v:'2C4RC1ZG9VR561430',p:50590,r:null,st:'En transit',url:'Chrysler-Grand_Caravan-2027-id13857359'},
-  {b:'Chrysler',m:'Pacifica',y:'2027',t:'Select',c:'Noir',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13829261',v:'2C4RC1BGXVR558241',p:54585,r:null,st:'Disponible',url:'Chrysler-Pacifica-2027-id13829261'},
-  {b:'Chrysler',m:'Pacifica',y:'2027',t:'Select AWD',c:'Rouge',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13937885',v:'2C4RC3BG4VR574236',p:60980,r:null,st:'En transit',url:'Chrysler-Pacifica-2027-id13937885'},
-  {b:'Chrysler',m:'Pacifica',y:'2027',t:'Select AWD',c:'Vert',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13937899',v:'2C4RC3BG0VR578333',p:60980,r:null,st:'En production',url:'Chrysler-Pacifica-2027-id13937899'},
-  {b:'Chrysler',m:'Pacifica',y:'2027',t:'Select AWD',c:'Noir',e:'3.6L V6',tr:'Auto. 9 vit.',s:'13937884',v:'2C4RC3BG2VR574235',p:61080,r:null,st:'En production',url:'Chrysler-Pacifica-2027-id13937884'},
-  // DODGE
-  {b:'Dodge',m:'Durango',y:'2026',t:'GT',c:'Gris',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26095',v:'1C4RDJDG7TC189872',p:59330,r:67830,st:'Disponible',url:'Dodge-Durango-2026-id13199704'},
-  {b:'Dodge',m:'Durango',y:'2026',t:'GT Plus',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13890249',v:'1C4RDJDG9TC288435',p:65175,r:73675,st:'En transit',url:'Dodge-Durango-2026-id13890249'},
-  // JEEP CHEROKEE
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Blanc',e:'1.6L I-4 Turbo',tr:'CVT',s:'13863460',v:'3C4PJMB29TT268750',p:47390,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13863460'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Noir',e:'1.6L I-4 Turbo',tr:'CVT',s:'13937873',v:'3C4PJMB29TT283247',p:47885,r:null,st:'En production',url:'Jeep-Cherokee-2026-id13937873'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Rouge',e:'1.6L I-4 Turbo',tr:'CVT',s:'13937900',v:'3C4PJMB22TT268752',p:47885,r:null,st:'En production',url:'Jeep-Cherokee-2026-id13937900'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Gris',e:'1.6L I-4 Turbo',tr:'CVT',s:'13937901',v:'3C4PJMB24TT268753',p:47885,r:null,st:'En production',url:'Jeep-Cherokee-2026-id13937901'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Gris',e:'1.6L I-4 Turbo',tr:'CVT',s:'13742523',v:'3C4PJMB2XTT243629',p:48180,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13742523'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Blanc cassé',e:'1.6L I-4 Turbo',tr:'CVT',s:'13775317',v:'3C4PJMB24TT243626',p:48180,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13775317'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Laredo',c:'Noir',e:'1.6L I-4 Turbo',tr:'CVT',s:'13937872',v:'3C4PJMB28TT243628',p:48180,r:null,st:'En production',url:'Jeep-Cherokee-2026-id13937872'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Limited',c:'Noir',e:'1.6L I-4 Turbo',tr:'CVT',s:'13845024',v:'3C4PJMB20TT269785',p:54380,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13845024'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Limited',c:'Noir',e:'1.6L I-4 Turbo',tr:'CVT',s:'13857358',v:'3C4PJMB22TT269819',p:56875,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13857358'},
-  {b:'Jeep',m:'Cherokee',y:'2026',t:'Overland',c:'Blanc',e:'1.6L I-4 Turbo',tr:'CVT',s:'13845022',v:'3C4PJMC25TT272759',p:60880,r:null,st:'En transit',url:'Jeep-Cherokee-2026-id13845022'},
-  // JEEP COMPASS
-  {b:'Jeep',m:'Compass',y:'2026',t:'North',c:'Noir',e:'2.0L Turbo I-4',tr:'Auto. 8 vit.',s:'26027',v:'3C4NJDBN1TT185525',p:40690,r:45190,st:'Disponible',url:'Jeep-Compass-2026-id12866366'},
-  {b:'Jeep',m:'Compass',y:'2026',t:'Altitude',c:'Blanc',e:'2.0L Turbo I-4',tr:'Auto. 8 vit.',s:'26197',v:'3C4NJDBN2TT185842',p:41590,r:47590,st:'Disponible',url:'Jeep-Compass-2026-id13459004'},
-  {b:'Jeep',m:'Compass',y:'2026',t:'North',c:'Bleu',e:'2.0L Turbo I-4',tr:'Auto. 8 vit.',s:'26209',v:'3C4NJDBN1TT243567',p:42585,r:47085,st:'Disponible',url:'Jeep-Compass-2026-id13523687'},
-  // JEEP GLADIATOR
-  {b:'Jeep',m:'Gladiator',y:'2026',t:'Willys',c:'Bleu foncé',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13890248',v:'1C6PJTAG1TL187221',p:64635,r:null,st:'En transit',url:'Jeep-Gladiator-2026-id13890248'},
-  {b:'Jeep',m:'Gladiator',y:'2026',t:'Willys',c:'Blanc cassé',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13898760',v:'1C6PJTAGXTL187220',p:64635,r:null,st:'En transit',url:'Jeep-Gladiator-2026-id13898760'},
-  {b:'Jeep',m:'Gladiator',y:'2026',t:'Willys',c:'Joose',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13896008',v:'1C6PJTAG3TL187222',p:64935,r:null,st:'En transit',url:'Jeep-Gladiator-2026-id13896008'},
-  {b:'Jeep',m:'Gladiator',y:'2026',t:'Mojave X',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26157',v:'1C6RJTEG2TL152349',p:83400,r:null,st:'Disponible',url:'Jeep-Gladiator-2026-id13391736'},
-  // JEEP GRAND CHEROKEE
-  {b:'Jeep',m:'Grand Cherokee',y:'2026',t:'Laredo',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26212',v:'1C4RJHAG7TC249591',p:61180,r:63680,st:'Disponible',url:'Jeep-Grand_Cherokee-2026-id13541834'},
-  {b:'Jeep',m:'Grand Cherokee',y:'2026',t:'Laredo X',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26237',v:'1C4RJHAG6TC266298',p:65180,r:67680,st:'Disponible',url:'Jeep-Grand_Cherokee-2026-id13629919'},
-  {b:'Jeep',m:'Grand Cherokee',y:'2026',t:'Altitude',c:'Gris',e:'2.0L Turbo I-4',tr:'Auto. 8 vit.',s:'26222',v:'1C4RJHAR9TC224340',p:68475,r:70975,st:'Disponible',url:'Jeep-Grand_Cherokee-2026-id13584499'},
-  // JEEP WRANGLER
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Sahara',c:'Gris',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26124',v:'1C4PJXEGXTW225358',p:65025,r:72275,st:'Disponible',url:'Jeep-Wrangler-2026-id13213480'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Willys',c:'Rouge',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13851270',v:'1C4PJXDG3TW305733',p:67615,r:74365,st:'En transit',url:'Jeep-Wrangler-2026-id13851270'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Willys',c:'Bleu',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13851271',v:'1C4PJXDG1TW305732',p:67615,r:74365,st:'Disponible',url:'Jeep-Wrangler-2026-id13851271'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Willys',c:'Bleu foncé',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13863459',v:'1C4PJXDGXTW305731',p:67615,r:74365,st:'En transit',url:'Jeep-Wrangler-2026-id13863459'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Sahara',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26114',v:'1C4PJXEG3TW210913',p:72545,r:79795,st:'Disponible',url:'Jeep-Wrangler-2026-id13113440'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Sahara',c:'Blanc',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26068',v:'1C4PJXEG1TW193853',p:73810,r:81060,st:'Disponible',url:'Jeep-Wrangler-2026-id12940774'},
-  {b:'Jeep',m:'Wrangler',y:'2026',t:'4-Door Willys',c:'Bleu foncé',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26253',v:'1C4PJXDG4TW273245',p:68990,r:75740,st:'Disponible',url:'Jeep-Wrangler-2026-id13688464'},
-  // RAM 1500
-  {b:'RAM',m:'1500',y:'2026',t:'Black Express',c:'Blanc',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13772117',v:'1C6SRFGG0TN372117',p:61790,r:68290,st:'En transit',url:'RAM-1500-2026-id13772117'},
-  {b:'RAM',m:'1500',y:'2026',t:'Black Express',c:'Gris',e:'3.6L V6',tr:'Auto. 8 vit.',s:'26185',v:'3C6RRFGGXT4166554',p:62485,r:68985,st:'Disponible',url:'RAM-1500-2026-id13219614'},
-  {b:'RAM',m:'1500',y:'2026',t:'Black Express',c:'Noir',e:'3.6L V6',tr:'Auto. 8 vit.',s:'13449834',v:'1C6SRFGG3TN449834',p:62385,r:68885,st:'En transit',url:'RAM-1500-2026-id13449834'},
-  {b:'RAM',m:'1500',y:'2026',t:'Warlock',c:'Gris',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'26250',v:'3C6SRFGP7T4186777',p:68465,r:74965,st:'Disponible',url:'RAM-1500-2026-id13674387'},
-  {b:'RAM',m:'1500',y:'2026',t:'Warlock',c:'Noir',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'13663669',v:'1C6SRFHT9TN663669',p:67265,r:null,st:'En transit',url:'RAM-1500-2026-id13663669'},
-  {b:'RAM',m:'1500',y:'2026',t:'Warlock',c:'Gris',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'13674387',v:'1C6SRFHT7TN674387',p:67365,r:null,st:'En transit',url:'RAM-1500-2026-id13674387'},
-  {b:'RAM',m:'1500',y:'2026',t:'Big Horn',c:'Vert',e:'5.7L HEMI V8',tr:'Auto. 8 vit.',s:'13580990',v:'1C6SRFBT9TN580990',p:74515,r:null,st:'Disponible',url:'RAM-1500-2026-id13580990'},
-  {b:'RAM',m:'1500',y:'2026',t:'Sport',c:'Canyon Lake',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'13649748',v:'1C6SRFTP5TN649748',p:75665,r:null,st:'En transit',url:'RAM-1500-2026-id13649748'},
-  {b:'RAM',m:'1500',y:'2026',t:'Big Horn',c:'Gris',e:'5.7L HEMI V8',tr:'Auto. 8 vit.',s:'13775318',v:'1C6SRFBT3TN775318',p:76805,r:null,st:'En transit',url:'RAM-1500-2026-id13775318'},
-  {b:'RAM',m:'1500',y:'2026',t:'Sport',c:'Blanc',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'26150',v:'1C6SRFTP0TN289907',p:77870,r:86120,st:'Disponible',url:'RAM-1500-2026-id13406266'},
-  {b:'RAM',m:'1500',y:'2026',t:'Sport',c:'Noir',e:'5.7L HEMI V8',tr:'Auto. 8 vit.',s:'13629920',v:'1C6SRFVT7TN629920',p:78360,r:null,st:'En transit',url:'RAM-1500-2026-id13629920'},
-  {b:'RAM',m:'1500',y:'2026',t:'Sport',c:'Noir',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'26154',v:'1C6SRFTP3TN326195',p:78465,r:86715,st:'Disponible',url:'RAM-1500-2026-id13455960'},
-  {b:'RAM',m:'1500',y:'2026',t:'Rebel',c:'Noir',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'26200',v:'1C6SRFLP6TN317502',p:81730,r:null,st:'Disponible',url:'RAM-1500-2026-id13501716'},
-  {b:'RAM',m:'1500',y:'2026',t:'Sport',c:'Noir',e:'5.7L HEMI V8',tr:'Auto. 8 vit.',s:'26248',v:'1C6SRFVT0TN332586',p:83665,r:91915,st:'Disponible',url:'RAM-1500-2026-id13631985'},
-  {b:'RAM',m:'1500',y:'2026',t:'Laramie',c:'Gris',e:'5.7L HEMI V8',tr:'Auto. 8 vit.',s:'26258',v:'',p:89540,r:null,st:'Disponible',url:'RAM-1500-2026-id13258000'},
-  {b:'RAM',m:'1500',y:'2026',t:"Sport caisse 6'4\"",c:'Canyon Lake',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'26241',v:'1C6SRFTP9TN311032',p:95300,r:null,st:'Disponible',url:'RAM-1500-2026-id13618002'},
-  {b:'RAM',m:'1500',y:'2026',t:'RHO',c:'Noir',e:'3.0L I-6 Turbo',tr:'Auto. 8 vit.',s:'13614561',v:'1C6SRFUP9TN333644',p:133134,r:144634,st:'En transit',url:'RAM-1500-2026-id13614561'},
-  // RAM 2500
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Gris',e:'6.4L V8',tr:'Auto. 8 vit.',s:'13738831',v:'3C6UR5CJ0TG738831',p:77815,r:85815,st:'En transit',url:'RAM-2500-2026-id13738831'},
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Rouge',e:'6.4L V8',tr:'Auto. 8 vit.',s:'13738832',v:'3C6UR5CJ2TG738832',p:78410,r:86410,st:'En transit',url:'RAM-2500-2026-id13738832'},
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Bleu',e:'6.4L V8',tr:'Auto. 8 vit.',s:'13724848',v:'3C6UR5CJ4TG328487',p:78510,r:86510,st:'En transit',url:'RAM-2500-2026-id13724848'},
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Bleu',e:'6.4L V8',tr:'Auto. 8 vit.',s:'13724847',v:'3C6UR5CJ6TG724847',p:78510,r:86510,st:'En transit',url:'RAM-2500-2026-id13724847'},
-  {b:'RAM',m:'2500',y:'2026',t:'Black Express',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13519984',v:'3C6UR5CL4TG283066',p:88015,r:94015,st:'En transit',url:'RAM-2500-2026-id13519984'},
-  {b:'RAM',m:'2500',y:'2026',t:'Black Express',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13449853',v:'3C6UR5CL0TG262912',p:89680,r:95680,st:'En transit',url:'RAM-2500-2026-id13449853'},
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13765660',v:'3C6UR5CL1TG328318',p:90815,r:96815,st:'En transit',url:'RAM-2500-2026-id13765660'},
-  {b:'RAM',m:'2500',y:'2026',t:'Warlock',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13758652',v:'3C6UR5CL8TG328316',p:91410,r:97410,st:'En transit',url:'RAM-2500-2026-id13758652'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26180',v:'3C6UR5DL0TG253142',p:97685,r:103685,st:'Disponible',url:'RAM-2500-2026-id13305174'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26186',v:'3C6UR5DL8TG253390',p:97685,r:103685,st:'Disponible',url:'RAM-2500-2026-id13340660'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26190',v:'3C6UR5DLXTG253391',p:97685,r:103685,st:'Disponible',url:'RAM-2500-2026-id13340664'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26191',v:'3C6UR5DL1TG253389',p:97685,r:103685,st:'Disponible',url:'RAM-2500-2026-id13340663'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26187',v:'3C6UR5DL3TG253393',p:98280,r:104280,st:'Disponible',url:'RAM-2500-2026-id13340661'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26188',v:'3C6UR5DL5TG253394',p:98280,r:104280,st:'Disponible',url:'RAM-2500-2026-id13340662'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13449850',v:'3C6UR5DL1TG253392',p:98310,r:104310,st:'En transit',url:'RAM-2500-2026-id13449850'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26162',v:'3C6UR5DL5TG255503',p:98380,r:104380,st:'Disponible',url:'RAM-2500-2026-id13291066'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Rouge',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26235',v:'3C6UR5DL8TG253129',p:98710,r:104710,st:'Disponible',url:'RAM-2500-2026-id13340386'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26057',v:'3C6UR5DL7TG222776',p:98905,r:104905,st:'Disponible',url:'RAM-2500-2026-id13057956'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26260',v:'',p:98905,r:null,st:'Disponible',url:'RAM-2500-2026-id13260000'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13649815',v:'3C6UR5DL0TG649815',p:99105,r:105105,st:'En transit',url:'RAM-2500-2026-id13649815'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26047',v:'3C6UR5JL3TG223699',p:99205,r:105205,st:'Disponible',url:'RAM-2500-2026-id13047882'},
-  {b:'RAM',m:'2500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13649747',v:'3C6UR5DL5TG649747',p:99605,r:105605,st:'En transit',url:'RAM-2500-2026-id13649747'},
-  {b:'RAM',m:'2500',y:'2026',t:'Rebel',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26202',v:'3C6UR5EL5TG248534',p:111270,r:117270,st:'Disponible',url:'RAM-2500-2026-id13512774'},
-  {b:'RAM',m:'2500',y:'2026',t:'Rebel',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13550671',v:'3C6UR5EL7TG550671',p:111270,r:117270,st:'En transit',url:'RAM-2500-2026-id13550671'},
-  {b:'RAM',m:'2500',y:'2026',t:'Rebel',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13552889',v:'3C6UR5EL9TG552889',p:111270,r:117270,st:'En transit',url:'RAM-2500-2026-id13552889'},
-  {b:'RAM',m:'2500',y:'2026',t:"Laramie caisse 6'4\"",c:'Gris',e:'6.7L Diesel',tr:'Auto.',s:'26085',v:'3C6UR5FL9TG242492',p:112605,r:118605,st:'Disponible',url:'RAM-2500-2026-id13118026'},
-  {b:'RAM',m:'2500',y:'2026',t:'Laramie',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13643772',v:'3C6UR5FL3TG643772',p:115995,r:121995,st:'En transit',url:'RAM-2500-2026-id13643772'},
-  {b:'RAM',m:'2500',y:'2026',t:'Limited',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26099',v:'3C6UR5SL9TG248640',p:120705,r:126705,st:'Disponible',url:'RAM-2500-2026-id13199632'},
-  {b:'RAM',m:'2500',y:'2026',t:'Limited',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13678007',v:'3C6UR5TL0TG309467',p:122605,r:128605,st:'En transit',url:'RAM-2500-2026-id13678007'},
-  // RAM 3500
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26138',v:'3C63RRHLXTG212093',p:98540,r:104540,st:'Disponible',url:'RAM-3500-2026-id13258172'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26167',v:'3C63RRHL5TG250900',p:99275,r:105275,st:'Disponible',url:'RAM-3500-2026-id13334906'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26173',v:'3C63RRHL7TG250901',p:99900,r:105900,st:'Disponible',url:'RAM-3500-2026-id13334912'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26176',v:'3C63RRHL0TG250903',p:100595,r:106595,st:'Disponible',url:'RAM-3500-2026-id13334915'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13724847',v:'3C63RRHL2TG724847',p:102150,r:108150,st:'En transit',url:'RAM-3500-2026-id13724840'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn',c:'Gris',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13609045',v:'3C63RRHL4TG609045',p:102445,r:108445,st:'En transit',url:'RAM-3500-2026-id13609045'},
-  {b:'RAM',m:'3500',y:'2026',t:'Big Horn caisse 8 pi',c:'Gris',e:'6.7L Diesel',tr:'Auto.',s:'26153',v:'3C63RRHLXTG244624',p:102845,r:108845,st:'Disponible',url:'RAM-3500-2026-id13284958'},
-  {b:'RAM',m:'3500',y:'2026',t:'Laramie',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26175',v:'3C63RRJL9TG246066',p:117070,r:123070,st:'Disponible',url:'RAM-3500-2026-id13334914'},
-  {b:'RAM',m:'3500',y:'2026',t:'Laramie',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26168',v:'3C63RRJL0TG246067',p:117665,r:123665,st:'Disponible',url:'RAM-3500-2026-id13334907'},
-  {b:'RAM',m:'3500',y:'2026',t:'Laramie',c:'Blanc',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26102',v:'3C63RRJL5TG216563',p:118750,r:124750,st:'Disponible',url:'RAM-3500-2026-id13186002'},
-  {b:'RAM',m:'3500',y:'2026',t:'Limited',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'26177',v:'3C63RRRL4TG257335',p:124920,r:130920,st:'Disponible',url:'RAM-3500-2026-id13334916'},
-  {b:'RAM',m:'3500',y:'2026',t:'Limited',c:'Noir',e:'6.7L Diesel Turbo',tr:'Auto. 8 vit.',s:'13674388',v:'3C63RRRL9TG275524',p:126145,r:132145,st:'En transit',url:'RAM-3500-2026-id13674388'},
-  // RAM PROMASTER
-  {b:'RAM',m:'ProMaster 3500',y:'2026',t:'High Roof 159',c:'Blanc',e:'3.6L V6',tr:'Auto. 9 vit.',s:'26178',v:'3C6MRVJG9TE181859',p:72490,r:null,st:'Disponible',url:'RAM-ProMaster_3500-2026-id13304972'},
-  {b:'RAM',m:'ProMaster 3500',y:'2026',t:'High Roof 159',c:'Noir',e:'3.6L V6',tr:'Auto. 9 vit.',s:'26192',v:'3C6MRVJG9TE181862',p:71890,r:null,st:'Disponible',url:'RAM-ProMaster_3500-2026-id13318982'},
-  {b:'RAM',m:'ProMaster 3500',y:'2026',t:'High Roof 159',c:'Gris',e:'3.6L V6',tr:'Auto. 9 vit.',s:'26193',v:'3C6MRVJG7TE181861',p:72585,r:null,st:'Disponible',url:'RAM-ProMaster_3500-2026-id13318983'},
-];
-
-// ── COULEURS ──────────────────────────────────────────────────────────
-const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','cassé':'#f0ede0','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','foncé':'#1a3a6b','vert':'#16a34a','joose':'#84cc16','olive':'#6b7c2a','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','sable':'#c4a97a','canyon':'#7a9cb8','lake':'#7a9cb8','beige':'#d4b896','brun':'#92400e'};
-function cx(s){if(!s)return'#9ca3af';const l=s.toLowerCase();for(const[k,v]of Object.entries(CM))if(l.includes(k))return v;return'#9ca3af';}
-function fp(p){if(!p)return'—';return parseInt(p).toLocaleString('fr-CA')+'\u00a0$';}
-function sb(st){
-  if(st==='En transit')return'<span class="badge badge-transit">EN TRANSIT</span>';
-  if(st==='En production')return'<span class="badge badge-prod">EN PROD.</span>';
-  return'<span class="badge badge-dispo">DISPO</span>';
-}
-function rc(st){
-  if(st==='En transit')return'row-transit';
-  if(st==='En production')return'row-prod';
-  return'';
-}
-function cc(st){
-  if(st==='En transit')return'card-transit';
-  if(st==='En production')return'card-prod';
-  return'';
-}
-
-let activeStatus='';
-
-function filterByStatus(s){
-  activeStatus=s;
-  ['all','dispo','transit'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
-  if(!s)document.getElementById('stat-all').classList.add('active');
-  else if(s==='Disponible')document.getElementById('stat-dispo').classList.add('active');
-  else document.getElementById('stat-transit').classList.add('active');
-  applyFilters();
-}
-
-function resetFilters(){
-  document.getElementById('search').value='';
-  document.getElementById('filter-brand').value='';
-  document.getElementById('filter-model').value='';
-  document.getElementById('sort').value='stock-asc';
-  activeStatus='';
-  ['all','dispo','transit'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
-  document.getElementById('stat-all').classList.add('active');
-  applyFilters();
-}
-
-function applyFilters(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const br=document.getElementById('filter-brand').value;
-  const mo=document.getElementById('filter-model').value;
-  const so=document.getElementById('sort').value;
-  let r=INVENTORY.filter(v=>{
-    const ms=!q||[v.b,v.m,v.y,v.t,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
-    const mst=!activeStatus||(activeStatus==='En transit'?(v.st==='En transit'||v.st==='En production'):v.st===activeStatus);
-    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&mst;
-  });
-  if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
-  else if(so==='stock-desc')r.sort((a,b)=>b.s.localeCompare(a.s,undefined,{numeric:true}));
-  else if(so==='price-asc')r.sort((a,b)=>a.p-b.p);
-  else if(so==='price-desc')r.sort((a,b)=>b.p-a.p);
-  else if(so==='name')r.sort((a,b)=>(a.b+a.m).localeCompare(b.b+b.m));
-
-  // Stats
-  document.getElementById('num-all').textContent=INVENTORY.length;
-  document.getElementById('num-dispo').textContent=INVENTORY.filter(v=>v.st==='Disponible').length;
-  document.getElementById('num-transit').textContent=INVENTORY.filter(v=>v.st==='En transit'||v.st==='En production').length;
-  document.getElementById('total-count').textContent=INVENTORY.length;
-
-  renderTable(r);
-  renderCards(r);
-  document.getElementById('empty-state').style.display=r.length===0?'block':'none';
-}
-
-function renderTable(vv){
-  document.getElementById('table-body').innerHTML=vv.map(v=>{
-    const eco=v.r?v.r-v.p:0;
-    const url=`https://www.laquerrechrysler.com/neufs/inventaire/${v.url}.html`;
-    return`<tr class="${rc(v.st)}">
-      <td>${sb(v.st)}</td>
-      <td><strong>${v.s}</strong></td>
-      <td><span style="font-weight:600">${v.b} ${v.m}</span></td>
-      <td style="color:#475569">${v.t}</td>
-      <td>${v.y}</td>
-      <td style="font-size:11px;max-width:120px;white-space:normal">${v.e}</td>
-      <td style="font-size:11px">${v.tr}</td>
-      <td><span style="display:inline-flex;align-items:center;gap:5px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></td>
-      <td style="font-family:monospace;font-size:10px;color:#64748b">${v.v||'—'}</td>
-      <td><strong style="color:#003DA5">${fp(v.p)}</strong></td>
-      <td style="color:#94a3b8;font-size:11px">${v.r?fp(v.r):'—'}</td>
-      <td>${eco>0?`<span style="color:#15803d;font-size:11px;font-weight:600">-${fp(eco)}</span>`:'—'}</td>
-      <td style="display:flex;gap:4px;">
-        <a class="action-btn" href="${url}" target="_blank" title="Voir la fiche"><i class="ti ti-external-link"></i></a>
-        <button class="btn-annonce-sm" onclick="genAnnonceByStock('${v.s}')" title="Générer annonce Marketplace"><i class="ti ti-speakerphone"></i></button>
-      </td>
-    </tr>`;}).join('');
-}
-
-function renderCards(vv){
-  document.getElementById('cards-list').innerHTML=vv.map(v=>{
-    const eco=v.r?v.r-v.p:0;
-    const url=`https://www.laquerrechrysler.com/neufs/inventaire/${v.url}.html`;
-    return`<div class="vcard ${cc(v.st)}">
-      <div class="vcard-header">
-        <div>
-          <div class="vcard-title">${v.y} ${v.b} ${v.m}</div>
-          <div class="vcard-trim">${v.t}</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="vcard-price">${fp(v.p)}</div>
-          ${v.r?`<div class="vcard-reg">${fp(v.r)}</div>`:''}
-        </div>
-      </div>
-      <div class="vcard-body">
-        <div class="vcard-row"><span class="vcard-lbl">Moteur</span><span class="vcard-val">${v.e}</span></div>
-        <div class="vcard-row"><span class="vcard-lbl">Couleur</span><span class="vcard-val"><span style="display:inline-flex;align-items:center;gap:4px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></span></div>
-        <div class="vcard-row"><span class="vcard-lbl">Transmission</span><span class="vcard-val">${v.tr}</span></div>
-        <div class="vcard-row"><span class="vcard-lbl">Stock</span><span class="vcard-val">${v.s}</span></div>
-        <div class="vcard-row" style="grid-column:1/-1"><span class="vcard-lbl">VIN</span><span class="vcard-val mono">${v.v||'—'}</span></div>
-      </div>
-      <div class="vcard-footer">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          ${sb(v.st)}
-          ${eco>0?`<span class="vcard-eco">-${fp(eco)}</span>`:''}
-        </div>
-        <div style="display:flex;gap:6px;">
-          <a class="btn-fiche" href="${url}" target="_blank">
-            <i class="ti ti-external-link" style="font-size:13px"></i> Fiche
-          </a>
-          <button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')">
-            <i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce
-          </button>
-        </div>
-      </div>
-    </div>`;}).join('');
-}
-
-function initSelects(){
-  const brands=[...new Set(INVENTORY.map(v=>v.b))].sort();
-  const models=[...new Set(INVENTORY.map(v=>v.m))].sort();
-  document.getElementById('filter-brand').innerHTML='<option value="">Toutes marques</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
-  document.getElementById('filter-model').innerHTML='<option value="">Tous modèles</option>'+models.map(m=>`<option value="${m}">${m}</option>`).join('');
-}
-
-initSelects();
-applyFilters();
-
-// ── GÉNÉRATION D'ANNONCE MARKETPLACE ─────────────────────────────────
-const PHONE = '873-300-4687';
-const SITE = 'www.laquerrechrysler.com';
-const ADRESSE = '34 Boulevard Arthabaska Est, Victoriaville, QC';
-
-function getTone(v){
-  const m=v.m.toLowerCase();
-  const t=v.t.toLowerCase();
-  // V2 — RAM 2500/3500, commercial
-  if((m==='2500'||m==='3500'||m==='promaster 3500')&&v.b==='RAM') return 'V2';
-  // V3 — Wrangler, Gladiator, Grand Cherokee
-  if(m==='wrangler'||m==='gladiator'||m==='grand cherokee') return 'V3';
-  // V1 — Compass, Grand Caravan, Pacifica + défaut
-  return 'V1';
-}
-
-function getAccroche(v){
-  const eco=v.r?v.r-v.p:0;
-  const ecoStr=eco>0?`ÉCONOMISEZ ${fp(eco)} !`:'OFFRE LIMITÉE !';
-  const tone=getTone(v);
-  if(tone==='V2') return `🔧 ${v.y} ${v.b} ${v.m} ${v.t} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
-  if(tone==='V3') return `🔥 ${v.y} ${v.b} ${v.m} ${v.t} — ${ecoStr}`;
-  return `💥 PRIX SPÉCIAL — ${ecoStr}`;
-}
-
-function getFeatures(v){
-  const m=v.m.toLowerCase();
-  const t=v.t.toLowerCase();
-  const lines=[];
-  // Par modèle
-  if(m==='grand caravan'||m==='pacifica'){
-    lines.push('🛋️ Habitacle 7 passagers — ultra-polyvalent');
-    lines.push('🎒 Espace cargo généreux');
-    lines.push('📲 Connectivité Apple CarPlay / Android Auto');
-    lines.push('❄️ Climatisation multizone');
-    lines.push('🛡️ Caméra de recul · aide au stationnement');
-    if(m==='pacifica') lines.push('🔌 Version hybride rechargeable disponible');
-  } else if(m==='wrangler'){
-    lines.push('🏔️ Hors-route légendaire — Jeep 4x4');
-    lines.push('🌞 Toit amovible et portes sans cadre');
-    lines.push('💪 Capacité tout-terrain supérieure');
-    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
-    lines.push('🔒 Système 4x4 Command-Trac');
-  } else if(m==='gladiator'){
-    lines.push('🏔️ Seul pick-up Jeep — tout-terrain + cargo');
-    lines.push('🌞 Toit amovible et portes sans cadre');
-    lines.push(`💪 Remorquage : jusqu'à 7 650 lb`);
-    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
-    lines.push('🔒 Système 4x4 Command-Trac');
-  } else if(m==='grand cherokee'){
-    lines.push('🏆 Le VUS le plus primé de l'histoire');
-    lines.push('💪 Remorquage : jusqu'à 7 200 lb');
-    lines.push('🛡️ Technologies de sécurité avancées');
-    lines.push('📲 Uconnect 5 · Apple CarPlay / Android Auto');
-    lines.push('🏔️ Quadra-Trac 4x4');
-  } else if(m==='compass'){
-    lines.push('🚗 Compact et agile — parfait pour la ville et la route');
-    lines.push('💪 4X4 intégral — confiance en toute saison');
-    lines.push('📲 Apple CarPlay / Android Auto');
-    lines.push('❄️ Climatisation automatique');
-    lines.push('💳 Financement avantageux disponible');
-  } else if(m==='durango'){
-    lines.push('💪 Remorquage : jusqu'à 8 700 lb');
-    lines.push('🛋️ Configuration 3 rangées — jusqu'à 7 passagers');
-    lines.push('🔥 V6 Pentastar — puissance et efficacité');
-    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
-    lines.push('🛡️ Traction intégrale — AWD');
-  } else if(v.b==='RAM'&&m==='1500'){
-    lines.push(`💪 Moteur ${v.e} — puissance et couple`);
-    lines.push('🚛 Capacité de remorquage exceptionnelle');
-    lines.push('📲 Uconnect 5 · Apple CarPlay / Android Auto');
-    lines.push('🛡️ Technologies sécurité avancées');
-    lines.push('🎨 Style et finition haut de gamme');
-  } else if(v.b==='RAM'&&(m==='2500'||m==='3500')){
-    lines.push(`🔧 Moteur ${v.e} — robustesse industrielle`);
-    lines.push('💪 Remorquage max — fait pour le chantier');
-    lines.push('🚛 Cabine d'équipe — 6 passagers');
-    lines.push('📲 Uconnect · connectivité intégrée');
-    lines.push('⚙️ Transmission automatique 8 vitesses ZF');
-  } else if(m==='promaster 3500'){
-    lines.push('📦 Cargo maximal — High Roof 159 po');
-    lines.push('🔧 V6 3.6L fiable et économique');
-    lines.push('🚚 Idéal entrepreneurs & livraisons');
-    lines.push('💺 Aménagement intérieur personnalisable');
-    lines.push('💳 Location commerciale disponible');
-  }
-  return lines.join('\n');
-}
-
-function buildAnnonce(v){
-  const tone=getTone(v);
-  const eco=v.r?v.r-v.p:0;
-  const prixReg=v.r?`\n💰 Prix régulier : ${fp(v.r)}`:'';
-  const econStr=eco>0?`\n🤑 ÉCONOMIES : ${fp(eco)}`:'';
-  const transitNote=v.st!=='Disponible'?`\n📅 Statut : ${v.st} — réservation possible`:'';
-  const features=getFeatures(v);
-
-  let sig='';
-  if(tone==='V1'){
-    sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.\n\nMon approche : pas de pression, juste les bons conseils pour trouver LE véhicule qui te convient vraiment.\n\n📲 Écris-moi ici ou par texto — je réponds rapidement et je m'adapte à ton horaire.\n\nOn peut se voir en concession ou t'arranger une visite à ta convenance. 😊`;
-  } else if(tone==='V2'){
-    sig=`💬 Vincent — Spécialiste camions lourds chez Laquerre Chrysler, Victoriaville.\n\nGestion de flotte, crédit commercial, location longue durée — on trouve la solution qui correspond à tes besoins d'affaires.\n\n📲 Texto ou appel — je réponds vite.`;
-  } else {
-    sig=`💬 Je suis Vincent, conseiller passionné chez Laquerre Chrysler.\n\nSi tu rêves de ce ${v.b} ${v.m}, viens l'essayer — l'expérience est unique.\n\n📲 Écris-moi, je m'occupe de tout. Pas de pression, juste du plaisir. 😎`;
-  }
-
-  return `${getAccroche(v)}
-
-✅ ${v.y} ${v.b} ${v.m} ${v.t}${v.st!=='Disponible'?' — '+v.st:''}
-
-🎨 Couleur : ${v.c}
-🔧 Moteur : ${v.e}
-⚙️ Transmission : ${v.tr}
-🛞 Motricité : 4 roues motrices${prixReg}
-🏷️ NOTRE PRIX : ${fp(v.p)} + taxes${econStr}
-🔢 N° de stock : ${v.s}
-${v.v?'NIV : '+v.v:''}${transitNote}
-
-${features}
-
-💳 Financement disponible — conditions avantageuses
-
----
-${sig}
-
-📍 Laquerre Chrysler
-${ADRESSE}
-📞 ${PHONE} | 🌐 ${SITE}`;
-}
-
-let currentAnnonce='';
-
-function genAnnonceByStock(stock){
-  const v=INVENTORY.find(x=>x.s===stock);
-  if(v) genAnnonce(v);
-}
-
-function genAnnonce(v){
-  currentAnnonce='';
-  document.getElementById('modal-title').textContent=`${v.y} ${v.b} ${v.m} ${v.t}`;
-  document.getElementById('modal-sub').textContent=`${v.c} · Stock ${v.s} · ${fp(v.p)}`;
-  document.getElementById('modal-content').innerHTML='<div class="generating"><div class="gen-spin"></div><div>Génération de l'annonce...</div></div>';
-  const copyBtn=document.getElementById('btn-copy');
-  copyBtn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
-  copyBtn.className='btn-copy';
-  document.getElementById('modal-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
-
-  // Simuler un délai réaliste puis afficher
-  setTimeout(()=>{
-    currentAnnonce=buildAnnonce(v);
-    document.getElementById('modal-content').innerHTML=`<div class="annonce-text">${currentAnnonce.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
-  },600);
-}
-
-function copyAnnonce(){
-  if(!currentAnnonce)return;
-  navigator.clipboard.writeText(currentAnnonce).then(()=>{
-    const btn=document.getElementById('btn-copy');
-    btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i> Copié !';
-    btn.className='btn-copy copied';
-    setTimeout(()=>{
-      btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
-      btn.className='btn-copy';
-    },2500);
-  }).catch(()=>{
-    // Fallback
-    const ta=document.createElement('textarea');
-    ta.value=currentAnnonce;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    const btn=document.getElementById('btn-copy');
-    btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i> Copié !';
-    btn.className='btn-copy copied';
-    setTimeout(()=>{
-      btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
-      btn.className='btn-copy';
-    },2500);
-  });
-}
-
-function closeModal(e){
-  if(e.target===document.getElementById('modal-overlay')) closeModalDirect();
-}
-function closeModalDirect(){
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-</script>
-
 <!-- MODAL ANNONCE -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
   <div class="modal">
@@ -710,14 +222,7 @@ function closeModalDirect(){
       </div>
       <button class="modal-close" onclick="closeModalDirect()">✕</button>
     </div>
-    <div class="modal-body">
-      <div id="modal-content">
-        <div class="generating">
-          <div class="gen-spin"></div>
-          <div>Génération de l'annonce...</div>
-        </div>
-      </div>
-    </div>
+    <div class="modal-body"><div id="modal-content"></div></div>
     <div class="modal-footer">
       <button class="btn-copy" id="btn-copy" onclick="copyAnnonce()">
         <i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce
@@ -725,5 +230,391 @@ function closeModalDirect(){
     </div>
   </div>
 </div>
+<script>
+const PHONE='873-300-4687';
+const SITE='www.laquerrechrysler.com';
+const ADR='34 Boulevard Arthabaska Est, Victoriaville, QC';
+const VITRE_BASE='https://www.laquerrechrysler.com/neufs/inventaire/';
+
+const INVENTORY=[
+  // ── NEUFS ──────────────────────────────────────────────────────────
+  {s:'25124',y:'2025',b:'JEEP',m:'WRANGLER 4XE SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXN62SW611495',vitre:true,vendu:false},
+  {s:'26027',y:'2026',b:'JEEP',m:'COMPASS NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN1TT185525',vitre:true,vendu:false},
+  {s:'26036',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',c:'BLANC',km:10,e:'NEUF',v:'2C4RC1ZG8TR187454',vitre:true,vendu:false},
+  {s:'26047',y:'2026',b:'RAM',m:'2500 BIG HORN 8 PIEDS',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL3TG223699',vitre:true,vendu:false},
+  {s:'26057',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL7TG222776',vitre:false,vendu:false},
+  {s:'26072',y:'2026',b:'RAM',m:'2500 TRADESMAN',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5HLXTG232809',vitre:true,vendu:false},
+  {s:'26073',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1ZG5TR206607',vitre:true,vendu:false},
+  {s:'26095',y:'2026',b:'DODGE',m:'DURANGO GT',c:'GRIS DESTROYER',km:10,e:'NEUF',v:'1C4RDJDG7TC189872',vitre:true,vendu:false},
+  {s:'26096',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C63RRHLXTG244283',vitre:true,vendu:false},
+  {s:'26102',y:'2026',b:'RAM',m:'3500 LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL5TG216563',vitre:true,vendu:false},
+  {s:'26114',y:'2026',b:'JEEP',m:'WRANGLER SAHARA',c:'NOIR',km:10,e:'NEUF',v:'1C4PJXEG3TW210913',vitre:true,vendu:false},
+  {s:'26115',y:'2026',b:'JEEP',m:'COMPASS NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN5TT206022',vitre:true,vendu:false},
+  {s:'26124',y:'2026',b:'JEEP',m:'WRANGLER SAHARA',c:'GRANIT',km:10,e:'NEUF',v:'1C4PJXEGXTW225358',vitre:true,vendu:false},
+  {s:'26138',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHLXTG212093',vitre:true,vendu:false},
+  {s:'26157',y:'2026',b:'JEEP',m:'GLADIATOR MOJAVE',c:'NOIR',km:10,e:'NEUF',v:'1C6RJTEG2TL152349',vitre:true,vendu:false},
+  {s:'26162',y:'2026',b:'RAM',m:'1500 BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL5TG255503',vitre:true,vendu:false},
+  {s:'26167',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL5TG250900',vitre:false,vendu:false},
+  {s:'26168',y:'2026',b:'RAM',m:'3500 LARAMIE',c:'NOIR',km:10,e:'NEUF',v:'3C63RRJL0TG246067',vitre:true,vendu:false},
+  {s:'26173',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL7TG250901',vitre:false,vendu:false},
+  {s:'26175',y:'2026',b:'RAM',m:'3500 LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL9TG246066',vitre:true,vendu:false},
+  {s:'26176',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C63RRHL0TG250903',vitre:false,vendu:false},
+  {s:'26177',y:'2026',b:'RAM',m:'3500 LIMITED',c:'NOIR',km:10,e:'NEUF',v:'3C63RRRL4TG257335',vitre:true,vendu:false},
+  {s:'26178',y:'2026',b:'RAM',m:'PROMASTER 3500',c:'BLANC',km:10,e:'NEUF',v:'3C6MRVJG9TE181859',vitre:true,vendu:false},
+  {s:'26180',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5DL0TG253142',vitre:true,vendu:false},
+  {s:'26182',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5DL1TG253392',vitre:false,vendu:false},
+  {s:'26183',y:'2026',b:'RAM',m:'1500 TRADESMAN',c:'NOIR',km:10,e:'NEUF',v:'3C6RRFGG6T4166552',vitre:true,vendu:false},
+  {s:'26188',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL5TG253394',vitre:true,vendu:false},
+  {s:'26191',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5DL1TG253389',vitre:true,vendu:true},
+  {s:'26192',y:'2026',b:'RAM',m:'PROMASTER 3500',c:'NOIR',km:10,e:'NEUF',v:'3C6MRVJG9TE181862',vitre:true,vendu:false},
+  {s:'26193',y:'2026',b:'RAM',m:'PROMASTER 3500',c:'GRANIT',km:10,e:'NEUF',v:'3C6MRVJG7TE181861',vitre:true,vendu:false},
+  {s:'26197',y:'2026',b:'JEEP',m:'COMPASS NORTH',c:'BLANC',km:10,e:'NEUF',v:'3C4NJDBN2TT185842',vitre:true,vendu:false},
+  {s:'26200',y:'2026',b:'RAM',m:'1500 REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP6TN317502',vitre:true,vendu:false},
+  {s:'26203',y:'2026',b:'RAM',m:'1500 REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP8TN317503',vitre:true,vendu:false},
+  {s:'26208',y:'2026',b:'RAM',m:'2500 TRADESMAN EXPRESS',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL4TG283066',vitre:false,vendu:false},
+  {s:'26209',y:'2026',b:'JEEP',m:'COMPASS NORTH',c:'BLEU DES PROFONDEURS',km:10,e:'NEUF',v:'3C4NJDBN1TT243567',vitre:true,vendu:false},
+  {s:'26211',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL0TG207671',vitre:true,vendu:false},
+  {s:'26212',y:'2026',b:'JEEP',m:'GRAND CHEROKEE LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG7TC249591',vitre:true,vendu:false},
+  {s:'26216',y:'2026',b:'RAM',m:'2500 REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL0TG294384',vitre:true,vendu:false},
+  {s:'26217',y:'2026',b:'JEEP',m:'CHEROKEE LIMITED',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB22TT256620',vitre:true,vendu:false},
+  {s:'26218',y:'2026',b:'RAM',m:'2500 REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL9TG294383',vitre:true,vendu:false},
+  {s:'26222',y:'2026',b:'JEEP',m:'GRAND CHEROKEE LAREDO',c:'GRIS DE MER',km:10,e:'NEUF',v:'1C4RJHAR9TC224340',vitre:true,vendu:false},
+  {s:'26230',y:'2026',b:'RAM',m:'1500 RHO',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFUP9TN333644',vitre:true,vendu:false},
+  {s:'26237',y:'2026',b:'JEEP',m:'GRAND CHEROKEE LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG6TC266298',vitre:true,vendu:false},
+  {s:'26238',y:'2026',b:'RAM',m:'1500 SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT4TN363839',vitre:true,vendu:false},
+  {s:'26239',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL9TG214808',vitre:true,vendu:false},
+  {s:'26244',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL4TG309636',vitre:true,vendu:false},
+  {s:'26245',y:'2026',b:'RAM',m:'1500 SPORT',c:'CANYON LAKE',km:10,e:'NEUF',v:'1C6SRFTP4TN363300',vitre:false,vendu:false},
+  {s:'26246',y:'2026',b:'RAM',m:'2500 LARAMIE',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5KL8TG309637',vitre:true,vendu:false},
+  {s:'26248',y:'2026',b:'RAM',m:'1500 SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT0TN332586',vitre:true,vendu:false},
+  {s:'26250',y:'2026',b:'RAM',m:'1500 WARLOCK',c:'GRANIT',km:10,e:'NEUF',v:'3C6SRFGP7T4186777',vitre:true,vendu:false},
+  {s:'26251',y:'2026',b:'RAM',m:'2500 LIMITED MÉGA CAB',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5TL0TG309467',vitre:true,vendu:false},
+  {s:'26253',y:'2026',b:'JEEP',m:'WRANGLER WILLYS',c:'ANVIL',km:10,e:'NEUF',v:'1C4PJXDG4TW273245',vitre:true,vendu:false},
+  {s:'26260',y:'2026',b:'RAM',m:'1500 SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT2TN352208',vitre:false,vendu:false},
+  {s:'26262',y:'2026',b:'JEEP',m:'WRANGLER 392 MOAB',c:'GRANIT',km:10,e:'NEUF',v:'1C4RJXSJ2TW276152',vitre:true,vendu:false},
+  {s:'26264',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',c:'BLANC',km:10,e:'NEUF',v:'2C4RC1ZG3TR286179',vitre:true,vendu:false},
+  {s:'26270',y:'2026',b:'JEEP',m:'CHEROKEE LAREDO',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB2XTT243629',vitre:true,vendu:false},
+  {s:'26272',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL5TG336893',vitre:true,vendu:false},
+  {s:'26273',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'BLEU FORGE',km:10,e:'NEUF',v:'3C6UR5JL7TG336894',vitre:true,vendu:false},
+  {s:'26274',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL0TG336896',vitre:true,vendu:false},
+  {s:'26275',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5JL2TG336897',vitre:true,vendu:false},
+  {s:'26281',y:'2026',b:'JEEP',m:'CHEROKEE LAREDO',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB26TT227315',vitre:true,vendu:false},
+  {s:'26284',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL9TG336895',vitre:true,vendu:false},
+  {s:'26285',y:'2026',b:'JEEP',m:'WRANGLER RUBICON',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXFG3TW258161',vitre:true,vendu:false},
+  {s:'26287',y:'2026',b:'JEEP',m:'CHEROKEE LAREDO',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB24TT243626',vitre:true,vendu:false},
+  {s:'26291',y:'2026',b:'RAM',m:'2500 WARLOCK',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL3TG328319',vitre:true,vendu:false},
+  {s:'26292',y:'2026',b:'RAM',m:'2500 WARLOCK',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5CLXTG328320',vitre:true,vendu:false},
+  {s:'26298',y:'2026',b:'RAM',m:'1500 BIG HORN',c:'VERT SERANO',km:10,e:'NEUF',v:'1C6SRFFT9TN382644',vitre:true,vendu:false},
+  {s:'26299',y:'2026',b:'RAM',m:'3500 BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C63RRHL4TG285329',vitre:true,vendu:false},
+  {s:'26312',y:'2026',b:'JEEP',m:'WRANGLER WILLYS',c:'BLEU HYDRO',km:10,e:'NEUF',v:'1C4PJXDG1TW305732',vitre:true,vendu:false},
+  {s:'26313',y:'2026',b:'JEEP',m:'WRANGLER WILLYS',c:'ROUGE',km:10,e:'NEUF',v:'1C4PJXDG3TW305733',vitre:true,vendu:false},
+  {s:'27000',y:'2027',b:'CHRYSLER',m:'PACIFICA',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1BGXVR558241',vitre:true,vendu:false},
+  // ── DÉMOS ──────────────────────────────────────────────────────────
+  {s:'25160',y:'2025',b:'JEEP',m:'COMPASS NORTH',c:'NOIR',km:5583,e:'DÉMO',v:'3C4NJDBN4ST625784',vitre:true,vendu:false},
+  {s:'26077',y:'2026',b:'RAM',m:'1500 REBEL',c:'BLANC',km:6577,e:'DÉMO',v:'1C6SRFLP5TN200946',vitre:true,vendu:false},
+  {s:'26308',y:'2026',b:'JEEP',m:'WRANGLER SAHARA',c:'GRANIT',km:0,e:'DÉMO',v:'1C4PJXEG6TW225552',vitre:true,vendu:false},
+  // ── USAGÉS ─────────────────────────────────────────────────────────
+  {s:'24086A',y:'2023',b:'FORD',m:'ESCAPE HYBRIDE',c:'GRIS',km:23910,e:'USED',v:'1FMCU0E18PUA92461',vitre:false,vendu:false},
+  {s:'24108A',y:'2023',b:'JEEP',m:'RENEGADE L',c:'ROUGE',km:23135,e:'USED',v:'ZACNJDB19PPP67542',vitre:true,vendu:false},
+  {s:'24189A',y:'2023',b:'JEEP',m:'RENEGADE L',c:'BLEU',km:1895,e:'DÉMO',v:'ZACNJDB10PPP66876',vitre:true,vendu:false},
+  {s:'25090B',y:'2023',b:'CHEVROLET',m:'CAMARO',c:'ROUGE',km:8980,e:'USED',v:'1G1FF1R78P0100848',vitre:false,vendu:false},
+  {s:'25103A',y:'2023',b:'RAM',m:'2500 POWER WAGON',c:'ROUGE',km:56283,e:'USED',v:'3C6UR5ELXPG584461',vitre:true,vendu:false},
+  {s:'25125A',y:'2022',b:'RAM',m:'3500 LARAMIE',c:'NOIR',km:80478,e:'USED',v:'3C63R3ELXNG291527',vitre:true,vendu:false},
+  {s:'25146B',y:'2023',b:'JEEP',m:'GRAND CHEROKEE',c:'NOIR',km:72763,e:'USED',v:'1C4RJHAG9P8709407',vitre:true,vendu:false},
+  {s:'25188A',y:'2024',b:'JEEP',m:'WRANGLER 4XE WILLYS',c:'ROUGE',km:37422,e:'USED',v:'1C4RJXN61RW199693',vitre:true,vendu:false},
+  {s:'25211B',y:'2008',b:'CHEVROLET',m:'COLORADO',c:'GRIS',km:258370,e:'USED',v:'1GCDT19E288181421',vitre:false,vendu:false},
+  {s:'25216A',y:'2022',b:'FORD',m:'MACH-E',c:'GRIS',km:45561,e:'USED',v:'3FMTK1SS5NMA45480',vitre:false,vendu:false},
+  {s:'25217C',y:'2006',b:'FORD',m:'MUSTANG',c:'NOIR',km:132640,e:'USED',v:'1ZVFT85H965205467',vitre:false,vendu:false},
+  {s:'26044A',y:'2020',b:'FORD',m:'F450',c:'BLANC',km:59270,e:'USED',v:'1FT8W4DTXLED81117',vitre:false,vendu:false},
+  {s:'26053A',y:'2017',b:'RAM',m:'2500 LARAMIE',c:'NOIR',km:215595,e:'USED',v:'3C6UR5FL1HG535374',vitre:true,vendu:false},
+  {s:'26084C',y:'2018',b:'HONDA',m:'PILOT',c:'NOIR',km:216263,e:'USED',v:'5FNYF6H90JB500475',vitre:false,vendu:false},
+  {s:'26085A',y:'2020',b:'RAM',m:'1500 SPORT',c:'BLANC',km:98458,e:'USED',v:'1C6SRFTT5NN469030',vitre:true,vendu:false},
+  {s:'26090A',y:'2024',b:'RAM',m:'3500 BIG HORN',c:'NOIR',km:171025,e:'USED',v:'3C63RRHL1RG208054',vitre:true,vendu:false},
+  {s:'26092A',y:'2023',b:'RAM',m:'2500 LONGHORN',c:'BLANC',km:45164,e:'USED',v:'3C6UR5GL8PG554775',vitre:true,vendu:false},
+  {s:'26093A',y:'2023',b:'RAM',m:'1500 LIMITED',c:'BLANC',km:139164,e:'USED',v:'1C6SRFPT3PN572332',vitre:true,vendu:false},
+  {s:'26094A',y:'2022',b:'RAM',m:'2500 LIMITED',c:'NOIR',km:123913,e:'USED',v:'3C6UR5SLXNG219327',vitre:true,vendu:false},
+  {s:'26112B',y:'2022',b:'FORD',m:'F250',c:'NOIR',km:85992,e:'USED',v:'1FT7W2BT2NEC22579',vitre:false,vendu:false},
+  {s:'26121A',y:'2018',b:'RAM',m:'2500 SLT',c:'NOIR',km:130685,e:'USED',v:'3C6UR5DL5JG346865',vitre:true,vendu:false},
+  {s:'26126B',y:'2026',b:'RAM',m:'2500 BIG HORN',c:'GRIS CÉRAMIQUE',km:11990,e:'USED',v:'3C6UR5DL0TG222778',vitre:true,vendu:false},
+  {s:'26135A',y:'2024',b:'RAM',m:'2500 LIMITED',c:'NOIR',km:103680,e:'USED',v:'3C6UR5SL0RG203904',vitre:true,vendu:false},
+  {s:'26136B',y:'2018',b:'RAM',m:'2500 SLT',c:'NOIR',km:196477,e:'USED',v:'3C6UR5DL8JG209225',vitre:false,vendu:false},
+  {s:'26142A',y:'2024',b:'RAM',m:'2500 BIG HORN',c:'NOIR',km:32887,e:'USED',v:'3C6UR5DL2RG306464',vitre:true,vendu:false},
+  {s:'26146A',y:'2016',b:'RAM',m:'3500 ST',c:'NOIR',km:226300,e:'USED',v:'3C63RRGL3GG196536',vitre:true,vendu:false},
+  {s:'26151B',y:'2021',b:'DODGE',m:'DURANGO',c:'VERT',km:80935,e:'USED',v:'1C4SDJCT7MC659089',vitre:true,vendu:false},
+  {s:'26181A',y:'2020',b:'RAM',m:'1500 SPORT',c:'ROUGE',km:191980,e:'USED',v:'1C6SRFTT3LN385415',vitre:true,vendu:false},
+  {s:'26182A',y:'2025',b:'RAM',m:'2500 BIG HORN',c:'NOIR',km:73227,e:'USED',v:'3C6UR5DL9SG526285',vitre:true,vendu:false},
+  {s:'26189A',y:'2024',b:'CHEVROLET',m:'SILVERADO',c:'NOIR',km:61882,e:'USED',v:'3GCPDCEK5RG139788',vitre:false,vendu:false},
+  {s:'26201A',y:'2023',b:'RAM',m:'3500 BIG HORN',c:'GRIS',km:70831,e:'USED',v:'3C63RRHL6PG552914',vitre:true,vendu:false},
+  {s:'26245A',y:'2017',b:'RAM',m:'1500 SLT',c:'NOIR',km:123840,e:'USED',v:'1C6RR7TT0HS526681',vitre:true,vendu:false},
+  {s:'26252A',y:'2011',b:'FORD',m:'EDGE',c:'BLEU',km:311465,e:'USED',v:'2FMDK4AK1BBB42065',vitre:false,vendu:false},
+  {s:'26253A',y:'2022',b:'JEEP',m:'CHEROKEE',c:'BLANC',km:107445,e:'USED',v:'1C4PJMBX3ND503597',vitre:true,vendu:false},
+  {s:'26257A',y:'2019',b:'RAM',m:'1500 LONGHORN',c:'NOIR',km:490855,e:'USED',v:'1C6SRFKT4KN820992',vitre:true,vendu:false},
+  {s:'26266A',y:'2022',b:'RAM',m:'1500 SPORT',c:'BLANC',km:52820,e:'USED',v:'1C6SRFVTXNN283299',vitre:true,vendu:false},
+  {s:'26267A',y:'2023',b:'JEEP',m:'GRAND CHEROKEE SUMMIT',c:'NOIR',km:111562,e:'USED',v:'1C4RJYE61PC601040',vitre:true,vendu:false},
+  {s:'26280A',y:'2020',b:'HYUNDAI',m:'SANTA FE',c:'BLEU',km:98203,e:'USED',v:'5NMS3CAD8LH139008',vitre:false,vendu:false},
+  {s:'C-858D',y:'2012',b:'DODGE',m:'JOURNEY',c:'NOIR',km:86279,e:'USED',v:'3C4PDCCG7CT322428',vitre:true,vendu:false},
+  {s:'C-870',y:'2023',b:'JEEP',m:'WRANGLER RUBICON 4XE',c:'GRIS',km:80831,e:'USED',v:'1C4JJXR60PW573330',vitre:true,vendu:false},
+  {s:'C-893',y:'2024',b:'RAM',m:'3500 LIMITED',c:'NOIR',km:90637,e:'USED',v:'3C63R3SLXRG199165',vitre:true,vendu:false},
+  {s:'C-914',y:'2022',b:'CHRYSLER',m:'300 TOURING',c:'ROUGE',km:86265,e:'USED',v:'2C3CCASG7NH265316',vitre:true,vendu:false},
+  {s:'C-924B',y:'2016',b:'JEEP',m:'CHEROKEE SPORT',c:'ARGENT',km:194088,e:'USED',v:'1C4PJMAS6GW333619',vitre:true,vendu:false},
+  {s:'C-925A',y:'2018',b:'DODGE',m:'GRAND CARAVAN',c:'GRIS',km:78474,e:'USED',v:'2C4RDGBG2JR181964',vitre:true,vendu:false},
+  {s:'C-929',y:'2015',b:'JEEP',m:'WRANGLER SPORT',c:'BLEU',km:129339,e:'USED',v:'1C4AJWAG7FL699070',vitre:true,vendu:false},
+  {s:'C-931A',y:'2019',b:'JEEP',m:'WRANGLER',c:'NOIR',km:148403,e:'USED',v:'1C4HJXDG8KW669908',vitre:true,vendu:false},
+  {s:'C-932',y:'2025',b:'RAM',m:'1500 REBEL',c:'BLANC',km:27354,e:'USED',v:'1C6SRFLP8SN580380',vitre:true,vendu:false},
+  {s:'C-934',y:'2022',b:'DODGE',m:'DURANGO',c:'BLANC',km:157510,e:'USED',v:'1C4SDJGJXNC201931',vitre:true,vendu:false},
+  {s:'C-940A',y:'2021',b:'JEEP',m:'GRAND CHEROKEE',c:'CHARCOAL',km:77456,e:'USED',v:'1C4RJFAG2MC807384',vitre:true,vendu:false},
+  {s:'C-941',y:'2023',b:'CHRYSLER',m:'PACIFICA',c:'GRIS',km:76589,e:'USED',v:'2C4RC3BG1PR565870',vitre:true,vendu:false},
+  {s:'C-944A',y:'2017',b:'JAGUAR',m:'F-PACE S',c:'BLANC',km:236161,e:'USED',v:'SADCM2BV5HA061599',vitre:false,vendu:false},
+  {s:'C-946',y:'2022',b:'JEEP',m:'WRANGLER SPORT',c:'ROUGE',km:53761,e:'USED',v:'1C4GJXAG6NW238472',vitre:true,vendu:false},
+  {s:'C-947',y:'2022',b:'CHRYSLER',m:'PACIFICA HYBRIDE',c:'GRIS',km:42855,e:'USED',v:'2C4RC1S7XNR112929',vitre:true,vendu:false},
+  {s:'C-948',y:'2024',b:'JEEP',m:'WRANGLER WILLYS 4XE',c:'GRIS',km:23455,e:'USED',v:'1C4RJXN6XRW218015',vitre:true,vendu:false},
+  {s:'C-952',y:'2023',b:'JEEP',m:'WRANGLER',c:'GRIS',km:53040,e:'USED',v:'1C4HJXDG7PW622070',vitre:true,vendu:false},
+  {s:'C-953',y:'2022',b:'DODGE',m:'DURANGO',c:'GRIS',km:67232,e:'USED',v:'1C4SDJCT3NC230680',vitre:true,vendu:false},
+  {s:'C-954',y:'2024',b:'RAM',m:'5500 CHASSIS',c:'NOIR',km:404,e:'USED',v:'3C7WRNFL2RG156597',vitre:true,vendu:false},
+  {s:'C-955',y:'2023',b:'KIA',m:'SPORTAGE PHEV',c:'NOIR',km:98033,e:'USED',v:'KNDPXDAH8P7081661',vitre:false,vendu:false},
+  {s:'C-958',y:'2021',b:'RAM',m:'1500 CLASSIC',c:'BLEU',km:117548,e:'USED',v:'1C6RR7LG4MS566047',vitre:true,vendu:false},
+  {s:'C-959',y:'2016',b:'CHEVROLET',m:'CRUZE',c:'BLANC',km:95645,e:'USED',v:'3G1BE5SM3GS601048',vitre:false,vendu:false},
+  {s:'C-961',y:'2025',b:'RAM',m:'PROMASTER 2500',c:'BLANC',km:13978,e:'USED',v:'3C6LRVCG1SE534893',vitre:true,vendu:false},
+  {s:'C-962',y:'2019',b:'VOLKSWAGEN',m:'JETTA',c:'BLANC',km:102513,e:'USED',v:'3VWC57BU0KM253534',vitre:false,vendu:true},
+  {s:'C-963',y:'2023',b:'GMC',m:'SIERRA 1500',c:'BLEU',km:97479,e:'USED',v:'3GTPUCEK7PG239775',vitre:false,vendu:false},
+  {s:'C-965',y:'2017',b:'NISSAN',m:'QUASHQUAI',c:'VERT',km:108613,e:'USED',v:'JN1BJ1CR8HW108819',vitre:false,vendu:false},
+  {s:'C-966',y:'2016',b:'BUICK',m:'ENCORE',c:'NOIR',km:96120,e:'USED',v:'KL4CJ2SM0GB561670',vitre:false,vendu:false},
+  {s:'C-967',y:'2020',b:'RAM',m:'1500 CLASSIC',c:'BLANC',km:102460,e:'USED',v:'3C6RR7KT3LG270361',vitre:true,vendu:false},
+  {s:'C-968',y:'2020',b:'JEEP',m:'GRAND CHEROKEE LIMITED',c:'CHARCOAL',km:125651,e:'USED',v:'1C4RJFBG0LC189219',vitre:true,vendu:false},
+  {s:'C-969',y:'2021',b:'JEEP',m:'WRANGLER 4XE',c:'ROUGE',km:162782,e:'USED',v:'1C4JJXP68MW799355',vitre:true,vendu:false},
+  {s:'C-970',y:'2022',b:'JEEP',m:'WRANGLER',c:'NOIR',km:77454,e:'USED',v:'1C4HJXAG2NW201715',vitre:true,vendu:false},
+  {s:'C-971',y:'2021',b:'RAM',m:'1500 CLASSIC',c:'BLEU',km:77849,e:'USED',v:'3C6RR7KT7MG599629',vitre:true,vendu:false},
+  {s:'C-973',y:'2021',b:'NISSAN',m:'ROGUE',c:'BLANC',km:50274,e:'USED',v:'5N1AT3BB1MC730916',vitre:false,vendu:true},
+  {s:'C-974',y:'2023',b:'CHEVROLET',m:'CAMARO',c:'BLANC',km:40782,e:'USED',v:'1G1FB3DX8P0100458',vitre:false,vendu:false},
+  {s:'C-975',y:'2020',b:'JEEP',m:'GRAND CHEROKEE',c:'ARGENT',km:128191,e:'USED',v:'1C4RJFLG8LC183103',vitre:true,vendu:false},
+  {s:'C-976',y:'2019',b:'JEEP',m:'GRAND CHEROKEE',c:'CHARCOAL',km:147745,e:'USED',v:'1C4RJFAG6KC762379',vitre:true,vendu:false},
+  {s:'C-977A',y:'2014',b:'NISSAN',m:'ROGUE',c:'BLANC',km:297838,e:'USED',v:'5N1AT2MV5EC815535',vitre:false,vendu:false},
+  {s:'C-978',y:'2024',b:'RAM',m:'1500 SPORT',c:'ROUGE',km:47573,e:'USED',v:'1C6SRFTT9RN101777',vitre:true,vendu:false},
+  {s:'C-979',y:'2022',b:'DODGE',m:'DURANGO',c:'GRIS',km:88132,e:'USED',v:'1C4RDJAG4NC229946',vitre:true,vendu:false},
+  {s:'C-980',y:'2018',b:'HYUNDAI',m:'ELANTRA',c:'BLEU',km:115739,e:'USED',v:'KMHD84LF3JU529398',vitre:false,vendu:false},
+  {s:'C-981',y:'2023',b:'MERCEDES',m:'GLC300',c:'NOIR',km:25709,e:'USED',v:'W1NKM4HB5PF044893',vitre:false,vendu:false},
+  {s:'C-982',y:'2022',b:'JEEP',m:'GLADIATOR',c:'NOIR',km:169572,e:'USED',v:'1C6JJTBG3NL100670',vitre:true,vendu:false},
+  {s:'C-983',y:'2019',b:'RAM',m:'1500 CLASSIC',c:'NOIR',km:143678,e:'USED',v:'1C6RR7KT9KS719985',vitre:true,vendu:false},
+  {s:'C-985',y:'2022',b:'RAM',m:'2500 LARAMIE',c:'GRIS',km:70669,e:'USED',v:'3C6UR5FL0NG410720',vitre:false,vendu:false},
+  {s:'C-986',y:'2020',b:'NISSAN',m:'KICKS',c:'ORANGE',km:49908,e:'USED',v:'3N1CP5CV5LL492712',vitre:false,vendu:false},
+  {s:'C-988',y:'2015',b:'JEEP',m:'GRAND CHEROKEE',c:'BLANC',km:233800,e:'USED',v:'1C4RJFJM8FC744283',vitre:true,vendu:false},
+];
+
+// ── COULEURS ──────────────────────────────────────────────────────────
+const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','joose':'#84cc16'};
+function cx(s){if(!s)return'#9ca3af';const l=s.toLowerCase();for(const[k,v]of Object.entries(CM))if(l.includes(k))return v;return'#9ca3af';}
+function fmKm(k){if(k<=10)return'—';return parseInt(k).toLocaleString('fr-CA')+' km';}
+
+function stateBadge(e){
+  if(e==='NEUF')return'<span class="badge badge-neuf">NEUF</span>';
+  if(e==='DÉMO')return'<span class="badge badge-demo">DÉMO</span>';
+  return'<span class="badge badge-used">USAGÉ</span>';
+}
+
+let activeType='';
+function filterByType(t){
+  activeType=t;
+  ['all','neuf','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
+  if(!t)document.getElementById('stat-all').classList.add('active');
+  else if(t==='NEUF')document.getElementById('stat-neuf').classList.add('active');
+  else if(t==='USED')document.getElementById('stat-used').classList.add('active');
+  else document.getElementById('stat-demo').classList.add('active');
+  applyFilters();
+}
+
+function resetFilters(){
+  document.getElementById('search').value='';
+  document.getElementById('filter-brand').value='';
+  document.getElementById('filter-model').value='';
+  document.getElementById('sort').value='stock-asc';
+  activeType='';
+  ['all','neuf','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
+  document.getElementById('stat-all').classList.add('active');
+  applyFilters();
+}
+
+function applyFilters(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const br=document.getElementById('filter-brand').value;
+  const mo=document.getElementById('filter-model').value;
+  const so=document.getElementById('sort').value;
+  let r=INVENTORY.filter(v=>{
+    const ms=!q||[v.b,v.m,v.y,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
+    const me=!activeType||(activeType==='USED'?(v.e==='USED'):v.e===activeType);
+    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me;
+  });
+  if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
+  else if(so==='stock-desc')r.sort((a,b)=>b.s.localeCompare(a.s,undefined,{numeric:true}));
+  else if(so==='km-asc')r.sort((a,b)=>a.km-b.km);
+  else if(so==='km-desc')r.sort((a,b)=>b.km-a.km);
+  else if(so==='year-desc')r.sort((a,b)=>parseInt(b.y)-parseInt(a.y));
+  else if(so==='name')r.sort((a,b)=>(a.b+a.m).localeCompare(b.b+b.m));
+
+  // Stats
+  document.getElementById('num-all').textContent=INVENTORY.length;
+  document.getElementById('num-neuf').textContent=INVENTORY.filter(v=>v.e==='NEUF').length;
+  document.getElementById('num-used').textContent=INVENTORY.filter(v=>v.e==='USED').length;
+  document.getElementById('num-demo').textContent=INVENTORY.filter(v=>v.e==='DÉMO').length;
+  document.getElementById('total-count').textContent=INVENTORY.length;
+
+  renderTable(r);
+  renderCards(r);
+  document.getElementById('empty-state').style.display=r.length===0?'block':'none';
+}
+
+function vitreUrl(v){
+  return`https://www.laquerrechrysler.com/neufs/inventaire/recherche.html?stock=${v.s}`;
+}
+function ficheUrl(v){
+  const base=v.e==='USED'?'https://www.laquerrechrysler.com/occasion/recherche.html':'https://www.laquerrechrysler.com/neufs/inventaire/recherche.html';
+  return`${base}?stock=${v.s}`;
+}
+
+function renderTable(vv){
+  document.getElementById('table-body').innerHTML=vv.map(v=>{
+    const rc=v.vendu?'row-vendu':'';
+    return`<tr class="${rc}">
+      <td>${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</td>
+      <td><strong>${v.s}</strong></td>
+      <td>${v.y}</td>
+      <td>${v.b}</td>
+      <td style="font-weight:600">${v.m}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:5px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></td>
+      <td style="font-size:11px;color:#64748b">${fmKm(v.km)}</td>
+      <td style="font-family:monospace;font-size:10px;color:#64748b">${v.v}</td>
+      <td><div style="display:flex;gap:4px;">
+        <a class="action-btn btn-site" href="${ficheUrl(v)}" target="_blank" title="Fiche sur le site"><i class="ti ti-external-link"></i></a>
+        ${v.vitre?`<a class="action-btn btn-vitre" href="${vitreUrl(v)}" target="_blank" title="Feuille de vitre"><i class="ti ti-file-text"></i></a>`:`<span class="action-btn btn-dis" title="Pas de feuille de vitre"><i class="ti ti-file-text"></i></span>`}
+        ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="action-btn btn-annonce" onclick="genAnnonceByStock('${v.s}')" title="Générer annonce Marketplace"><i class="ti ti-speakerphone"></i></button>`:''}
+      </div></td>
+    </tr>`;}).join('');
+}
+
+function renderCards(vv){
+  document.getElementById('cards-list').innerHTML=vv.map(v=>`
+    <div class="vcard${v.vendu?' card-vendu':''}">
+      <div class="vcard-header">
+        <div>
+          <div class="vcard-title">${v.y} ${v.b} ${v.m}</div>
+          <div class="vcard-sub">${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</div>
+        </div>
+        <div class="vcard-km">${fmKm(v.km)}</div>
+      </div>
+      <div class="vcard-body">
+        <div class="vcard-row"><span class="vcard-lbl">Couleur</span><span class="vcard-val"><span style="display:inline-flex;align-items:center;gap:4px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></span></div>
+        <div class="vcard-row"><span class="vcard-lbl">Stock</span><span class="vcard-val">${v.s}</span></div>
+        <div class="vcard-row" style="grid-column:1/-1"><span class="vcard-lbl">VIN</span><span class="vcard-val mono">${v.v}</span></div>
+      </div>
+      <div class="vcard-footer">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <a class="btn-fiche" href="${ficheUrl(v)}" target="_blank"><i class="ti ti-external-link" style="font-size:13px"></i> Fiche</a>
+          ${v.vitre?`<a class="btn-vitre-mobile" href="${vitreUrl(v)}" target="_blank"><i class="ti ti-file-text" style="font-size:13px"></i> Vitre</a>`:''}
+          ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')"><i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce</button>`:''}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function initSelects(){
+  const brands=[...new Set(INVENTORY.map(v=>v.b))].sort();
+  const models=[...new Set(INVENTORY.map(v=>v.m))].sort();
+  document.getElementById('filter-brand').innerHTML='<option value="">Toutes marques</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
+  document.getElementById('filter-model').innerHTML='<option value="">Tous modèles</option>'+models.map(m=>`<option value="${m}">${m}</option>`).join('');
+}
+
+// ── GÉNÉRATION ANNONCE ────────────────────────────────────────────────
+let currentAnnonce='';
+function genAnnonceByStock(s){const v=INVENTORY.find(x=>x.s===s);if(v)genAnnonce(v);}
+
+function getTone(v){
+  const m=v.m.toLowerCase();
+  if(m.includes('2500')||m.includes('3500')||m.includes('promaster'))return'V2';
+  if(m.includes('wrangler')||m.includes('gladiator')||m.includes('grand cherokee'))return'V3';
+  return'V1';
+}
+
+function buildAnnonce(v){
+  const tone=getTone(v);
+  const kmStr=v.km<=10?'Kilométrage : 10 km — Neuf !':'Kilométrage : '+v.km.toLocaleString('fr-CA')+' km';
+  const etatStr=v.e==='DÉMO'?'Véhicule démonstrateur — inspectée et certifié':v.e==='NEUF'?'Véhicule neuf':'Véhicule usagé — inspecté, garantie prolongée disponible';
+
+  const features={
+    'GRAND CARAVAN':'🛋️ 7 passagers · Espace cargo généreux\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation multizone\n🛡️ Caméra de recul · aide au stationnement\n💳 Financement disponible',
+    'PACIFICA':'🛋️ Sièges Stow \'n Go — disparaissent dans le plancher\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation tri-zone\n🔌 Version hybride rechargeable disponible\n💳 Financement disponible',
+    'COMPASS':'🚗 Compact et agile — parfait en toute saison\n💪 4X4 intégral\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation automatique\n💳 Financement avantageux disponible',
+    'WRANGLER':'🏔️ Hors-route légendaire · Toit amovible\n💪 4x4 Command-Trac\n🌞 Portes sans cadre · Look unique\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Icône Jeep — valeur de revente exceptionnelle',
+    'GLADIATOR':'🏔️ Seul pick-up Jeep · Toit amovible\n💪 Remorquage jusqu\'à 7 650 lb\n🌞 Portes sans cadre · Benne cargo\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Polyvalence unique sur le marché',
+    'GRAND CHEROKEE':'🏆 Le VUS le plus primé de l\'histoire\n💪 Remorquage jusqu\'à 7 200 lb\n🛡️ Technologies de sécurité avancées\n📲 Uconnect 5 · Apple CarPlay / Android Auto\n🏔️ Quadra-Trac 4x4',
+    'CHEROKEE':'🚗 VUS compact — confort et polyvalence\n💪 4x4 intégral toutes saisons\n📲 Uconnect · Apple CarPlay / Android Auto\n❄️ Climatisation automatique\n💳 Financement disponible',
+    'DURANGO':'💪 Remorquage jusqu\'à 8 700 lb\n🛋️ 3 rangées · jusqu\'à 7 passagers\n🔥 V6 Pentastar puissant et efficace\n📲 Uconnect · Apple CarPlay / Android Auto\n🛡️ Traction intégrale AWD',
+    '1500':'💪 Capacité de remorquage exceptionnelle\n🔥 Moteur puissant — HP & couple élevé\n📲 Uconnect 5 · Apple CarPlay / Android Auto\n🛡️ Technologies sécurité avancées\n🎨 Style et finition haut de gamme',
+    '2500':'🔧 Cummins diesel — robustesse industrielle\n💪 Remorquage max — fait pour le chantier\n🚛 Cabine d\'équipe — 6 passagers\n📲 Uconnect · connectivité intégrée\n⚙️ Transmission automatique 8 vitesses ZF',
+    '3500':'🔧 Cummins diesel — puissance maximale\n💪 Remorquage et charge utile extrêmes\n🚛 Parfait pour les lourds travaux de chantier\n📲 Uconnect · connectivité intégrée\n⚙️ Transmission automatique 8 vitesses ZF',
+    'PROMASTER':'📦 Cargo maximal — High Roof 159 po\n🔧 Moteur fiable et économique\n🚚 Idéal entrepreneurs & livraisons\n💺 Aménagement intérieur personnalisable\n💳 Location commerciale disponible',
+  };
+
+  let feat='📋 Véhicule en excellent état\n📲 Connectivité moderne\n💳 Financement disponible';
+  for(const[k,f]of Object.entries(features)){if(v.m.toUpperCase().includes(k)){feat=f;break;}}
+
+  let accroche='',sig='';
+  if(tone==='V2'){
+    accroche=`🔧 ${v.y} ${v.b} ${v.m} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
+    sig=`💬 Vincent — Spécialiste camions lourds chez Laquerre Chrysler, Victoriaville.\n\nGestion de flotte, crédit commercial, location longue durée — on trouve la solution qui correspond à tes besoins d'affaires.\n\n📲 Texto ou appel — je réponds vite.`;
+  } else if(tone==='V3'){
+    accroche=`🔥 ${v.y} ${v.b} ${v.m} — L'EXPÉRIENCE AU PROCHAIN NIVEAU !`;
+    sig=`💬 Je suis Vincent, conseiller passionné chez Laquerre Chrysler.\n\nSi tu rêves de ce ${v.b} ${v.m}, viens l'essayer — l'expérience est unique.\n\n📲 Écris-moi, je m'occupe de tout. Pas de pression, juste du plaisir. 😎`;
+  } else {
+    accroche=`🚗 ${v.y} ${v.b} ${v.m} — OFFRE SPÉCIALE !`;
+    sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.\n\nMon approche : pas de pression, juste les bons conseils pour trouver LE véhicule qui te convient vraiment.\n\n📲 Écris-moi ici ou par texto — je réponds rapidement. 😊`;
+  }
+
+  return`${accroche}
+
+✅ ${v.y} ${v.b} ${v.m}
+
+🎨 Couleur : ${v.c}
+🏷️ N° de stock : ${v.s}
+🔢 NIV : ${v.v}
+📦 ${etatStr}
+📏 ${kmStr}
+
+${feat}
+
+---
+${sig}
+
+📍 Laquerre Chrysler
+${ADR}
+📞 ${PHONE} | 🌐 ${SITE}`;
+}
+
+function genAnnonce(v){
+  currentAnnonce='';
+  document.getElementById('modal-title').textContent=`${v.y} ${v.b} ${v.m}`;
+  document.getElementById('modal-sub').textContent=`${v.c} · Stock ${v.s}`;
+  document.getElementById('modal-content').innerHTML='<div class="generating"><div class="spin"></div><div>Génération de l\'annonce...</div></div>';
+  const btn=document.getElementById('btn-copy');
+  btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l\'annonce';
+  btn.className='btn-copy';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+  setTimeout(()=>{
+    currentAnnonce=buildAnnonce(v);
+    document.getElementById('modal-content').innerHTML=`<div class="annonce-text">${currentAnnonce.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+  },500);
+}
+
+function copyAnnonce(){
+  if(!currentAnnonce)return;
+  const btn=document.getElementById('btn-copy');
+  const ok=()=>{btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i> Copié !';btn.className='btn-copy copied';setTimeout(()=>{btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l\'annonce';btn.className='btn-copy';},2500);};
+  navigator.clipboard.writeText(currentAnnonce).then(ok).catch(()=>{const t=document.createElement('textarea');t.value=currentAnnonce;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);ok();});
+}
+function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
+
+initSelects();
+applyFilters();
+</script>
 </body>
 </html>
