@@ -81,6 +81,26 @@ tbody tr:last-child{border-bottom:none;}
 td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .color-dot{width:10px;height:10px;border-radius:50%;border:1px solid #e2e8f0;display:inline-block;flex-shrink:0;}
 .action-btn{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;text-decoration:none;background:#059669;color:#fff;}
+.btn-annonce-sm{width:28px;height:28px;border-radius:6px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:13px;background:#e8401c;color:#fff;transition:opacity .15s;}
+.btn-annonce-sm:hover{opacity:.8;}
+.btn-annonce-mobile{background:#e8401c;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;}
+@media(min-width:769px){.modal-overlay{align-items:center;}.modal{border-radius:16px;max-height:80vh;margin:16px;}}
+.modal-header{padding:16px 18px 12px;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.modal-title{font-size:14px;font-weight:700;color:#1a1a2e;}
+.modal-sub{font-size:11px;color:#64748b;margin-top:2px;}
+.modal-close{width:30px;height:30px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#64748b;}
+.modal-close:hover{background:#e2e8f0;}
+.modal-body{flex:1;overflow-y:auto;padding:14px 18px;}
+.annonce-text{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:12px;line-height:1.7;color:#1a1a2e;white-space:pre-wrap;font-family:'Inter',sans-serif;min-height:200px;}
+.modal-footer{padding:12px 18px;border-top:1px solid #e2e8f0;display:flex;gap:8px;flex-shrink:0;}
+.btn-copy{flex:1;background:#003DA5;color:#fff;border:none;border-radius:8px;padding:11px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-copy:hover{background:#0052cc;}
+.btn-copy.copied{background:#059669;}
+.generating{text-align:center;padding:32px;color:#64748b;font-size:13px;}
+.gen-spin{display:inline-block;width:20px;height:20px;border:2px solid #e2e8f0;border-top-color:#003DA5;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px;}
 .action-btn:hover{opacity:.8;}
 
 /* CARDS mobile */
@@ -432,7 +452,10 @@ function renderTable(vv){
       <td><strong style="color:#003DA5">${fp(v.p)}</strong></td>
       <td style="color:#94a3b8;font-size:11px">${v.r?fp(v.r):'—'}</td>
       <td>${eco>0?`<span style="color:#15803d;font-size:11px;font-weight:600">-${fp(eco)}</span>`:'—'}</td>
-      <td><a class="action-btn" href="${url}" target="_blank" title="Voir la fiche"><i class="ti ti-external-link"></i></a></td>
+      <td style="display:flex;gap:4px;">
+        <a class="action-btn" href="${url}" target="_blank" title="Voir la fiche"><i class="ti ti-external-link"></i></a>
+        <button class="btn-annonce-sm" onclick="genAnnonceByStock('${v.s}')" title="Générer annonce Marketplace"><i class="ti ti-speakerphone"></i></button>
+      </td>
     </tr>`;}).join('');
 }
 
@@ -463,9 +486,14 @@ function renderCards(vv){
           ${sb(v.st)}
           ${eco>0?`<span class="vcard-eco">-${fp(eco)}</span>`:''}
         </div>
-        <a class="btn-fiche" href="${url}" target="_blank">
-          <i class="ti ti-external-link" style="font-size:13px"></i> Voir la fiche
-        </a>
+        <div style="display:flex;gap:6px;">
+          <a class="btn-fiche" href="${url}" target="_blank">
+            <i class="ti ti-external-link" style="font-size:13px"></i> Fiche
+          </a>
+          <button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')">
+            <i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce
+          </button>
+        </div>
       </div>
     </div>`;}).join('');
 }
@@ -479,6 +507,223 @@ function initSelects(){
 
 initSelects();
 applyFilters();
+
+// ── GÉNÉRATION D'ANNONCE MARKETPLACE ─────────────────────────────────
+const PHONE = '873-300-4687';
+const SITE = 'www.laquerrechrysler.com';
+const ADRESSE = '34 Boulevard Arthabaska Est, Victoriaville, QC';
+
+function getTone(v){
+  const m=v.m.toLowerCase();
+  const t=v.t.toLowerCase();
+  // V2 — RAM 2500/3500, commercial
+  if((m==='2500'||m==='3500'||m==='promaster 3500')&&v.b==='RAM') return 'V2';
+  // V3 — Wrangler, Gladiator, Grand Cherokee
+  if(m==='wrangler'||m==='gladiator'||m==='grand cherokee') return 'V3';
+  // V1 — Compass, Grand Caravan, Pacifica + défaut
+  return 'V1';
+}
+
+function getAccroche(v){
+  const eco=v.r?v.r-v.p:0;
+  const ecoStr=eco>0?`ÉCONOMISEZ ${fp(eco)} !`:'OFFRE LIMITÉE !';
+  const tone=getTone(v);
+  if(tone==='V2') return `🔧 ${v.y} ${v.b} ${v.m} ${v.t} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
+  if(tone==='V3') return `🔥 ${v.y} ${v.b} ${v.m} ${v.t} — ${ecoStr}`;
+  return `💥 PRIX SPÉCIAL — ${ecoStr}`;
+}
+
+function getFeatures(v){
+  const m=v.m.toLowerCase();
+  const t=v.t.toLowerCase();
+  const lines=[];
+  // Par modèle
+  if(m==='grand caravan'||m==='pacifica'){
+    lines.push('🛋️ Habitacle 7 passagers — ultra-polyvalent');
+    lines.push('🎒 Espace cargo généreux');
+    lines.push('📲 Connectivité Apple CarPlay / Android Auto');
+    lines.push('❄️ Climatisation multizone');
+    lines.push('🛡️ Caméra de recul · aide au stationnement');
+    if(m==='pacifica') lines.push('🔌 Version hybride rechargeable disponible');
+  } else if(m==='wrangler'){
+    lines.push('🏔️ Hors-route légendaire — Jeep 4x4');
+    lines.push('🌞 Toit amovible et portes sans cadre');
+    lines.push('💪 Capacité tout-terrain supérieure');
+    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
+    lines.push('🔒 Système 4x4 Command-Trac');
+  } else if(m==='gladiator'){
+    lines.push('🏔️ Seul pick-up Jeep — tout-terrain + cargo');
+    lines.push('🌞 Toit amovible et portes sans cadre');
+    lines.push(`💪 Remorquage : jusqu'à 7 650 lb`);
+    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
+    lines.push('🔒 Système 4x4 Command-Trac');
+  } else if(m==='grand cherokee'){
+    lines.push('🏆 Le VUS le plus primé de l'histoire');
+    lines.push('💪 Remorquage : jusqu'à 7 200 lb');
+    lines.push('🛡️ Technologies de sécurité avancées');
+    lines.push('📲 Uconnect 5 · Apple CarPlay / Android Auto');
+    lines.push('🏔️ Quadra-Trac 4x4');
+  } else if(m==='compass'){
+    lines.push('🚗 Compact et agile — parfait pour la ville et la route');
+    lines.push('💪 4X4 intégral — confiance en toute saison');
+    lines.push('📲 Apple CarPlay / Android Auto');
+    lines.push('❄️ Climatisation automatique');
+    lines.push('💳 Financement avantageux disponible');
+  } else if(m==='durango'){
+    lines.push('💪 Remorquage : jusqu'à 8 700 lb');
+    lines.push('🛋️ Configuration 3 rangées — jusqu'à 7 passagers');
+    lines.push('🔥 V6 Pentastar — puissance et efficacité');
+    lines.push('📲 Uconnect · Apple CarPlay / Android Auto');
+    lines.push('🛡️ Traction intégrale — AWD');
+  } else if(v.b==='RAM'&&m==='1500'){
+    lines.push(`💪 Moteur ${v.e} — puissance et couple`);
+    lines.push('🚛 Capacité de remorquage exceptionnelle');
+    lines.push('📲 Uconnect 5 · Apple CarPlay / Android Auto');
+    lines.push('🛡️ Technologies sécurité avancées');
+    lines.push('🎨 Style et finition haut de gamme');
+  } else if(v.b==='RAM'&&(m==='2500'||m==='3500')){
+    lines.push(`🔧 Moteur ${v.e} — robustesse industrielle`);
+    lines.push('💪 Remorquage max — fait pour le chantier');
+    lines.push('🚛 Cabine d'équipe — 6 passagers');
+    lines.push('📲 Uconnect · connectivité intégrée');
+    lines.push('⚙️ Transmission automatique 8 vitesses ZF');
+  } else if(m==='promaster 3500'){
+    lines.push('📦 Cargo maximal — High Roof 159 po');
+    lines.push('🔧 V6 3.6L fiable et économique');
+    lines.push('🚚 Idéal entrepreneurs & livraisons');
+    lines.push('💺 Aménagement intérieur personnalisable');
+    lines.push('💳 Location commerciale disponible');
+  }
+  return lines.join('\n');
+}
+
+function buildAnnonce(v){
+  const tone=getTone(v);
+  const eco=v.r?v.r-v.p:0;
+  const prixReg=v.r?`\n💰 Prix régulier : ${fp(v.r)}`:'';
+  const econStr=eco>0?`\n🤑 ÉCONOMIES : ${fp(eco)}`:'';
+  const transitNote=v.st!=='Disponible'?`\n📅 Statut : ${v.st} — réservation possible`:'';
+  const features=getFeatures(v);
+
+  let sig='';
+  if(tone==='V1'){
+    sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.\n\nMon approche : pas de pression, juste les bons conseils pour trouver LE véhicule qui te convient vraiment.\n\n📲 Écris-moi ici ou par texto — je réponds rapidement et je m'adapte à ton horaire.\n\nOn peut se voir en concession ou t'arranger une visite à ta convenance. 😊`;
+  } else if(tone==='V2'){
+    sig=`💬 Vincent — Spécialiste camions lourds chez Laquerre Chrysler, Victoriaville.\n\nGestion de flotte, crédit commercial, location longue durée — on trouve la solution qui correspond à tes besoins d'affaires.\n\n📲 Texto ou appel — je réponds vite.`;
+  } else {
+    sig=`💬 Je suis Vincent, conseiller passionné chez Laquerre Chrysler.\n\nSi tu rêves de ce ${v.b} ${v.m}, viens l'essayer — l'expérience est unique.\n\n📲 Écris-moi, je m'occupe de tout. Pas de pression, juste du plaisir. 😎`;
+  }
+
+  return `${getAccroche(v)}
+
+✅ ${v.y} ${v.b} ${v.m} ${v.t}${v.st!=='Disponible'?' — '+v.st:''}
+
+🎨 Couleur : ${v.c}
+🔧 Moteur : ${v.e}
+⚙️ Transmission : ${v.tr}
+🛞 Motricité : 4 roues motrices${prixReg}
+🏷️ NOTRE PRIX : ${fp(v.p)} + taxes${econStr}
+🔢 N° de stock : ${v.s}
+${v.v?'NIV : '+v.v:''}${transitNote}
+
+${features}
+
+💳 Financement disponible — conditions avantageuses
+
+---
+${sig}
+
+📍 Laquerre Chrysler
+${ADRESSE}
+📞 ${PHONE} | 🌐 ${SITE}`;
+}
+
+let currentAnnonce='';
+
+function genAnnonceByStock(stock){
+  const v=INVENTORY.find(x=>x.s===stock);
+  if(v) genAnnonce(v);
+}
+
+function genAnnonce(v){
+  currentAnnonce='';
+  document.getElementById('modal-title').textContent=`${v.y} ${v.b} ${v.m} ${v.t}`;
+  document.getElementById('modal-sub').textContent=`${v.c} · Stock ${v.s} · ${fp(v.p)}`;
+  document.getElementById('modal-content').innerHTML='<div class="generating"><div class="gen-spin"></div><div>Génération de l'annonce...</div></div>';
+  const copyBtn=document.getElementById('btn-copy');
+  copyBtn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
+  copyBtn.className='btn-copy';
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+
+  // Simuler un délai réaliste puis afficher
+  setTimeout(()=>{
+    currentAnnonce=buildAnnonce(v);
+    document.getElementById('modal-content').innerHTML=`<div class="annonce-text">${currentAnnonce.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
+  },600);
+}
+
+function copyAnnonce(){
+  if(!currentAnnonce)return;
+  navigator.clipboard.writeText(currentAnnonce).then(()=>{
+    const btn=document.getElementById('btn-copy');
+    btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i> Copié !';
+    btn.className='btn-copy copied';
+    setTimeout(()=>{
+      btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
+      btn.className='btn-copy';
+    },2500);
+  }).catch(()=>{
+    // Fallback
+    const ta=document.createElement('textarea');
+    ta.value=currentAnnonce;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn=document.getElementById('btn-copy');
+    btn.innerHTML='<i class="ti ti-check" style="font-size:14px"></i> Copié !';
+    btn.className='btn-copy copied';
+    setTimeout(()=>{
+      btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce';
+      btn.className='btn-copy';
+    },2500);
+  });
+}
+
+function closeModal(e){
+  if(e.target===document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect(){
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
 </script>
+
+<!-- MODAL ANNONCE -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Annonce Facebook Marketplace</div>
+        <div class="modal-sub" id="modal-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modal-content">
+        <div class="generating">
+          <div class="gen-spin"></div>
+          <div>Génération de l'annonce...</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-copy" id="btn-copy" onclick="copyAnnonce()">
+        <i class="ti ti-copy" style="font-size:14px"></i> Copier l'annonce
+      </button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
