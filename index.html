@@ -50,6 +50,7 @@ select.filter-sel{flex:1;min-width:90px;border:1px solid #e2e8f0;border-radius:7
 .badge-used{background:#f1f5f9;color:#475569;}
 .badge-demo{background:#ede9fe;color:#6d28d9;}
 .badge-vendu{background:#fee2e2;color:#991b1b;}
+.badge-eco{background:#fef3c7;color:#92400e;font-size:9px;}
 .table-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 table{width:100%;border-collapse:collapse;}
@@ -72,9 +73,13 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .vcard.card-vendu{opacity:.45;}
 .vcard-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;gap:8px;}
 .vcard-title{font-size:14px;font-weight:700;color:#1a1a2e;line-height:1.2;}
-.vcard-trim{font-size:11px;color:#475569;margin-top:2px;}
+.vcard-trim{font-size:11px;color:#475569;margin-top:1px;}
 .vcard-sub{font-size:11px;color:#64748b;margin-top:3px;}
-.vcard-km{font-size:14px;font-weight:600;color:#475569;white-space:nowrap;text-align:right;}
+.vcard-right{text-align:right;}
+.vcard-prix{font-size:16px;font-weight:700;color:#003DA5;white-space:nowrap;}
+.vcard-reg{font-size:10px;color:#94a3b8;text-decoration:line-through;}
+.vcard-eco{font-size:10px;font-weight:600;color:#92400e;background:#fef3c7;padding:1px 5px;border-radius:3px;}
+.vcard-km{font-size:13px;font-weight:500;color:#64748b;white-space:nowrap;}
 .vcard-body{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-bottom:10px;}
 .vcard-row{display:flex;flex-direction:column;}
 .vcard-lbl{font-size:9px;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1px;}
@@ -146,7 +151,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   <div class="main">
     <div class="page-header">
       <div class="page-title">Inventaire des véhicules</div>
-      <span class="ts-badge">16 juin 2026 · <span id="total-count">0</span> véhicules</span>
+      <span class="ts-badge">18 juin 2026 · <span id="total-count">0</span> véhicules</span>
     </div>
     <div class="stats-grid">
       <div class="stat-card active" id="stat-all" onclick="filterByType('')">
@@ -173,6 +178,8 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
         <select class="filter-sel" id="sort" onchange="applyFilters()">
           <option value="stock-asc">Stock ↑</option>
           <option value="stock-desc">Stock ↓</option>
+          <option value="price-asc">Prix ↑</option>
+          <option value="price-desc">Prix ↓</option>
           <option value="km-asc">KM ↑</option>
           <option value="km-desc">KM ↓</option>
           <option value="year-desc">Année ↓</option>
@@ -185,7 +192,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
       <div class="table-scroll">
         <table>
           <thead><tr>
-            <th>État</th><th>Stock</th><th>Année</th><th>Marque</th><th>Modèle</th><th>Trim</th><th>Couleur</th><th>KM</th><th>VIN</th><th>Actions</th>
+            <th>État</th><th>Stock</th><th>Année</th><th>Marque</th><th>Modèle</th><th>Trim</th><th>Couleur</th><th>KM</th><th>Prix</th><th>Économie</th><th>VIN</th><th>Actions</th>
           </tr></thead>
           <tbody id="table-body"></tbody>
         </table>
@@ -195,7 +202,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div id="empty-state" style="display:none" class="empty">
       <i class="ti ti-search"></i><p>Aucun véhicule trouvé.</p>
     </div>
-    <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">Source : Inventaire neuf et usagé · 16 juin 2026</div>
+    <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">Source : Inventaire + laquerrechrysler.com · 18 juin 2026</div>
   </div>
 </div>
 <div class="bottom-nav">
@@ -228,167 +235,176 @@ const PHONE='873-300-4687';
 const SITE='www.laquerrechrysler.com';
 const ADR='34 Boulevard Arthabaska Est, Victoriaville, QC';
 
+// p=prix, r=prix régulier (avant rabais)
 const INVENTORY=[
   // ── NEUFS ──────────────────────────────────────────────────────────
-  {s:'25124',y:'2025',b:'JEEP',m:'WRANGLER',t:'4XE SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXN62SW611495',vitre:true,vendu:false},
-  {s:'26027',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN1TT185525',vitre:true,vendu:false},
-  {s:'26036',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',t:'',c:'BLANC',km:10,e:'NEUF',v:'2C4RC1ZG8TR187454',vitre:true,vendu:true},
-  {s:'26047',y:'2026',b:'RAM',m:'2500',t:'BIG HORN 8 PIEDS',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL3TG223699',vitre:true,vendu:false},
-  {s:'26057',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL7TG222776',vitre:false,vendu:false},
-  {s:'26073',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',t:'',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1ZG5TR206607',vitre:true,vendu:false},
-  {s:'26095',y:'2026',b:'DODGE',m:'DURANGO',t:'GT',c:'GRIS DESTROYER',km:10,e:'NEUF',v:'1C4RDJDG7TC189872',vitre:true,vendu:false},
-  {s:'26096',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C63RRHLXTG244283',vitre:true,vendu:false},
-  {s:'26102',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL5TG216563',vitre:true,vendu:false},
-  {s:'26114',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'NOIR',km:10,e:'NEUF',v:'1C4PJXEG3TW210913',vitre:true,vendu:false},
-  {s:'26115',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN5TT206022',vitre:true,vendu:false},
-  {s:'26124',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'GRANIT',km:10,e:'NEUF',v:'1C4PJXEGXTW225358',vitre:true,vendu:false},
-  {s:'26138',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHLXTG212093',vitre:true,vendu:false},
-  {s:'26157',y:'2026',b:'JEEP',m:'GLADIATOR',t:'MOJAVE',c:'NOIR',km:10,e:'NEUF',v:'1C6RJTEG2TL152349',vitre:true,vendu:false},
-  {s:'26162',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL5TG255503',vitre:true,vendu:false},
-  {s:'26167',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL5TG250900',vitre:false,vendu:false},
-  {s:'26168',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'NOIR',km:10,e:'NEUF',v:'3C63RRJL0TG246067',vitre:true,vendu:false},
-  {s:'26173',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL7TG250901',vitre:false,vendu:false},
-  {s:'26175',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL9TG246066',vitre:true,vendu:false},
-  {s:'26176',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C63RRHL0TG250903',vitre:false,vendu:false},
-  {s:'26177',y:'2026',b:'RAM',m:'3500',t:'LIMITED',c:'NOIR',km:10,e:'NEUF',v:'3C63RRRL4TG257335',vitre:true,vendu:false},
-  {s:'26178',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'',c:'BLANC',km:10,e:'NEUF',v:'3C6MRVJG9TE181859',vitre:true,vendu:false},
-  {s:'26180',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5DL0TG253142',vitre:true,vendu:false},
-  {s:'26183',y:'2026',b:'RAM',m:'1500',t:'TRADESMAN',c:'NOIR',km:10,e:'NEUF',v:'3C6RRFGG6T4166552',vitre:true,vendu:false},
-  {s:'26188',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL5TG253394',vitre:true,vendu:false},
-  {s:'26191',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5DL1TG253389',vitre:true,vendu:true},
-  {s:'26192',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'',c:'NOIR',km:10,e:'NEUF',v:'3C6MRVJG9TE181862',vitre:true,vendu:false},
-  {s:'26193',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'',c:'GRANIT',km:10,e:'NEUF',v:'3C6MRVJG7TE181861',vitre:true,vendu:false},
-  {s:'26197',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'BLANC',km:10,e:'NEUF',v:'3C4NJDBN2TT185842',vitre:true,vendu:false},
-  {s:'26200',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP6TN317502',vitre:true,vendu:false},
-  {s:'26203',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP8TN317503',vitre:true,vendu:false},
-  {s:'26208',y:'2026',b:'RAM',m:'2500',t:'TRADESMAN EXPRESS',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL4TG283066',vitre:false,vendu:false},
-  {s:'26209',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'BLEU DES PROFONDEURS',km:10,e:'NEUF',v:'3C4NJDBN1TT243567',vitre:true,vendu:false},
-  {s:'26211',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL0TG207671',vitre:true,vendu:false},
-  {s:'26212',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG7TC249591',vitre:true,vendu:false},
-  {s:'26216',y:'2026',b:'RAM',m:'2500',t:'REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL0TG294384',vitre:true,vendu:false},
-  {s:'26217',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LIMITED',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB22TT256620',vitre:true,vendu:false},
-  {s:'26218',y:'2026',b:'RAM',m:'2500',t:'REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL9TG294383',vitre:true,vendu:false},
-  {s:'26222',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'GRIS DE MER',km:10,e:'NEUF',v:'1C4RJHAR9TC224340',vitre:true,vendu:false},
-  {s:'26230',y:'2026',b:'RAM',m:'1500',t:'RHO',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFUP9TN333644',vitre:true,vendu:false},
-  {s:'26237',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG6TC266298',vitre:true,vendu:false},
-  {s:'26238',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT4TN363839',vitre:true,vendu:true},
-  {s:'26239',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL9TG214808',vitre:true,vendu:false},
-  {s:'26244',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL4TG309636',vitre:true,vendu:false},
-  {s:'26246',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5KL8TG309637',vitre:true,vendu:false},
-  {s:'26248',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT0TN332586',vitre:true,vendu:false},
-  {s:'26250',y:'2026',b:'RAM',m:'1500',t:'WARLOCK',c:'GRANIT',km:10,e:'NEUF',v:'3C6SRFGP7T4186777',vitre:true,vendu:false},
-  {s:'26251',y:'2026',b:'RAM',m:'2500',t:'LIMITED MÉGA CAB',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5TL0TG309467',vitre:true,vendu:false},
-  {s:'26260',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT2TN352208',vitre:false,vendu:false},
-  {s:'26264',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',t:'',c:'BLANC',km:10,e:'NEUF',v:'2C4RC1ZG3TR286179',vitre:true,vendu:false},
-  {s:'26270',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LAREDO',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB2XTT243629',vitre:true,vendu:false},
-  {s:'26272',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL5TG336893',vitre:true,vendu:false},
-  {s:'26273',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLEU FORGE',km:10,e:'NEUF',v:'3C6UR5JL7TG336894',vitre:true,vendu:false},
-  {s:'26274',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL0TG336896',vitre:true,vendu:false},
-  {s:'26275',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5JL2TG336897',vitre:true,vendu:false},
-  {s:'26281',y:'2026',b:'JEEP',m:'CHEROKEE',t:'',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB26TT227315',vitre:true,vendu:false},
-  {s:'26284',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL9TG336895',vitre:true,vendu:false},
-  {s:'26285',y:'2026',b:'JEEP',m:'WRANGLER',t:'RUBICON',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXFG3TW258161',vitre:true,vendu:false},
-  {s:'26287',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LAREDO',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB24TT243626',vitre:true,vendu:false},
-  {s:'26291',y:'2026',b:'RAM',m:'2500',t:'WARLOCK',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL3TG328319',vitre:true,vendu:false},
-  {s:'26292',y:'2026',b:'RAM',m:'2500',t:'WARLOCK',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5CLXTG328320',vitre:true,vendu:false},
-  {s:'26298',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'VERT SERANO',km:10,e:'NEUF',v:'1C6SRFFT9TN382644',vitre:true,vendu:false},
-  {s:'26299',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C63RRHL4TG285329',vitre:true,vendu:false},
-  {s:'26312',y:'2026',b:'JEEP',m:'WRANGLER',t:'WILLYS',c:'BLEU HYDRO',km:10,e:'NEUF',v:'1C4PJXDG1TW305732',vitre:true,vendu:false},
-  {s:'26313',y:'2026',b:'JEEP',m:'WRANGLER',t:'WILLYS',c:'ROUGE',km:10,e:'NEUF',v:'1C4PJXDG3TW305733',vitre:true,vendu:false},
-  {s:'27000',y:'2027',b:'CHRYSLER',m:'PACIFICA',t:'',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1BGXVR558241',vitre:true,vendu:false},
+  {s:'25124',y:'2025',b:'JEEP',m:'WRANGLER',t:'4XE SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXN62SW611495',vitre:true,vendu:false,p:null,r:null},
+  {s:'26027',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN1TT185525',vitre:true,vendu:false,p:40690,r:45190},
+  {s:'26047',y:'2026',b:'RAM',m:'2500',t:'BIG HORN 8 PIEDS',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL3TG223699',vitre:true,vendu:false,p:99205,r:105205},
+  {s:'26057',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL7TG222776',vitre:false,vendu:false,p:98905,r:null},
+  {s:'26073',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',t:'SXT',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1ZG5TR206607',vitre:true,vendu:false,p:50590,r:null},
+  {s:'26095',y:'2026',b:'DODGE',m:'DURANGO',t:'GT',c:'GRIS DESTROYER',km:10,e:'NEUF',v:'1C4RDJDG7TC189872',vitre:true,vendu:false,p:59330,r:67830},
+  {s:'26096',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C63RRHLXTG244283',vitre:true,vendu:false,p:100595,r:106595},
+  {s:'26102',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL5TG216563',vitre:true,vendu:false,p:118750,r:124750},
+  {s:'26114',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'NOIR',km:10,e:'NEUF',v:'1C4PJXEG3TW210913',vitre:true,vendu:false,p:72545,r:79795},
+  {s:'26115',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN5TT206022',vitre:true,vendu:false,p:42585,r:null},
+  {s:'26124',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'GRANIT',km:10,e:'NEUF',v:'1C4PJXEGXTW225358',vitre:true,vendu:false,p:65025,r:72275},
+  {s:'26138',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHLXTG212093',vitre:true,vendu:false,p:98540,r:104540},
+  {s:'26157',y:'2026',b:'JEEP',m:'GLADIATOR',t:'MOJAVE',c:'NOIR',km:10,e:'NEUF',v:'1C6RJTEG2TL152349',vitre:true,vendu:false,p:83400,r:null},
+  {s:'26162',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL5TG255503',vitre:true,vendu:false,p:99980,r:105980},
+  {s:'26167',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL5TG250900',vitre:false,vendu:false,p:99275,r:105275},
+  {s:'26168',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'NOIR',km:10,e:'NEUF',v:'3C63RRJL0TG246067',vitre:true,vendu:false,p:117665,r:123665},
+  {s:'26173',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C63RRHL7TG250901',vitre:false,vendu:false,p:99900,r:105900},
+  {s:'26175',y:'2026',b:'RAM',m:'3500',t:'LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C63RRJL9TG246066',vitre:true,vendu:false,p:117070,r:123070},
+  {s:'26176',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C63RRHL0TG250903',vitre:false,vendu:false,p:100595,r:106595},
+  {s:'26177',y:'2026',b:'RAM',m:'3500',t:'LIMITED',c:'NOIR',km:10,e:'NEUF',v:'3C63RRRL4TG257335',vitre:true,vendu:false,p:124920,r:130920},
+  {s:'26178',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'HIGH ROOF 159',c:'BLANC',km:10,e:'NEUF',v:'3C6MRVJG9TE181859',vitre:true,vendu:false,p:72490,r:null},
+  {s:'26180',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5DL0TG253142',vitre:true,vendu:false,p:99285,r:105285},
+  {s:'26183',y:'2026',b:'RAM',m:'1500',t:'TRADESMAN',c:'NOIR',km:10,e:'NEUF',v:'3C6RRFGG6T4166552',vitre:true,vendu:false,p:62385,r:null},
+  {s:'26188',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5DL5TG253394',vitre:true,vendu:false,p:99880,r:105880},
+  {s:'26191',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5DL1TG253389',vitre:true,vendu:true,p:99285,r:105285},
+  {s:'26192',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'HIGH ROOF 159',c:'NOIR',km:10,e:'NEUF',v:'3C6MRVJG9TE181862',vitre:true,vendu:false,p:71890,r:null},
+  {s:'26193',y:'2026',b:'RAM',m:'PROMASTER 3500',t:'HIGH ROOF 159',c:'GRANIT',km:10,e:'NEUF',v:'3C6MRVJG7TE181861',vitre:true,vendu:false,p:72585,r:null},
+  {s:'26197',y:'2026',b:'JEEP',m:'COMPASS',t:'ALTITUDE',c:'BLANC',km:10,e:'NEUF',v:'3C4NJDBN2TT185842',vitre:true,vendu:false,p:41590,r:47590},
+  {s:'26200',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP6TN317502',vitre:true,vendu:false,p:81730,r:null},
+  {s:'26203',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLP8TN317503',vitre:true,vendu:false,p:81730,r:null},
+  {s:'26208',y:'2026',b:'RAM',m:'2500',t:'TRADESMAN EXPRESS',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL4TG283066',vitre:false,vendu:false,p:88015,r:94015},
+  {s:'26209',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'BLEU DES PROFONDEURS',km:10,e:'NEUF',v:'3C4NJDBN1TT243567',vitre:true,vendu:false,p:42585,r:47085},
+  {s:'26211',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL0TG207671',vitre:true,vendu:false,p:97685,r:null},
+  {s:'26212',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG7TC249591',vitre:true,vendu:false,p:61180,r:63680},
+  {s:'26216',y:'2026',b:'RAM',m:'2500',t:'REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL0TG294384',vitre:true,vendu:false,p:111270,r:117270},
+  {s:'26217',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LIMITED',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB22TT256620',vitre:true,vendu:false,p:54380,r:null},
+  {s:'26218',y:'2026',b:'RAM',m:'2500',t:'REBEL',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5EL9TG294383',vitre:true,vendu:false,p:111270,r:117270},
+  {s:'26222',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'GRIS DE MER',km:10,e:'NEUF',v:'1C4RJHAR9TC224340',vitre:true,vendu:false,p:68475,r:70975},
+  {s:'26228',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C63RRHL4TG276355',vitre:true,vendu:false,p:100595,r:null},
+  {s:'26230',y:'2026',b:'RAM',m:'1500',t:'RHO',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFUP9TN333644',vitre:true,vendu:false,p:133134,r:144634},
+  {s:'26237',y:'2026',b:'JEEP',m:'GRAND CHEROKEE',t:'LAREDO',c:'NOIR',km:10,e:'NEUF',v:'1C4RJHAG6TC266298',vitre:true,vendu:false,p:65180,r:67680},
+  {s:'26239',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5DL9TG214808',vitre:true,vendu:false,p:97685,r:null},
+  {s:'26244',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL4TG309636',vitre:true,vendu:false,p:99105,r:105105},
+  {s:'26246',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5KL8TG309637',vitre:true,vendu:false,p:112605,r:118605},
+  {s:'26248',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT0TN332586',vitre:true,vendu:false,p:83665,r:91915},
+  {s:'26250',y:'2026',b:'RAM',m:'1500',t:'WARLOCK',c:'GRANIT',km:10,e:'NEUF',v:'3C6SRFGP7T4186777',vitre:true,vendu:false,p:68465,r:74965},
+  {s:'26251',y:'2026',b:'RAM',m:'2500',t:'LIMITED MÉGA CAB',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5TL0TG309467',vitre:true,vendu:false,p:120705,r:126705},
+  {s:'26260',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT2TN352208',vitre:false,vendu:false,p:78465,r:null},
+  {s:'26264',y:'2026',b:'CHRYSLER',m:'GRAND CARAVAN',t:'SXT',c:'BLANC',km:10,e:'NEUF',v:'2C4RC1ZG3TR286179',vitre:true,vendu:false,p:49995,r:null},
+  {s:'26270',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LAREDO',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB2XTT243629',vitre:true,vendu:false,p:47390,r:null},
+  {s:'26272',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'3C6UR5JL5TG336893',vitre:true,vendu:false,p:99275,r:105275},
+  {s:'26273',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLEU FORGE',km:10,e:'NEUF',v:'3C6UR5JL7TG336894',vitre:true,vendu:false,p:99275,r:null},
+  {s:'26274',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5JL0TG336896',vitre:true,vendu:false,p:99105,r:null},
+  {s:'26275',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5JL2TG336897',vitre:true,vendu:false,p:98710,r:104710},
+  {s:'26281',y:'2026',b:'JEEP',m:'CHEROKEE',t:'',c:'GRIS RAIE',km:10,e:'NEUF',v:'3C4PJMB26TT227315',vitre:true,vendu:false,p:47390,r:null},
+  {s:'26284',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5JL9TG336895',vitre:true,vendu:false,p:99275,r:null},
+  {s:'26285',y:'2026',b:'JEEP',m:'WRANGLER',t:'RUBICON',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXFG3TW258161',vitre:true,vendu:false,p:91805,r:99055},
+  {s:'26287',y:'2026',b:'JEEP',m:'CHEROKEE',t:'LAREDO',c:'VERT OLIVE',km:10,e:'NEUF',v:'3C4PJMB24TT243626',vitre:true,vendu:false,p:47885,r:null},
+  {s:'26288',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'GRANIT',km:10,e:'NEUF',v:'1C6SRFFT2TN363840',vitre:true,vendu:false,p:76805,r:null},
+  {s:'26289',y:'2026',b:'RAM',m:'3500',t:'LIMITED',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C63RRRL3TG272702',vitre:true,vendu:false,p:126145,r:132145},
+  {s:'26291',y:'2026',b:'RAM',m:'2500',t:'WARLOCK',c:'GRIS CÉRAMIQUE',km:10,e:'NEUF',v:'3C6UR5CL3TG328319',vitre:true,vendu:false,p:90815,r:96815},
+  {s:'26292',y:'2026',b:'RAM',m:'2500',t:'WARLOCK',c:'ROUGE',km:10,e:'NEUF',v:'3C6UR5CLXTG328320',vitre:true,vendu:false,p:91410,r:97410},
+  {s:'26297',y:'2026',b:'RAM',m:'2500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5EJ3TG328378',vitre:true,vendu:false,p:111270,r:117270},
+  {s:'26298',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'VERT SERANO',km:10,e:'NEUF',v:'1C6SRFFT9TN382644',vitre:true,vendu:false,p:74515,r:null},
+  {s:'26299',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C63RRHL4TG285329',vitre:true,vendu:false,p:99900,r:null},
+  {s:'26300',y:'2026',b:'JEEP',m:'GRAND CHEROKEE L',t:'',c:'BLANC',km:10,e:'NEUF',v:'1C4RJKAR5T8587735',vitre:true,vendu:false,p:68475,r:null},
+  {s:'26310',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5DL2TG335941',vitre:true,vendu:false,p:99285,r:105285},
+  {s:'26312',y:'2026',b:'JEEP',m:'WRANGLER',t:'WILLYS',c:'BLEU HYDRO',km:10,e:'NEUF',v:'1C4PJXDG1TW305732',vitre:true,vendu:false,p:67615,r:74365},
+  {s:'26313',y:'2026',b:'JEEP',m:'WRANGLER',t:'WILLYS',c:'ROUGE',km:10,e:'NEUF',v:'1C4PJXDG3TW305733',vitre:true,vendu:false,p:67615,r:74365},
+  {s:'26315',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFLT9TN388917',vitre:true,vendu:false,p:81730,r:null},
+  {s:'26321',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:10,e:'NEUF',v:'1C6SRFLT1TN388930',vitre:true,vendu:false,p:61790,r:68290},
+  {s:'27000',y:'2027',b:'CHRYSLER',m:'PACIFICA',t:'SELECT',c:'NOIR',km:10,e:'NEUF',v:'2C4RC1BGXVR558241',vitre:true,vendu:false,p:54585,r:null},
   // ── DÉMOS ──────────────────────────────────────────────────────────
-  {s:'25160',y:'2025',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:5583,e:'DÉMO',v:'3C4NJDBN4ST625784',vitre:true,vendu:false},
-  {s:'26077',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:6577,e:'DÉMO',v:'1C6SRFLP5TN200946',vitre:true,vendu:false},
-  {s:'26308',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'GRANIT',km:10,e:'DÉMO',v:'1C4PJXEG6TW225552',vitre:true,vendu:false},
-  {s:'24189A',y:'2023',b:'JEEP',m:'RENEGADE',t:'L',c:'BLEU',km:1895,e:'DÉMO',v:'ZACNJDB10PPP66876',vitre:true,vendu:false},
+  {s:'25160',y:'2025',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:5583,e:'DÉMO',v:'3C4NJDBN4ST625784',vitre:true,vendu:false,p:null,r:null},
+  {s:'26077',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:6577,e:'DÉMO',v:'1C6SRFLP5TN200946',vitre:true,vendu:false,p:null,r:null},
+  {s:'26308',y:'2026',b:'JEEP',m:'WRANGLER',t:'SAHARA',c:'GRANIT',km:10,e:'DÉMO',v:'1C4PJXEG6TW225552',vitre:true,vendu:false,p:null,r:null},
+  {s:'24189A',y:'2023',b:'JEEP',m:'RENEGADE',t:'L',c:'BLEU',km:1895,e:'DÉMO',v:'ZACNJDB10PPP66876',vitre:true,vendu:false,p:null,r:null},
   // ── USAGÉS ─────────────────────────────────────────────────────────
-  {s:'24086A',y:'2023',b:'FORD',m:'ESCAPE',t:'HYBRIDE',c:'GRIS',km:23910,e:'USED',v:'1FMCU0E18PUA92461',vitre:false,vendu:false},
-  {s:'24108A',y:'2023',b:'JEEP',m:'RENEGADE',t:'L',c:'ROUGE',km:23135,e:'USED',v:'ZACNJDB19PPP67542',vitre:true,vendu:false},
-  {s:'25090B',y:'2023',b:'CHEVROLET',m:'CAMARO',t:'',c:'ROUGE',km:8980,e:'USED',v:'1G1FF1R78P0100848',vitre:false,vendu:false},
-  {s:'25103A',y:'2023',b:'RAM',m:'2500',t:'POWER WAGON',c:'ROUGE',km:56283,e:'USED',v:'3C6UR5ELXPG584461',vitre:true,vendu:false},
-  {s:'25125A',y:'2022',b:'RAM',m:'3500',t:'LARAMIE',c:'NOIR',km:80478,e:'USED',v:'3C63R3ELXNG291527',vitre:true,vendu:false},
-  {s:'25146B',y:'2023',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'NOIR',km:72763,e:'USED',v:'1C4RJHAG9P8709407',vitre:true,vendu:false},
-  {s:'25188A',y:'2024',b:'JEEP',m:'WRANGLER',t:'4XE WILLYS',c:'ROUGE',km:37422,e:'USED',v:'1C4RJXN61RW199693',vitre:true,vendu:false},
-  {s:'25211B',y:'2008',b:'CHEVROLET',m:'COLORADO',t:'',c:'GRIS',km:258370,e:'USED',v:'1GCDT19E288181421',vitre:false,vendu:false},
-  {s:'25216A',y:'2022',b:'FORD',m:'MACH-E',t:'',c:'GRIS',km:45561,e:'USED',v:'3FMTK1SS5NMA45480',vitre:false,vendu:false},
-  {s:'25217C',y:'2006',b:'FORD',m:'MUSTANG',t:'',c:'NOIR',km:132640,e:'USED',v:'1ZVFT85H965205467',vitre:false,vendu:false},
-  {s:'26044A',y:'2020',b:'FORD',m:'F450',t:'',c:'BLANC',km:59270,e:'USED',v:'1FT8W4DTXLED81117',vitre:false,vendu:false},
-  {s:'26053A',y:'2017',b:'RAM',m:'2500',t:'LARAMIE',c:'NOIR',km:215595,e:'USED',v:'3C6UR5FL1HG535374',vitre:true,vendu:false},
-  {s:'26072A',y:'2016',b:'RAM',m:'2500',t:'ST',c:'BLANC',km:316993,e:'USED',v:'3C6UR5HL9GG212721',vitre:true,vendu:false},
-  {s:'26084C',y:'2018',b:'HONDA',m:'PILOT',t:'',c:'NOIR',km:216263,e:'USED',v:'5FNYF6H90JB500475',vitre:false,vendu:false},
-  {s:'26085A',y:'2020',b:'RAM',m:'1500',t:'SPORT',c:'BLANC',km:98458,e:'USED',v:'1C6SRFTT5NN469030',vitre:true,vendu:false},
-  {s:'26090A',y:'2024',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:171025,e:'USED',v:'3C63RRHL1RG208054',vitre:true,vendu:false},
-  {s:'26092A',y:'2023',b:'RAM',m:'2500',t:'LONGHORN',c:'BLANC',km:45164,e:'USED',v:'3C6UR5GL8PG554775',vitre:true,vendu:false},
-  {s:'26093A',y:'2023',b:'RAM',m:'1500',t:'LIMITED',c:'BLANC',km:139164,e:'USED',v:'1C6SRFPT3PN572332',vitre:true,vendu:false},
-  {s:'26094A',y:'2022',b:'RAM',m:'2500',t:'LIMITED',c:'NOIR',km:123913,e:'USED',v:'3C6UR5SLXNG219327',vitre:true,vendu:false},
-  {s:'26112B',y:'2022',b:'FORD',m:'F250',t:'',c:'NOIR',km:85992,e:'USED',v:'1FT7W2BT2NEC22579',vitre:false,vendu:false},
-  {s:'26121A',y:'2018',b:'RAM',m:'2500',t:'SLT',c:'NOIR',km:130685,e:'USED',v:'3C6UR5DL5JG346865',vitre:true,vendu:false},
-  {s:'26126B',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:11990,e:'USED',v:'3C6UR5DL0TG222778',vitre:true,vendu:false},
-  {s:'26135A',y:'2024',b:'RAM',m:'2500',t:'LIMITED',c:'NOIR',km:103680,e:'USED',v:'3C6UR5SL0RG203904',vitre:true,vendu:false},
-  {s:'26136B',y:'2018',b:'RAM',m:'2500',t:'SLT',c:'NOIR',km:196477,e:'USED',v:'3C6UR5DL8JG209225',vitre:false,vendu:false},
-  {s:'26142A',y:'2024',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:32887,e:'USED',v:'3C6UR5DL2RG306464',vitre:true,vendu:false},
-  {s:'26146A',y:'2016',b:'RAM',m:'3500',t:'ST',c:'NOIR',km:226300,e:'USED',v:'3C63RRGL3GG196536',vitre:true,vendu:false},
-  {s:'26151B',y:'2021',b:'DODGE',m:'DURANGO',t:'',c:'VERT',km:80935,e:'USED',v:'1C4SDJCT7MC659089',vitre:true,vendu:false},
-  {s:'26181A',y:'2020',b:'RAM',m:'1500',t:'SPORT',c:'ROUGE',km:191980,e:'USED',v:'1C6SRFTT3LN385415',vitre:true,vendu:false},
-  {s:'26182A',y:'2025',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:73227,e:'USED',v:'3C6UR5DL9SG526285',vitre:true,vendu:false},
-  {s:'26189A',y:'2024',b:'CHEVROLET',m:'SILVERADO',t:'',c:'NOIR',km:61882,e:'USED',v:'3GCPDCEK5RG139788',vitre:false,vendu:false},
-  {s:'26201A',y:'2023',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS',km:70831,e:'USED',v:'3C63RRHL6PG552914',vitre:true,vendu:false},
-  {s:'26245A',y:'2017',b:'RAM',m:'1500',t:'SLT',c:'NOIR',km:123840,e:'USED',v:'1C6RR7TT0HS526681',vitre:true,vendu:false},
-  {s:'26252A',y:'2011',b:'FORD',m:'EDGE',t:'',c:'BLEU',km:311465,e:'USED',v:'2FMDK4AK1BBB42065',vitre:false,vendu:false},
-  {s:'26253A',y:'2022',b:'JEEP',m:'CHEROKEE',t:'',c:'BLANC',km:107445,e:'USED',v:'1C4PJMBX3ND503597',vitre:true,vendu:false},
-  {s:'26257B',y:'2014',b:'DODGE',m:'JOURNEY',t:'',c:'NOIR',km:143111,e:'USED',v:'3C4PDDFG2ET212262',vitre:true,vendu:false},
-  {s:'26262A',y:'2021',b:'JEEP',m:'GRAND CHEROKEE L',t:'',c:'BLANC',km:77800,e:'USED',v:'1C4RJKDG0M8127152',vitre:true,vendu:false},
-  {s:'26266A',y:'2022',b:'RAM',m:'1500',t:'SPORT',c:'BLANC',km:52820,e:'USED',v:'1C6SRFVTXNN283299',vitre:true,vendu:false},
-  {s:'26267A',y:'2023',b:'JEEP',m:'GRAND CHEROKEE',t:'SUMMIT',c:'NOIR',km:111562,e:'USED',v:'1C4RJYE61PC601040',vitre:true,vendu:false},
-  {s:'26280A',y:'2020',b:'HYUNDAI',m:'SANTA FE',t:'',c:'BLEU',km:98203,e:'USED',v:'5NMS3CAD8LH139008',vitre:false,vendu:false},
-  {s:'26341A',y:'2026',b:'JEEP',m:'GLADIATOR',t:'',c:'ROUGE',km:50104,e:'USED',v:'1C6JJTEG2PL508219',vitre:true,vendu:false},
-  {s:'C-858D',y:'2012',b:'DODGE',m:'JOURNEY',t:'',c:'NOIR',km:86279,e:'USED',v:'3C4PDCCG7CT322428',vitre:true,vendu:false},
-  {s:'C-870',y:'2023',b:'JEEP',m:'WRANGLER',t:'RUBICON 4XE',c:'GRIS',km:80831,e:'USED',v:'1C4JJXR60PW573330',vitre:true,vendu:false},
-  {s:'C-893',y:'2024',b:'RAM',m:'3500',t:'LIMITED',c:'NOIR',km:90637,e:'USED',v:'3C63R3SLXRG199165',vitre:true,vendu:false},
-  {s:'C-924B',y:'2016',b:'JEEP',m:'CHEROKEE',t:'SPORT',c:'ARGENT',km:194088,e:'USED',v:'1C4PJMAS6GW333619',vitre:true,vendu:false},
-  {s:'C-925A',y:'2018',b:'DODGE',m:'GRAND CARAVAN',t:'',c:'GRIS',km:78474,e:'USED',v:'2C4RDGBG2JR181964',vitre:true,vendu:false},
-  {s:'C-929',y:'2015',b:'JEEP',m:'WRANGLER',t:'SPORT',c:'BLEU',km:129339,e:'USED',v:'1C4AJWAG7FL699070',vitre:true,vendu:false},
-  {s:'C-931A',y:'2019',b:'JEEP',m:'WRANGLER',t:'',c:'NOIR',km:148403,e:'USED',v:'1C4HJXDG8KW669908',vitre:true,vendu:false},
-  {s:'C-932',y:'2025',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:27354,e:'USED',v:'1C6SRFLP8SN580380',vitre:true,vendu:false},
-  {s:'C-934',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'BLANC',km:157510,e:'USED',v:'1C4SDJGJXNC201931',vitre:true,vendu:false},
-  {s:'C-941',y:'2023',b:'CHRYSLER',m:'PACIFICA',t:'',c:'GRIS',km:76589,e:'USED',v:'2C4RC3BG1PR565870',vitre:true,vendu:false},
-  {s:'C-944A',y:'2017',b:'JAGUAR',m:'F-PACE',t:'S',c:'BLANC',km:236161,e:'USED',v:'SADCM2BV5HA061599',vitre:false,vendu:false},
-  {s:'C-946',y:'2022',b:'JEEP',m:'WRANGLER',t:'SPORT',c:'ROUGE',km:53761,e:'USED',v:'1C4GJXAG6NW238472',vitre:true,vendu:false},
-  {s:'C-947',y:'2022',b:'CHRYSLER',m:'PACIFICA',t:'HYBRIDE',c:'GRIS',km:42855,e:'USED',v:'2C4RC1S7XNR112929',vitre:true,vendu:false},
-  {s:'C-948',y:'2024',b:'JEEP',m:'WRANGLER',t:'WILLYS 4XE',c:'GRIS',km:23455,e:'USED',v:'1C4RJXN6XRW218015',vitre:true,vendu:false},
-  {s:'C-952',y:'2023',b:'JEEP',m:'WRANGLER',t:'',c:'GRIS',km:53040,e:'USED',v:'1C4HJXDG7PW622070',vitre:true,vendu:false},
-  {s:'C-953',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'GRIS',km:67232,e:'USED',v:'1C4SDJCT3NC230680',vitre:true,vendu:false},
-  {s:'C-954',y:'2024',b:'RAM',m:'5500',t:'CHASSIS',c:'NOIR',km:404,e:'USED',v:'3C7WRNFL2RG156597',vitre:true,vendu:false},
-  {s:'C-955',y:'2023',b:'KIA',m:'SPORTAGE',t:'PHEV',c:'NOIR',km:98033,e:'USED',v:'KNDPXDAH8P7081661',vitre:false,vendu:false},
-  {s:'C-958',y:'2021',b:'RAM',m:'1500',t:'CLASSIC',c:'BLEU',km:117548,e:'USED',v:'1C6RR7LG4MS566047',vitre:true,vendu:false},
-  {s:'C-959',y:'2016',b:'CHEVROLET',m:'CRUZE',t:'',c:'BLANC',km:95645,e:'USED',v:'3G1BE5SM3GS601048',vitre:false,vendu:false},
-  {s:'C-961',y:'2025',b:'RAM',m:'PROMASTER 2500',t:'',c:'BLANC',km:13978,e:'USED',v:'3C6LRVCG1SE534893',vitre:true,vendu:false},
-  {s:'C-965',y:'2017',b:'NISSAN',m:'QUASHQUAI',t:'',c:'VERT',km:108613,e:'USED',v:'JN1BJ1CR8HW108819',vitre:false,vendu:false},
-  {s:'C-966',y:'2016',b:'BUICK',m:'ENCORE',t:'',c:'NOIR',km:96120,e:'USED',v:'KL4CJ2SM0GB561670',vitre:false,vendu:false},
-  {s:'C-967',y:'2020',b:'RAM',m:'1500',t:'CLASSIC',c:'BLANC',km:102460,e:'USED',v:'3C6RR7KT3LG270361',vitre:true,vendu:false},
-  {s:'C-968',y:'2020',b:'JEEP',m:'GRAND CHEROKEE',t:'LIMITED',c:'CHARCOAL',km:125651,e:'USED',v:'1C4RJFBG0LC189219',vitre:true,vendu:false},
-  {s:'C-969',y:'2021',b:'JEEP',m:'WRANGLER',t:'4XE',c:'ROUGE',km:162782,e:'USED',v:'1C4JJXP68MW799355',vitre:true,vendu:false},
-  {s:'C-970',y:'2022',b:'JEEP',m:'WRANGLER',t:'',c:'NOIR',km:77454,e:'USED',v:'1C4HJXAG2NW201715',vitre:true,vendu:false},
-  {s:'C-971',y:'2021',b:'RAM',m:'1500',t:'CLASSIC',c:'BLEU',km:77849,e:'USED',v:'3C6RR7KT7MG599629',vitre:true,vendu:false},
-  {s:'C-974',y:'2023',b:'CHEVROLET',m:'CAMARO',t:'',c:'BLANC',km:40782,e:'USED',v:'1G1FB3DX8P0100458',vitre:false,vendu:false},
-  {s:'C-975',y:'2020',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'ARGENT',km:128191,e:'USED',v:'1C4RJFLG8LC183103',vitre:true,vendu:false},
-  {s:'C-976',y:'2019',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'CHARCOAL',km:147745,e:'USED',v:'1C4RJFAG6KC762379',vitre:true,vendu:false},
-  {s:'C-977A',y:'2014',b:'NISSAN',m:'ROGUE',t:'',c:'BLANC',km:297838,e:'USED',v:'5N1AT2MV5EC815535',vitre:false,vendu:false},
-  {s:'C-978',y:'2024',b:'RAM',m:'1500',t:'SPORT',c:'ROUGE',km:47573,e:'USED',v:'1C6SRFTT9RN101777',vitre:true,vendu:false},
-  {s:'C-979',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'GRIS',km:88132,e:'USED',v:'1C4RDJAG4NC229946',vitre:true,vendu:false},
-  {s:'C-980',y:'2018',b:'HYUNDAI',m:'ELANTRA',t:'',c:'BLEU',km:115739,e:'USED',v:'KMHD84LF3JU529398',vitre:false,vendu:false},
-  {s:'C-981',y:'2023',b:'MERCEDES',m:'GLC300',t:'',c:'NOIR',km:25709,e:'USED',v:'W1NKM4HB5PF044893',vitre:false,vendu:false},
-  {s:'C-982',y:'2022',b:'JEEP',m:'GLADIATOR',t:'',c:'NOIR',km:169572,e:'USED',v:'1C6JJTBG3NL100670',vitre:true,vendu:false},
-  {s:'C-983',y:'2019',b:'RAM',m:'1500',t:'CLASSIC',c:'NOIR',km:143678,e:'USED',v:'1C6RR7KT9KS719985',vitre:true,vendu:false},
-  {s:'C-985',y:'2022',b:'RAM',m:'2500',t:'LARAMIE',c:'GRIS',km:70669,e:'USED',v:'3C6UR5FL0NG410720',vitre:false,vendu:false},
-  {s:'C-986',y:'2020',b:'NISSAN',m:'KICKS',t:'',c:'ORANGE',km:49908,e:'USED',v:'3N1CP5CV5LL492712',vitre:false,vendu:false},
-  {s:'C-988',y:'2015',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'BLANC',km:233800,e:'USED',v:'1C4RJFJM8FC744283',vitre:true,vendu:false},
-  {s:'C-990',y:'2023',b:'JEEP',m:'WRANGLER',t:'SAHARA 4XE',c:'GRIS',km:59557,e:'USED',v:'1C4JJXP68PW651601',vitre:true,vendu:false},
+  {s:'24086A',y:'2023',b:'FORD',m:'ESCAPE',t:'HYBRIDE',c:'GRIS',km:23910,e:'USED',v:'1FMCU0E18PUA92461',vitre:false,vendu:false,p:null,r:null},
+  {s:'24108A',y:'2023',b:'JEEP',m:'RENEGADE',t:'L',c:'ROUGE',km:23135,e:'USED',v:'ZACNJDB19PPP67542',vitre:true,vendu:false,p:null,r:null},
+  {s:'25090B',y:'2023',b:'CHEVROLET',m:'CAMARO',t:'',c:'ROUGE',km:8980,e:'USED',v:'1G1FF1R78P0100848',vitre:false,vendu:false,p:null,r:null},
+  {s:'25103A',y:'2023',b:'RAM',m:'2500',t:'POWER WAGON',c:'ROUGE',km:56283,e:'USED',v:'3C6UR5ELXPG584461',vitre:true,vendu:false,p:null,r:null},
+  {s:'25125A',y:'2022',b:'RAM',m:'3500',t:'LARAMIE',c:'NOIR',km:80478,e:'USED',v:'3C63R3ELXNG291527',vitre:true,vendu:false,p:null,r:null},
+  {s:'25146B',y:'2023',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'NOIR',km:72763,e:'USED',v:'1C4RJHAG9P8709407',vitre:true,vendu:false,p:null,r:null},
+  {s:'25188A',y:'2024',b:'JEEP',m:'WRANGLER',t:'4XE WILLYS',c:'ROUGE',km:37422,e:'USED',v:'1C4RJXN61RW199693',vitre:true,vendu:false,p:null,r:null},
+  {s:'25211B',y:'2008',b:'CHEVROLET',m:'COLORADO',t:'',c:'GRIS',km:258370,e:'USED',v:'1GCDT19E288181421',vitre:false,vendu:false,p:null,r:null},
+  {s:'25216A',y:'2022',b:'FORD',m:'MACH-E',t:'',c:'GRIS',km:45561,e:'USED',v:'3FMTK1SS5NMA45480',vitre:false,vendu:false,p:null,r:null},
+  {s:'25217C',y:'2006',b:'FORD',m:'MUSTANG',t:'',c:'NOIR',km:132640,e:'USED',v:'1ZVFT85H965205467',vitre:false,vendu:false,p:null,r:null},
+  {s:'26044A',y:'2020',b:'FORD',m:'F450',t:'',c:'BLANC',km:59270,e:'USED',v:'1FT8W4DTXLED81117',vitre:false,vendu:false,p:null,r:null},
+  {s:'26053A',y:'2017',b:'RAM',m:'2500',t:'LARAMIE',c:'NOIR',km:215595,e:'USED',v:'3C6UR5FL1HG535374',vitre:true,vendu:false,p:null,r:null},
+  {s:'26072A',y:'2016',b:'RAM',m:'2500',t:'ST',c:'BLANC',km:316993,e:'USED',v:'3C6UR5HL9GG212721',vitre:true,vendu:false,p:null,r:null},
+  {s:'26084C',y:'2018',b:'HONDA',m:'PILOT',t:'',c:'NOIR',km:216263,e:'USED',v:'5FNYF6H90JB500475',vitre:false,vendu:false,p:null,r:null},
+  {s:'26085A',y:'2020',b:'RAM',m:'1500',t:'SPORT',c:'BLANC',km:98458,e:'USED',v:'1C6SRFTT5NN469030',vitre:true,vendu:false,p:null,r:null},
+  {s:'26090A',y:'2024',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:171025,e:'USED',v:'3C63RRHL1RG208054',vitre:true,vendu:false,p:null,r:null},
+  {s:'26092A',y:'2023',b:'RAM',m:'2500',t:'LONGHORN',c:'BLANC',km:45164,e:'USED',v:'3C6UR5GL8PG554775',vitre:true,vendu:false,p:null,r:null},
+  {s:'26093A',y:'2023',b:'RAM',m:'1500',t:'LIMITED',c:'BLANC',km:139164,e:'USED',v:'1C6SRFPT3PN572332',vitre:true,vendu:false,p:null,r:null},
+  {s:'26094A',y:'2022',b:'RAM',m:'2500',t:'LIMITED',c:'NOIR',km:123913,e:'USED',v:'3C6UR5SLXNG219327',vitre:true,vendu:false,p:null,r:null},
+  {s:'26112B',y:'2022',b:'FORD',m:'F250',t:'',c:'NOIR',km:85992,e:'USED',v:'1FT7W2BT2NEC22579',vitre:false,vendu:false,p:null,r:null},
+  {s:'26121A',y:'2018',b:'RAM',m:'2500',t:'SLT',c:'NOIR',km:130685,e:'USED',v:'3C6UR5DL5JG346865',vitre:true,vendu:false,p:null,r:null},
+  {s:'26126B',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'GRIS CÉRAMIQUE',km:11990,e:'USED',v:'3C6UR5DL0TG222778',vitre:true,vendu:false,p:null,r:null},
+  {s:'26135A',y:'2024',b:'RAM',m:'2500',t:'LIMITED',c:'NOIR',km:103680,e:'USED',v:'3C6UR5SL0RG203904',vitre:true,vendu:false,p:null,r:null},
+  {s:'26136B',y:'2018',b:'RAM',m:'2500',t:'SLT',c:'NOIR',km:196477,e:'USED',v:'3C6UR5DL8JG209225',vitre:false,vendu:false,p:null,r:null},
+  {s:'26142A',y:'2024',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:32887,e:'USED',v:'3C6UR5DL2RG306464',vitre:true,vendu:false,p:null,r:null},
+  {s:'26146A',y:'2016',b:'RAM',m:'3500',t:'ST',c:'NOIR',km:226300,e:'USED',v:'3C63RRGL3GG196536',vitre:true,vendu:false,p:null,r:null},
+  {s:'26151B',y:'2021',b:'DODGE',m:'DURANGO',t:'',c:'VERT',km:80935,e:'USED',v:'1C4SDJCT7MC659089',vitre:true,vendu:false,p:null,r:null},
+  {s:'26181A',y:'2020',b:'RAM',m:'1500',t:'SPORT',c:'ROUGE',km:191980,e:'USED',v:'1C6SRFTT3LN385415',vitre:true,vendu:false,p:null,r:null},
+  {s:'26182A',y:'2025',b:'RAM',m:'2500',t:'BIG HORN',c:'NOIR',km:73227,e:'USED',v:'3C6UR5DL9SG526285',vitre:true,vendu:false,p:null,r:null},
+  {s:'26189A',y:'2024',b:'CHEVROLET',m:'SILVERADO',t:'',c:'NOIR',km:61882,e:'USED',v:'3GCPDCEK5RG139788',vitre:false,vendu:false,p:null,r:null},
+  {s:'26201A',y:'2023',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS',km:70831,e:'USED',v:'3C63RRHL6PG552914',vitre:true,vendu:false,p:null,r:null},
+  {s:'26245A',y:'2017',b:'RAM',m:'1500',t:'SLT',c:'NOIR',km:123840,e:'USED',v:'1C6RR7TT0HS526681',vitre:true,vendu:false,p:null,r:null},
+  {s:'26252A',y:'2011',b:'FORD',m:'EDGE',t:'',c:'BLEU',km:311465,e:'USED',v:'2FMDK4AK1BBB42065',vitre:false,vendu:false,p:null,r:null},
+  {s:'26253A',y:'2022',b:'JEEP',m:'CHEROKEE',t:'',c:'BLANC',km:107445,e:'USED',v:'1C4PJMBX3ND503597',vitre:true,vendu:false,p:null,r:null},
+  {s:'26257B',y:'2014',b:'DODGE',m:'JOURNEY',t:'',c:'BLANC',km:143111,e:'USED',v:'3C4PDDFG2ET212262',vitre:true,vendu:true,p:null,r:null},
+  {s:'26262A',y:'2021',b:'JEEP',m:'GRAND CHEROKEE L',t:'',c:'BLANC',km:77800,e:'USED',v:'1C4RJKDG0M8127152',vitre:true,vendu:false,p:null,r:null},
+  {s:'26266A',y:'2022',b:'RAM',m:'1500',t:'SPORT',c:'BLANC',km:52820,e:'USED',v:'1C6SRFVTXNN283299',vitre:true,vendu:false,p:null,r:null},
+  {s:'26267A',y:'2023',b:'JEEP',m:'GRAND CHEROKEE',t:'SUMMIT',c:'NOIR',km:111562,e:'USED',v:'1C4RJYE61PC601040',vitre:true,vendu:false,p:null,r:null},
+  {s:'26280A',y:'2020',b:'HYUNDAI',m:'SANTA FE',t:'',c:'BLEU',km:98203,e:'USED',v:'5NMS3CAD8LH139008',vitre:false,vendu:false,p:null,r:null},
+  {s:'26341A',y:'2026',b:'JEEP',m:'GLADIATOR',t:'',c:'ROUGE',km:50104,e:'USED',v:'1C6JJTEG2PL508219',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-858D',y:'2012',b:'DODGE',m:'JOURNEY',t:'',c:'NOIR',km:86279,e:'USED',v:'3C4PDCCG7CT322428',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-870',y:'2023',b:'JEEP',m:'WRANGLER',t:'RUBICON 4XE',c:'GRIS',km:80831,e:'USED',v:'1C4JJXR60PW573330',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-893',y:'2024',b:'RAM',m:'3500',t:'LIMITED',c:'NOIR',km:90637,e:'USED',v:'3C63R3SLXRG199165',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-924B',y:'2016',b:'JEEP',m:'CHEROKEE',t:'SPORT',c:'ARGENT',km:194088,e:'USED',v:'1C4PJMAS6GW333619',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-925A',y:'2018',b:'DODGE',m:'GRAND CARAVAN',t:'',c:'GRIS',km:78474,e:'USED',v:'2C4RDGBG2JR181964',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-929',y:'2015',b:'JEEP',m:'WRANGLER',t:'SPORT',c:'BLEU',km:129339,e:'USED',v:'1C4AJWAG7FL699070',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-931A',y:'2019',b:'JEEP',m:'WRANGLER',t:'',c:'NOIR',km:148403,e:'USED',v:'1C4HJXDG8KW669908',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-932',y:'2025',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:27354,e:'USED',v:'1C6SRFLP8SN580380',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-934',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'BLANC',km:157510,e:'USED',v:'1C4SDJGJXNC201931',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-941',y:'2023',b:'CHRYSLER',m:'PACIFICA',t:'',c:'GRIS',km:76589,e:'USED',v:'2C4RC3BG1PR565870',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-944A',y:'2017',b:'JAGUAR',m:'F-PACE',t:'S',c:'BLANC',km:236161,e:'USED',v:'SADCM2BV5HA061599',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-946',y:'2022',b:'JEEP',m:'WRANGLER',t:'SPORT',c:'ROUGE',km:53761,e:'USED',v:'1C4GJXAG6NW238472',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-947',y:'2022',b:'CHRYSLER',m:'PACIFICA',t:'HYBRIDE',c:'GRIS',km:42855,e:'USED',v:'2C4RC1S7XNR112929',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-948',y:'2024',b:'JEEP',m:'WRANGLER',t:'WILLYS 4XE',c:'GRIS',km:23455,e:'USED',v:'1C4RJXN6XRW218015',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-952',y:'2023',b:'JEEP',m:'WRANGLER',t:'',c:'GRIS',km:53040,e:'USED',v:'1C4HJXDG7PW622070',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-953',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'GRIS',km:67232,e:'USED',v:'1C4SDJCT3NC230680',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-954',y:'2024',b:'RAM',m:'5500',t:'CHASSIS',c:'NOIR',km:404,e:'USED',v:'3C7WRNFL2RG156597',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-955',y:'2023',b:'KIA',m:'SPORTAGE',t:'PHEV',c:'NOIR',km:98033,e:'USED',v:'KNDPXDAH8P7081661',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-958',y:'2021',b:'RAM',m:'1500',t:'CLASSIC',c:'BLEU',km:117548,e:'USED',v:'1C6RR7LG4MS566047',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-959',y:'2016',b:'CHEVROLET',m:'CRUZE',t:'',c:'BLANC',km:95645,e:'USED',v:'3G1BE5SM3GS601048',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-961',y:'2025',b:'RAM',m:'PROMASTER 2500',t:'',c:'BLANC',km:13978,e:'USED',v:'3C6LRVCG1SE534893',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-965',y:'2017',b:'NISSAN',m:'QUASHQUAI',t:'',c:'VERT',km:108613,e:'USED',v:'JN1BJ1CR8HW108819',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-966',y:'2016',b:'BUICK',m:'ENCORE',t:'',c:'NOIR',km:96120,e:'USED',v:'KL4CJ2SM0GB561670',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-967',y:'2020',b:'RAM',m:'1500',t:'CLASSIC',c:'BLANC',km:102460,e:'USED',v:'3C6RR7KT3LG270361',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-968',y:'2020',b:'JEEP',m:'GRAND CHEROKEE',t:'LIMITED',c:'CHARCOAL',km:125651,e:'USED',v:'1C4RJFBG0LC189219',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-969',y:'2021',b:'JEEP',m:'WRANGLER',t:'4XE',c:'ROUGE',km:162782,e:'USED',v:'1C4JJXP68MW799355',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-970',y:'2022',b:'JEEP',m:'WRANGLER',t:'',c:'NOIR',km:77454,e:'USED',v:'1C4HJXAG2NW201715',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-971',y:'2021',b:'RAM',m:'1500',t:'CLASSIC',c:'BLEU',km:77849,e:'USED',v:'3C6RR7KT7MG599629',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-974',y:'2023',b:'CHEVROLET',m:'CAMARO',t:'',c:'BLANC',km:40782,e:'USED',v:'1G1FB3DX8P0100458',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-975',y:'2020',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'ARGENT',km:128191,e:'USED',v:'1C4RJFLG8LC183103',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-976',y:'2019',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'CHARCOAL',km:147745,e:'USED',v:'1C4RJFAG6KC762379',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-977A',y:'2014',b:'NISSAN',m:'ROGUE',t:'',c:'BLANC',km:297838,e:'USED',v:'5N1AT2MV5EC815535',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-978',y:'2024',b:'RAM',m:'1500',t:'SPORT',c:'ROUGE',km:47573,e:'USED',v:'1C6SRFTT9RN101777',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-979',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'GRIS',km:88132,e:'USED',v:'1C4RDJAG4NC229946',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-980',y:'2018',b:'HYUNDAI',m:'ELANTRA',t:'',c:'BLEU',km:115739,e:'USED',v:'KMHD84LF3JU529398',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-981',y:'2023',b:'MERCEDES',m:'GLC300',t:'',c:'NOIR',km:25709,e:'USED',v:'W1NKM4HB5PF044893',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-982',y:'2022',b:'JEEP',m:'GLADIATOR',t:'',c:'NOIR',km:169572,e:'USED',v:'1C6JJTBG3NL100670',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-983',y:'2019',b:'RAM',m:'1500',t:'CLASSIC',c:'NOIR',km:143678,e:'USED',v:'1C6RR7KT9KS719985',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-985',y:'2022',b:'RAM',m:'2500',t:'LARAMIE',c:'GRIS',km:70669,e:'USED',v:'3C6UR5FL0NG410720',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-986',y:'2020',b:'NISSAN',m:'KICKS',t:'',c:'ORANGE',km:49908,e:'USED',v:'3N1CP5CV5LL492712',vitre:false,vendu:false,p:null,r:null},
+  {s:'C-987',y:'2022',b:'DODGE',m:'DURANGO',t:'',c:'NOIR',km:73447,e:'USED',v:'1C4RDJAG7NC223963',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-988',y:'2015',b:'JEEP',m:'GRAND CHEROKEE',t:'',c:'BLANC',km:233800,e:'USED',v:'1C4RJFJM8FC744283',vitre:true,vendu:false,p:null,r:null},
+  {s:'C-990',y:'2023',b:'JEEP',m:'WRANGLER',t:'SAHARA 4XE',c:'GRIS',km:59557,e:'USED',v:'1C4JJXP68PW651601',vitre:true,vendu:false,p:null,r:null},
 ];
 
-const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','ceramique':'#a0a8b0','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','joose':'#84cc16','raie':'#8fa0a8'};
+const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','ceramique':'#a0a8b0','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','raie':'#8fa0a8'};
 function cx(s){if(!s)return'#9ca3af';const l=s.toLowerCase();for(const[k,v]of Object.entries(CM))if(l.includes(k))return v;return'#9ca3af';}
 function fmKm(k){if(k<=10)return'—';return parseInt(k).toLocaleString('fr-CA')+' km';}
+function fp(p){if(!p)return'—';return parseInt(p).toLocaleString('fr-CA')+'\u00a0$';}
 
 function stateBadge(e){
   if(e==='NEUF')return'<span class="badge badge-neuf">NEUF</span>';
@@ -430,6 +446,8 @@ function applyFilters(){
   });
   if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
   else if(so==='stock-desc')r.sort((a,b)=>b.s.localeCompare(a.s,undefined,{numeric:true}));
+  else if(so==='price-asc')r.sort((a,b)=>(a.p||999999)-(b.p||999999));
+  else if(so==='price-desc')r.sort((a,b)=>(b.p||0)-(a.p||0));
   else if(so==='km-asc')r.sort((a,b)=>a.km-b.km);
   else if(so==='km-desc')r.sort((a,b)=>b.km-a.km);
   else if(so==='year-desc')r.sort((a,b)=>parseInt(b.y)-parseInt(a.y));
@@ -452,8 +470,9 @@ function ficheUrl(v){
 }
 
 function renderTable(vv){
-  document.getElementById('table-body').innerHTML=vv.map(v=>`
-    <tr class="${v.vendu?'row-vendu':''}">
+  document.getElementById('table-body').innerHTML=vv.map(v=>{
+    const eco=v.r&&v.p?v.r-v.p:0;
+    return`<tr class="${v.vendu?'row-vendu':''}">
       <td>${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</td>
       <td><strong>${v.s}</strong></td>
       <td>${v.y}</td>
@@ -462,29 +481,38 @@ function renderTable(vv){
       <td style="color:#475569;font-size:11px">${v.t||'—'}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></td>
       <td style="font-size:11px;color:#64748b">${fmKm(v.km)}</td>
+      <td><strong style="color:#003DA5">${fp(v.p)}</strong>${v.r?`<br><span style="font-size:10px;color:#94a3b8;text-decoration:line-through">${fp(v.r)}</span>`:''}</td>
+      <td>${eco>0?`<span style="color:#92400e;font-weight:600;font-size:11px">-${fp(eco)}</span>`:'—'}</td>
       <td style="font-family:monospace;font-size:10px;color:#64748b">${v.v}</td>
       <td><div style="display:flex;gap:4px;">
         <a class="action-btn btn-site" href="${ficheUrl(v)}" target="_blank" title="Fiche sur le site"><i class="ti ti-external-link"></i></a>
         ${v.vitre?`<a class="action-btn btn-vitre" href="${ficheUrl(v)}" target="_blank" title="Feuille de vitre"><i class="ti ti-file-text"></i></a>`:`<span class="action-btn btn-dis" title="Pas de feuille de vitre"><i class="ti ti-file-text"></i></span>`}
         ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="action-btn btn-annonce" onclick="genAnnonceByStock('${v.s}')" title="Annonce Marketplace"><i class="ti ti-speakerphone"></i></button>`:''}
       </div></td>
-    </tr>`).join('');
+    </tr>`;}).join('');
 }
 
 function renderCards(vv){
-  document.getElementById('cards-list').innerHTML=vv.map(v=>`
-    <div class="vcard${v.vendu?' card-vendu':''}">
+  document.getElementById('cards-list').innerHTML=vv.map(v=>{
+    const eco=v.r&&v.p?v.r-v.p:0;
+    return`<div class="vcard${v.vendu?' card-vendu':''}">
       <div class="vcard-header">
         <div>
           <div class="vcard-title">${v.y} ${v.b} ${v.m}</div>
           ${v.t?`<div class="vcard-trim">${v.t}</div>`:''}
           <div class="vcard-sub">${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</div>
         </div>
-        <div class="vcard-km">${fmKm(v.km)}</div>
+        <div class="vcard-right">
+          ${v.p?`<div class="vcard-prix">${fp(v.p)}</div>`:''}
+          ${v.r?`<div class="vcard-reg">${fp(v.r)}</div>`:''}
+          ${eco>0?`<div class="vcard-eco">-${fp(eco)}</div>`:''}
+          ${!v.p?`<div class="vcard-km">${fmKm(v.km)}</div>`:''}
+        </div>
       </div>
       <div class="vcard-body">
         <div class="vcard-row"><span class="vcard-lbl">Couleur</span><span class="vcard-val"><span style="display:inline-flex;align-items:center;gap:4px;"><span class="color-dot" style="background:${cx(v.c)}"></span>${v.c}</span></span></div>
         <div class="vcard-row"><span class="vcard-lbl">Stock</span><span class="vcard-val">${v.s}</span></div>
+        ${v.p&&v.km>10?`<div class="vcard-row"><span class="vcard-lbl">KM</span><span class="vcard-val">${fmKm(v.km)}</span></div>`:''}
         <div class="vcard-row" style="grid-column:1/-1"><span class="vcard-lbl">VIN</span><span class="vcard-val mono">${v.v}</span></div>
       </div>
       <div class="vcard-footer">
@@ -494,7 +522,7 @@ function renderCards(vv){
           ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')"><i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce</button>`:''}
         </div>
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
 }
 
 function initSelects(){
@@ -517,13 +545,15 @@ function getTone(v){
 
 function buildAnnonce(v){
   const tone=getTone(v);
+  const eco=v.r&&v.p?v.r-v.p:0;
   const kmStr=v.km<=10?'Kilométrage : 10 km — Neuf !':'Kilométrage : '+v.km.toLocaleString('fr-CA')+' km';
   const etatStr=v.e==='DÉMO'?'Véhicule démonstrateur — inspecté et certifié':v.e==='NEUF'?'Véhicule neuf':'Véhicule usagé — inspecté, garantie prolongée disponible';
   const nomComplet=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
+  const prixStr=v.p?`\n🏷️ NOTRE PRIX : ${fp(v.p)} + taxes${v.r?`\n💰 Prix régulier : ${fp(v.r)}`:''}${eco>0?`\n🤑 ÉCONOMIES : ${fp(eco)}`:''}`:'\n🏷️ Prix : Contactez-nous';
 
   const features={
     'GRAND CARAVAN':'🛋️ 7 passagers · Espace cargo généreux\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation multizone\n🛡️ Caméra de recul · aide au stationnement\n💳 Financement disponible',
-    'PACIFICA':'🛋️ Sièges Stow\'n\'Go — disparaissent dans le plancher\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation tri-zone\n🔌 Version hybride rechargeable disponible\n💳 Financement disponible',
+    'PACIFICA':'🛋️ Sièges Stow\'n\'Go intégrés dans le plancher\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation tri-zone\n🔌 Version hybride rechargeable disponible\n💳 Financement disponible',
     'COMPASS':'🚗 Compact et agile — parfait en toute saison\n💪 4X4 intégral\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation automatique\n💳 Financement avantageux disponible',
     'WRANGLER':'🏔️ Hors-route légendaire · Toit amovible\n💪 4x4 Command-Trac\n🌞 Portes sans cadre · Look unique\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Icône Jeep — valeur de revente exceptionnelle',
     'GLADIATOR':'🏔️ Seul pick-up Jeep · Toit amovible\n💪 Remorquage jusqu\'à 7 650 lb\n🌞 Portes sans cadre · Benne cargo\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Polyvalence unique sur le marché',
@@ -559,7 +589,7 @@ function buildAnnonce(v){
 🏷️ N° de stock : ${v.s}
 🔢 NIV : ${v.v}
 📦 ${etatStr}
-📏 ${kmStr}
+📏 ${kmStr}${prixStr}
 
 ${feat}
 
@@ -574,7 +604,7 @@ ${ADR}
 function genAnnonce(v){
   currentAnnonce='';
   document.getElementById('modal-title').textContent=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
-  document.getElementById('modal-sub').textContent=`${v.c} · Stock ${v.s}`;
+  document.getElementById('modal-sub').textContent=`${v.c} · Stock ${v.s}${v.p?' · '+fp(v.p):''}`;
   document.getElementById('modal-content').innerHTML='<div class="generating"><div class="spin"></div><div>Génération de l\'annonce...</div></div>';
   const btn=document.getElementById('btn-copy');
   btn.innerHTML='<i class="ti ti-copy" style="font-size:14px"></i> Copier l\'annonce';
