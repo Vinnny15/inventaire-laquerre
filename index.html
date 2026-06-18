@@ -547,51 +547,171 @@ function buildAnnonce(v){
   const tone=getTone(v);
   const eco=v.r&&v.p?v.r-v.p:0;
   const kmStr=v.km<=10?'Kilométrage : 10 km — Neuf !':'Kilométrage : '+v.km.toLocaleString('fr-CA')+' km';
-  const etatStr=v.e==='DÉMO'?'Véhicule démonstrateur — inspecté et certifié':v.e==='NEUF'?'Véhicule neuf':'Véhicule usagé — inspecté, garantie prolongée disponible';
+  const etatStr=v.e==='DÉMO'?'Démonstrateur — inspecté, certifié, garantie prolongée disponible':v.e==='NEUF'?'Véhicule neuf':'Véhicule usagé — inspecté, garantie prolongée disponible';
   const nomComplet=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
-  const prixStr=v.p?`\n🏷️ NOTRE PRIX : ${fp(v.p)} + taxes${v.r?`\n💰 Prix régulier : ${fp(v.r)}`:''}${eco>0?`\n🤑 ÉCONOMIES : ${fp(eco)}`:''}`:'\n🏷️ Prix : Contactez-nous';
-
-  const features={
-    'GRAND CARAVAN':'🛋️ 7 passagers · Espace cargo généreux\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation multizone\n🛡️ Caméra de recul · aide au stationnement\n💳 Financement disponible',
-    'PACIFICA':'🛋️ Sièges Stow\'n\'Go intégrés dans le plancher\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation tri-zone\n🔌 Version hybride rechargeable disponible\n💳 Financement disponible',
-    'COMPASS':'🚗 Compact et agile — parfait en toute saison\n💪 4X4 intégral\n📲 Apple CarPlay / Android Auto\n❄️ Climatisation automatique\n💳 Financement avantageux disponible',
-    'WRANGLER':'🏔️ Hors-route légendaire · Toit amovible\n💪 4x4 Command-Trac\n🌞 Portes sans cadre · Look unique\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Icône Jeep — valeur de revente exceptionnelle',
-    'GLADIATOR':'🏔️ Seul pick-up Jeep · Toit amovible\n💪 Remorquage jusqu\'à 7 650 lb\n🌞 Portes sans cadre · Benne cargo\n📲 Uconnect · Apple CarPlay / Android Auto\n🔒 Polyvalence unique sur le marché',
-    'GRAND CHEROKEE':'🏆 Le VUS le plus primé de l\'histoire\n💪 Remorquage jusqu\'à 7 200 lb\n🛡️ Technologies de sécurité avancées\n📲 Uconnect 5 · Apple CarPlay / Android Auto\n🏔️ Quadra-Trac 4x4',
-    'CHEROKEE':'🚗 VUS compact — confort et polyvalence\n💪 4x4 intégral toutes saisons\n📲 Uconnect · Apple CarPlay / Android Auto\n❄️ Climatisation automatique\n💳 Financement disponible',
-    'DURANGO':'💪 Remorquage jusqu\'à 8 700 lb\n🛋️ 3 rangées · jusqu\'à 7 passagers\n🔥 V6 Pentastar puissant et efficace\n📲 Uconnect · Apple CarPlay / Android Auto\n🛡️ Traction intégrale AWD',
-    '1500':'💪 Capacité de remorquage exceptionnelle\n🔥 Moteur puissant — HP & couple élevé\n📲 Uconnect 5 · Apple CarPlay / Android Auto\n🛡️ Technologies sécurité avancées\n🎨 Style et finition haut de gamme',
-    '2500':'🔧 Cummins diesel — robustesse industrielle\n💪 Remorquage max — fait pour le chantier\n🚛 Cabine d\'équipe — 6 passagers\n📲 Uconnect · connectivité intégrée\n⚙️ Transmission automatique 8 vitesses ZF',
-    '3500':'🔧 Cummins diesel — puissance maximale\n💪 Remorquage et charge utile extrêmes\n🚛 Parfait pour les lourds travaux de chantier\n📲 Uconnect · connectivité intégrée\n⚙️ Transmission automatique 8 vitesses ZF',
-    'PROMASTER':'📦 Cargo maximal — espace optimisé\n🔧 Moteur fiable et économique\n🚚 Idéal entrepreneurs & livraisons\n💺 Aménagement intérieur personnalisable\n💳 Location commerciale disponible',
-  };
-
-  let feat='📋 Véhicule en excellent état\n📲 Connectivité moderne\n💳 Financement disponible';
-  for(const[k,f]of Object.entries(features)){if(v.m.toUpperCase().includes(k)){feat=f;break;}}
-
-  let accroche,sig;
-  if(tone==='V2'){
-    accroche=`🔧 ${nomComplet} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
-    sig=`💬 Vincent — Spécialiste camions lourds chez Laquerre Chrysler, Victoriaville.\n\nGestion de flotte, crédit commercial, location longue durée — on trouve la solution qui correspond à tes besoins d'affaires.\n\n📲 Texto ou appel — je réponds vite.`;
-  } else if(tone==='V3'){
-    accroche=`🔥 ${nomComplet} — L'EXPÉRIENCE AU PROCHAIN NIVEAU !`;
-    sig=`💬 Je suis Vincent, conseiller passionné chez Laquerre Chrysler.\n\nSi tu rêves de ce ${v.b} ${v.m}, viens l'essayer — l'expérience est unique.\n\n📲 Écris-moi, je m'occupe de tout. Pas de pression, juste du plaisir. 😎`;
+  const isBlackExpress=v.t&&v.t.toUpperCase().includes('BLACK EXPRESS');
+  let prixBlock;
+  if(v.p){
+    let pb='\n💰 Prix régulier : '+(v.r?fp(v.r):'N/D');
+    if(eco>0) pb+='\n💥 NOTRE PRIX : '+fp(v.p)+' + taxes\n🤑 ÉCONOMIES : '+fp(eco);
+    else pb+='\n💥 NOTRE PRIX : '+fp(v.p)+' + taxes';
+    prixBlock=pb;
   } else {
-    accroche=`🚗 ${nomComplet} — OFFRE SPÉCIALE !`;
-    sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.\n\nMon approche : pas de pression, juste les bons conseils pour trouver LE véhicule qui te convient vraiment.\n\n📲 Écris-moi ici ou par texto — je réponds rapidement. 😊`;
+    prixBlock='\n💥 Prix : Contactez-nous';
   }
 
-  return`${accroche}
+  // ── ACCROCHE ─────────────────────────────────────────────
+  let accroche;
+  if(eco>0){
+    accroche=`${tone==='V2'?'🔧':tone==='V3'?'🔥':'🚗'} ${nomComplet} — ÉCONOMISEZ ${fp(eco)} !`;
+  } else {
+    if(tone==='V2') accroche=`🔧 ${nomComplet} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
+    else if(tone==='V3') accroche=`🔥 ${nomComplet} — L\'EXPÉRIENCE AU PROCHAIN NIVEAU !`;
+    else accroche=`🚗 ${nomComplet} — OFFRE FAMILIALE !`;
+  }
+
+  // ── SPECS PAR MODÈLE ─────────────────────────────────────
+  const m=v.m.toUpperCase();
+  const t=(v.t||'').toUpperCase();
+  let specs='';
+
+  if(m==='2500'||m==='3500'||m==='4500'||m==='5500'){
+    const diesel=v.e!=='USED'&&(m==='2500'||m==='3500');
+    const places=isBlackExpress?'6':'5';
+    if(diesel){
+      specs=`🔧 Cummins 6.7L Diesel — 370 HP · 850 lb-pi de couple
+💪 Capacité de remorquage : jusqu'à 20 000 lb
+🚛 Cabine d'équipe ${places} passagers — confort au chantier
+⚙️ Boîte automatique 8 vitesses ZF
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+🛡️ Freins à disque ventilés aux 4 roues
+💳 Financement commercial — crédit entreprise accepté`;
+    } else {
+      specs=`🔧 6.4L V8 HEMI — 410 HP · 429 lb-pi de couple
+💪 Capacité de remorquage : jusqu'à 17 980 lb
+🚛 Cabine d'équipe ${places} passagers
+⚙️ Boîte automatique 8 vitesses
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+💳 Financement commercial disponible`;
+    }
+  } else if(m==='1500'){
+    const hemi=v.e&&(v.e.includes('5.7')||t.includes('SPORT')||t.includes('REBEL')||t.includes('RHO')||t.includes('LARAMIE'));
+    specs=`🔧 Moteur ${v.e||'puissant'} — performance et efficacité
+💪 Capacité de remorquage exceptionnelle
+🚛 Cabine d'équipe — espace et confort
+⚙️ Transmission automatique 8 vitesses
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+🎨 Style et finition haut de gamme
+💳 Financement disponible — conditions avantageuses`;
+  } else if(m.includes('PROMASTER')){
+    specs=`📦 Cargo maximal — High Roof 159 po
+🔧 Moteur V6 fiable et économique
+🚚 Idéal entrepreneurs et livraisons
+💺 Aménagement intérieur personnalisable
+💳 Location commerciale disponible`;
+  } else if(m==='WRANGLER'){
+    const toit=t.includes('SAHARA')?'Toit amovible Freedom Top':t.includes('RUBICON')?'Toit amovible renforcé':t.includes('WILLYS')?'Toit amovible':t.includes('4XE')?'Toit amovible · Hybride rechargeable':'Toit amovible';
+    specs=`🌞 ${toit} — sky's the limit
+🚪 Portes sans cadre — conduite unique au monde
+🏔️ Hors-route légendaire · 4x4 Command-Trac${t.includes('RUBICON')?' upgraded':''}
+🔒 Dana 44 axles avant et arrière
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+🎨 Look iconique — valeur de revente exceptionnelle`;
+  } else if(m==='GLADIATOR'){
+    specs=`🏔️ Seul pick-up Jeep au monde · Toit amovible
+🌞 Portes sans cadre — liberté totale
+💪 Remorquage jusqu'à 7 650 lb
+🔧 V6 3.6L Pentastar — robustesse et fiabilité
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+🔒 Polyvalence unique — truck le jour, aventure le soir`;
+  } else if(m.includes('GRAND CHEROKEE')){
+    specs=`🏆 Le VUS le plus primé de l\'histoire Jeep
+💪 Remorquage jusqu'à 7 200 lb
+🛡️ Technologies de sécurité avancées
+📲 Uconnect 5 · Apple CarPlay / Android Auto
+🏔️ Quadra-Trac 4x4 — prêt pour tout
+🎨 Finition intérieure haut de gamme`;
+  } else if(m==='CHEROKEE'){
+    specs=`🚗 VUS compact — confort et polyvalence toute saison
+💪 4x4 intégral — confiance sur toutes les routes
+📲 Uconnect · Apple CarPlay / Android Auto
+❄️ Climatisation automatique
+💳 Financement avantageux disponible`;
+  } else if(m==='COMPASS'){
+    specs=`🚗 Compact, agile et capable en toute saison
+💪 4X4 intégral — fiable même en hiver québécois
+📲 Apple CarPlay / Android Auto intégré
+❄️ Climatisation automatique
+💳 Financement dès 120 $/sem · approbation rapide`;
+  } else if(m==='DURANGO'){
+    specs=`💪 Remorquage jusqu'à 8 700 lb
+🛋️ 3 rangées · jusqu'à 7 passagers
+🔥 V6 Pentastar 3.6L — 293 HP · 260 lb-pi
+📲 Uconnect · Apple CarPlay / Android Auto
+🛡️ Traction intégrale AWD`;
+  } else if(m.includes('GRAND CARAVAN')){
+    specs=`🛋️ 7 passagers — confort pour toute la famille
+🎒 Espace cargo généreux — pour les sorties de hockey
+📲 Apple CarPlay / Android Auto intégré
+❄️ Climatisation automatique
+🛡️ Caméra de recul · aide au stationnement
+💳 Financement dès 149 $/sem · approbation rapide`;
+  } else if(m==='PACIFICA'){
+    specs=`🛋️ Sièges Stow n Go — disparaissent dans le plancher
+🎒 7 passagers · espace cargo modulable
+📲 Apple CarPlay / Android Auto · écrans arrière disponibles
+❄️ Climatisation tri-zone
+🔌 Version hybride rechargeable disponible
+💳 Financement avantageux disponible`;
+  } else {
+    specs=`📋 Véhicule en excellent état
+📲 Connectivité moderne
+💳 Financement disponible`;
+  }
+
+  // ── SIGNATURE ────────────────────────────────────────────
+  let sig;
+  if(tone==='V2'){
+    sig=`💬 Vincent — Spécialiste camions lourds, Laquerre Chrysler Victoriaville.
+
+Si tu fais des kilomètres pour travailler, t\'as besoin d'un truck qui en fait autant. Le RAM ${v.m} Cummins, c'est l\'outil qui ne lâche pas.
+
+Gestion de flotte · Crédit commercial · Location longue durée — je trouve la formule qui marche pour toi.
+
+📲 Texto ou appel — je réponds vite.`;
+  } else if(tone==='V3'){
+    sig=`💬 Il y a des véhicules qu\'on achète. Et il y a des véhicules qui changent comment on vit les fins de semaine.
+
+Ce ${v.b} ${v.m}, c\'est les deux. Assez capable pour aller là où les autres restent sur l\'asphalte, assez confortable pour le quotidien.
+
+Je suis Vincent, conseiller chez Laquerre Chrysler. Pas de pression — juste une bonne conversation sur ce que tu cherches vraiment.
+
+📲 Écris-moi, je m\'occupe du reste. 😎`;
+  } else {
+    sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.
+
+${m.includes('GRAND CARAVAN')||m==='PACIFICA'?`La ${v.b} ${v.m}, c\'est le véhicule que les familles regrettent de ne pas avoir acheté plus tôt. Pratique, fiable, et honnêtement — un des meilleurs rapports qualité-prix sur le marché.`:`Le ${v.b} ${v.m}, c\'est le bon choix pour ta situation — je peux t'expliquer pourquoi en 5 minutes.`}
+
+Pas de pression, pas de discours. Juste les bons conseils pour ton budget et ta famille.
+
+📲 Écris-moi ici ou par texto — je réponds rapidement. 😊`;
+  }
+
+  // ── ASSEMBLAGE FINAL ─────────────────────────────────────
+  return `${accroche}
 
 ✅ ${nomComplet}
 
 🎨 Couleur : ${v.c}
+🔧 Moteur : ${v.e||'—'}
+⚙️ Transmission : ${v.tr||'—'}
+🛞 Motricité : 4 roues motrices
 🏷️ N° de stock : ${v.s}
-🔢 NIV : ${v.v}
+🔢 NIV : ${v.v||'—'}
 📦 ${etatStr}
-📏 ${kmStr}${prixStr}
+📏 ${kmStr}${prixBlock}
 
-${feat}
+${specs}
 
 ---
 ${sig}
