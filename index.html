@@ -492,7 +492,7 @@ function renderTable(vv){
       <td><div style="display:flex;gap:4px;">
         <a class="action-btn btn-site" href="${ficheUrl(v)}" target="_blank" title="Fiche sur le site"><i class="ti ti-external-link"></i></a>
         ${v.vitre?`<a class="action-btn btn-vitre" href="${ficheUrl(v)}" target="_blank" title="Feuille de vitre"><i class="ti ti-file-text"></i></a>`:`<span class="action-btn btn-dis" title="Pas de feuille de vitre"><i class="ti ti-file-text"></i></span>`}
-        ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="action-btn btn-annonce" onclick="genAnnonceByStock('${v.s}')" title="Annonce Marketplace"><i class="ti ti-speakerphone"></i></button>`:''}
+        <button class="action-btn btn-annonce" onclick="genAnnonceByStock('${v.s}')" title="Annonce Marketplace"><i class="ti ti-speakerphone"></i></button>
       </div></td>
     </tr>`;}).join('');
 }
@@ -524,7 +524,7 @@ function renderCards(vv){
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <a class="btn-fiche" href="${ficheUrl(v)}" target="_blank"><i class="ti ti-external-link" style="font-size:13px"></i> Fiche</a>
           ${v.vitre?`<a class="btn-vitre-mobile" href="${ficheUrl(v)}" target="_blank"><i class="ti ti-file-text" style="font-size:13px"></i> Vitre</a>`:''}
-          ${v.e==='NEUF'||v.e==='DÉMO'?`<button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')"><i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce</button>`:''}
+          <button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')"><i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce</button>
         </div>
       </div>
     </div>`;}).join('');
@@ -548,6 +548,20 @@ function getTone(v){
   return'V1';
 }
 
+function guessEngine(v){
+  if(v.eng) return v.eng;
+  const m=v.m.toUpperCase();
+  if(m==='1500') return '5.7L HEMI V8 ou V6 — voir fiche';
+  if(m==='2500'||m==='3500') return '6.7L Cummins Diesel ou 6.4L HEMI V8';
+  if(m==='WRANGLER'||m==='GLADIATOR') return '3.6L Pentastar V6';
+  if(m.includes('GRAND CHEROKEE')) return '3.6L V6';
+  if(m==='CHEROKEE'||m==='COMPASS'||m==='RENEGADE') return 'Moteur 4 cylindres turbo';
+  if(m==='DURANGO') return '3.6L Pentastar V6';
+  if(m.includes('GRAND CARAVAN')||m==='PACIFICA'||m==='JOURNEY') return '3.6L Pentastar V6';
+  if(m.includes('PROMASTER')) return 'V6 3.6L';
+  return 'Voir fiche véhicule';
+}
+
 function buildAnnonce(v){
   const tone=getTone(v);
   const eco=v.r&&v.p?v.r-v.p:0;
@@ -566,9 +580,14 @@ function buildAnnonce(v){
   }
 
   // ── ACCROCHE ─────────────────────────────────────────────
+  const isUsed=v.e==='USED';
   let accroche;
   if(eco>0){
     accroche=`${tone==='V2'?'🔧':tone==='V3'?'🔥':'🚗'} ${nomComplet} — ÉCONOMISEZ ${fp(eco)} !`;
+  } else if(isUsed){
+    const kmLow=v.km>0&&v.km<60000;
+    if(kmLow) accroche=`${tone==='V2'?'🔧':tone==='V3'?'🔥':'🚗'} ${nomComplet} — SEULEMENT ${v.km.toLocaleString('fr-CA')} KM !`;
+    else accroche=`${tone==='V2'?'🔧':tone==='V3'?'🔥':'🚗'} ${nomComplet} — OCCASION À SAISIR !`;
   } else {
     if(tone==='V2') accroche=`🔧 ${nomComplet} — TRAVAIL SÉRIEUX, PRIX SÉRIEUX !`;
     else if(tone==='V3') accroche=`🔥 ${nomComplet} — L\'EXPÉRIENCE AU PROCHAIN NIVEAU !`;
@@ -677,11 +696,12 @@ function buildAnnonce(v){
   }
 
   // ── SIGNATURE ────────────────────────────────────────────
+  const usedNote=isUsed?' Un usagé bien entretenu, c\'est souvent le meilleur achat — je peux te montrer l\'historique.':'';
   let sig;
   if(tone==='V2'){
     sig=`💬 Vincent — Spécialiste camions lourds, Laquerre Chrysler Victoriaville.
 
-Si tu fais des kilomètres pour travailler, t\'as besoin d'un truck qui en fait autant. Le RAM ${v.m} Cummins, c'est l\'outil qui ne lâche pas.
+Si tu fais des kilomètres pour travailler, t\'as besoin d'un truck qui en fait autant. Le RAM ${v.m} Cummins, c'est l\'outil qui ne lâche pas.${usedNote}
 
 Gestion de flotte · Crédit commercial · Location longue durée — je trouve la formule qui marche pour toi.
 
@@ -689,7 +709,7 @@ Gestion de flotte · Crédit commercial · Location longue durée — je trouve 
   } else if(tone==='V3'){
     sig=`💬 Il y a des véhicules qu\'on achète. Et il y a des véhicules qui changent comment on vit les fins de semaine.
 
-Ce ${v.b} ${v.m}, c\'est les deux. Assez capable pour aller là où les autres restent sur l\'asphalte, assez confortable pour le quotidien.
+Ce ${v.b} ${v.m}, c\'est les deux. Assez capable pour aller là où les autres restent sur l\'asphalte, assez confortable pour le quotidien.${usedNote}
 
 Je suis Vincent, conseiller chez Laquerre Chrysler. Pas de pression — juste une bonne conversation sur ce que tu cherches vraiment.
 
@@ -697,7 +717,7 @@ Je suis Vincent, conseiller chez Laquerre Chrysler. Pas de pression — juste un
   } else {
     sig=`💬 Je suis Vincent, conseiller chez Laquerre Chrysler à Victoriaville.
 
-${m.includes('GRAND CARAVAN')||m==='PACIFICA'?`La ${v.b} ${v.m}, c\'est le véhicule que les familles regrettent de ne pas avoir acheté plus tôt. Pratique, fiable, et honnêtement — un des meilleurs rapports qualité-prix sur le marché.`:`Le ${v.b} ${v.m}, c\'est le bon choix pour ta situation — je peux t'expliquer pourquoi en 5 minutes.`}
+${m.includes('GRAND CARAVAN')||m==='PACIFICA'?`La ${v.b} ${v.m}, c\'est le véhicule que les familles regrettent de ne pas avoir acheté plus tôt. Pratique, fiable, et honnêtement — un des meilleurs rapports qualité-prix sur le marché.`:`Le ${v.b} ${v.m}, c\'est le bon choix pour ta situation — je peux t'expliquer pourquoi en 5 minutes.`}${usedNote}
 
 Pas de pression, pas de discours. Juste les bons conseils pour ton budget et ta famille.
 
@@ -705,18 +725,19 @@ Pas de pression, pas de discours. Juste les bons conseils pour ton budget et ta 
   }
 
   // ── ASSEMBLAGE FINAL ─────────────────────────────────────
+  const inspectionLine=isUsed?'\n🔍 Inspecté en atelier · Garantie prolongée disponible':'';
   return `${accroche}
 
 ✅ ${nomComplet}
 
 🎨 Couleur : ${v.c}
-🔧 Moteur : ${v.e||'—'}
+🔧 Moteur : ${guessEngine(v)}
 ⚙️ Transmission : ${v.tr||'—'}
 🛞 Motricité : 4 roues motrices
 🏷️ N° de stock : ${v.s}
 🔢 NIV : ${v.v||'—'}
 📦 ${etatStr}
-📏 ${kmStr}${prixBlock}
+📏 ${kmStr}${prixBlock}${inspectionLine}
 
 ${specs}
 
