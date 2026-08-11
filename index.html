@@ -687,8 +687,13 @@ function buildAnnonce(v){
     const places=isBlackExpress?'6':'5';
     const engLabel=v.eng||(diesel?'6.7L Cummins Diesel':'6.4L HEMI V8');
     if(diesel){
-      specs=`🔧 ${engLabel} — 370 HP · 850 lb-pi de couple
-💪 Capacité de remorquage : jusqu'à 20 000 lb
+      const isHO=parseInt(v.y||'2026')>=2025;
+      const hp=isHO?'430 HP':'370 HP';
+      const torque=isHO?'1 075 lb-pi':'850 lb-pi';
+      const remorquage=isHO?'23 000 lb':'20 000 lb';
+      const engSpec=isHO?'6.7L Cummins High Output Diesel':engLabel;
+      specs=`🔧 ${engSpec} — ${hp} · ${torque} de couple
+💪 Capacité de remorquage : jusqu'à ${remorquage}
 🚛 Cabine d'équipe ${places} passagers — confort au chantier
 ⚙️ Boîte automatique 8 vitesses ZF
 📲 Uconnect 5 · Apple CarPlay / Android Auto
@@ -780,10 +785,15 @@ function buildAnnonce(v){
   // ── SIGNATURE ────────────────────────────────────────────
   const usedNote=isUsed?' Un usagé bien entretenu, c\'est souvent le meilleur achat — je peux te montrer l\'historique.':'';
   let sig;
+  let msgV2;
+  if(m==='2500') msgV2='Le RAM 2500 Cummins High Output — 430 HP, 1 075 lb-pi de couple. Quand le chantier demande le maximum, il livre.';
+  else if(m==='3500') msgV2='Le RAM 3500 Cummins High Output — 430 HP, 1 075 lb-pi de couple. La référence absolue pour les charges lourdes et le remorquage extrême.';
+  else if(m.includes('PROMASTER')) msgV2='Le ProMaster — conçu pour travailler aussi fort que toi, chaque journée.';
+  else msgV2='Le RAM '+v.m+' — puissance et fiabilité pour tes longues journées de travail.';
   if(tone==='V2'){
     sig=`💬 Vincent — Spécialiste camions lourds, Laquerre Chrysler Victoriaville.
 
-Si tu fais des kilomètres pour travailler, t\'as besoin d'un truck qui en fait autant. Le RAM ${v.m} Cummins, c'est l\'outil qui ne lâche pas.${usedNote}
+${msgV2}${usedNote}
 
 Gestion de flotte · Crédit commercial · Location longue durée — je trouve la formule qui marche pour toi.
 
