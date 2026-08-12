@@ -413,6 +413,7 @@ const INVENTORY=[
   {s:'26337',eng:'6.4L HEMI V8',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'BLANC ÉCLATANT',km:10,e:'NEUF',v:'3C6UR5FLXTG343928',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:113490,r:124490,mp:false},
   {s:'26343',eng:'6.7L Cummins Diesel',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'BLANC ÉCLATANT',km:0,e:'NEUF',v:'3C6UR5DL4TG349131',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:105302,r:null,mp:false},
   {s:'26345',eng:'6.7L Cummins Diesel',y:'2026',b:'RAM',m:'2500',t:'BIG HORN',c:'CRISTAL GRANIT',km:0,e:'NEUF',v:'3C6UR5DLXTG349134',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:105997,r:null,mp:false},
+  {s:'26357',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'BIG HORN EDITION NUIT',c:'COUCHE NACRÉE CRISTAL NOIR',km:10,e:'NEUF',v:'3C6UR5JLXTG352684',tr:'Auto. 8 vit. ZF',vitre:true,vendu:false,p:95895,r:106895,mp:false},
   {s:'26359',eng:'5.7L HEMI V8',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'COUCHE NACRÉE CRISTAL NOIR',km:10,e:'NEUF',v:'1C6SRFLT8TN418425',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:89850,r:98100,mp:true},
   {s:'26364',eng:'3.0L I-6 Twin Turbo',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'CRISTAL GRANIT',km:0,e:'NEUF',v:'1C6SRFLT2TN418467',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:85020,r:null,mp:false},
   {s:'26397',eng:'5.7L HEMI V8',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'3C6SRFVP8T4174771',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:81910,r:null,mp:false},
@@ -767,7 +768,7 @@ function buildAnnonce(v){
       const isHO=parseInt(v.y||'2026')>=2025;
       const hp=isHO?'430 HP':'370 HP';
       const torque=isHO?'1 075 lb-pi':'850 lb-pi';
-      const remorquage=isHO?'23 000 lb':'20 000 lb';
+      const remorquage=m==='3500'?(isHO?'35 000 lb':'31 210 lb'):(isHO?'23 000 lb':'20 000 lb');
       const engSpec=isHO?'6.7L Cummins High Output Diesel':engLabel;
       specs=`🔧 ${engSpec} — ${hp} · ${torque} de couple
 💪 Capacité de remorquage : jusqu'à ${remorquage}
@@ -864,7 +865,7 @@ function buildAnnonce(v){
   let sig;
   let msgV2;
   if(m==='2500') msgV2='Le RAM 2500 Cummins High Output — 430 HP, 1 075 lb-pi de couple. Quand le chantier demande le maximum, il livre.';
-  else if(m==='3500') msgV2='Le RAM 3500 Cummins High Output — 430 HP, 1 075 lb-pi de couple. La référence absolue pour les charges lourdes et le remorquage extrême.';
+  else if(m==='3500') msgV2='Le RAM 3500 Cummins High Output — 430 HP, 1 075 lb-pi de couple. Jusqu\'à 35 000 lb de remorquage en configuration 5e roue. La référence absolue pour les charges lourdes.';
   else if(m.includes('PROMASTER')) msgV2='Le ProMaster — conçu pour travailler aussi fort que toi, chaque journée.';
   else msgV2='Le RAM '+v.m+' — puissance et fiabilité pour tes longues journées de travail.';
   if(tone==='V2'){
