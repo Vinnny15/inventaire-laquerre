@@ -238,6 +238,47 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   </div>
 </div>
 <script>
+const SUPABASE_URL='https://vwcomupmwtfvcrcodkyq.supabase.co';
+const SUPABASE_KEY='sb_publishable_yOTtOHl7HVnfn01_L4SzrA_FeeDF4Y3';
+
+async function sbFetch(path, opts={}){
+  const res = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer '+SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+      ...opts.headers
+    },
+    ...opts
+  });
+  return res;
+}
+
+async function loadMPFromSupabase(){
+  try{
+    const res = await sbFetch('marketplace_status?select=stock,mp');
+    if(res.ok){
+      const data = await res.json();
+      data.forEach(row=>{
+        const v = INVENTORY.find(x=>x.s===row.stock);
+        if(v) v.mp = row.mp;
+      });
+      applyFilters();
+    }
+  }catch(e){console.error('Supabase load error:',e);}
+}
+
+async function saveMPToSupabase(stock, mp){
+  try{
+    await sbFetch('marketplace_status', {
+      method: 'POST',
+      headers: {'Prefer': 'resolution=merge-duplicates,return=minimal'},
+      body: JSON.stringify({stock, mp, updated_at: new Date().toISOString()})
+    });
+  }catch(e){console.error('Supabase save error:',e);}
+}
+
 const EMAIL='vtourigny@laquerrechrysler.com';
 const SITE='www.laquerrechrysler.com';
 const ADR='34 Boulevard Arthabaska Est, Victoriaville, QC';
@@ -906,15 +947,36 @@ function toggleMP(s){
   var v=INVENTORY.find(function(x){return x.s===s;});
   if(!v)return;
   v.mp=!v.mp;
+  // Sauvegarder dans Supabase
+  saveMPToSupabase(s, v.mp);
+  // Backup localStorage
   try{var d=JSON.parse(localStorage.getItem('mp_posted')||'{}');d[s]=v.mp;localStorage.setItem('mp_posted',JSON.stringify(d));}catch(e){}
   applyFilters();
 }
 function loadMPState(){
+  // D'abord charger localStorage comme fallback immédiat
   try{var d=JSON.parse(localStorage.getItem('mp_posted')||'{}');INVENTORY.forEach(function(v){if(d[v.s]!==undefined)v.mp=d[v.s];});}catch(e){}
+  // Ensuite synchroniser avec Supabase (remplace localStorage)
+  loadMPFromSupabase();
 }
 
 loadMPState();
 initSelects();
+// Synchroniser les véhicules mp:true existants vers Supabase au premier chargement
+(async function syncInitialMP(){
+  try{
+    const res = await sbFetch('marketplace_status?select=stock');
+    if(res.ok){
+      const existing = await res.json();
+      const existingStocks = existing.map(r=>r.stock);
+      const toSync = INVENTORY.filter(v=>v.mp===true && !existingStocks.includes(v.s));
+      for(const v of toSync){
+        await saveMPToSupabase(v.s, true);
+      }
+      if(toSync.length>0) console.log('Synced '+toSync.length+' vehicles to Supabase');
+    }
+  }catch(e){}
+})();
 applyFilters();
 </script>
 </body>
