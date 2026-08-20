@@ -70,6 +70,9 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .btn-annonce{background:#e8401c;color:#fff;}
 .btn-dis{background:#e2e8f0;color:#cbd5e1;cursor:default;}
 .btn-mp-on{background:#1877f2;color:#fff;}
+.btn-vendu-on{background:#dc2626;color:#fff;}
+.btn-vendu-off{background:#f1f5f9;color:#94a3b8;border:1.5px dashed #cbd5e1;}
+.badge-vendu{background:#dc2626;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;margin-left:4px;}
 .btn-mp-off{background:#f1f5f9;color:#94a3b8;border:1.5px dashed #cbd5e1;}
 .badge-mp{background:#1877f2;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;margin-left:4px;}
 .cards-list{display:none;flex-direction:column;gap:10px;}
@@ -624,7 +627,8 @@ function applyFilters(){
     const ms=!q||[v.b,v.m,v.t,v.y,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
     const me=!activeType||(activeType==='USED'?(v.e==='USED'):v.e===activeType);
     const mmp=!activeMPFilter||v.mp===true;
-    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me&&mmp;
+    const mvendu=activeMPFilter||!v.vendu;
+    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me&&mmp&&mvendu;
   });
   if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
   else if(so==='stock-desc')r.sort((a,b)=>b.s.localeCompare(a.s,undefined,{numeric:true}));
@@ -669,6 +673,7 @@ function renderTable(vv){
       <td style="font-family:monospace;font-size:10px;color:#64748b">${v.v}</td>
       <td><div style="display:flex;gap:4px;">
         <a class="action-btn btn-site" href="${ficheUrl(v)}" target="_blank" title="Fiche sur le site"><i class="ti ti-external-link"></i></a><button class="action-btn ${v.mp?'btn-mp-on':'btn-mp-off'}" onclick="toggleMP('${v.s}')" title="${v.mp?'✓ Marketplace':'Ajouter à Marketplace'}"><i class="ti ti-brand-facebook"></i></button>
+        <button class="action-btn ${v.vendu?'btn-vendu-on':'btn-vendu-off'}" onclick="toggleVendu('${v.s}')" title="${v.vendu?'✓ Vendu':'Marquer vendu'}"><i class="ti ti-tag"></i></button>
         ${v.vitre?`<a class="action-btn btn-vitre" href="${ficheUrl(v)}" target="_blank" title="Feuille de vitre"><i class="ti ti-file-text"></i></a>`:`<span class="action-btn btn-dis" title="Pas de feuille de vitre"><i class="ti ti-file-text"></i></span>`}
         <button class="action-btn btn-annonce" onclick="genAnnonceByStock('${v.s}')" title="Annonce Marketplace"><i class="ti ti-speakerphone"></i></button>
       </div></td>
@@ -702,7 +707,8 @@ function renderCards(vv){
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <a class="btn-fiche" href="${ficheUrl(v)}" target="_blank"><i class="ti ti-external-link" style="font-size:13px"></i> Fiche</a>
           ${v.vitre?`<a class="btn-vitre-mobile" href="${ficheUrl(v)}" target="_blank"><i class="ti ti-file-text" style="font-size:13px"></i> Vitre</a>`:''}
-          <button class="${v.mp?'btn-mp-on':'btn-mp-off'}" onclick="toggleMP('${v.s}')" style="border:none;border-radius:8px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><i class="ti ti-brand-facebook" style="font-size:13px"></i>${v.mp?'✓':'MP'}</button>
+          <button class="${v.vendu?'btn-vendu-on':'btn-vendu-off'}" onclick="toggleVendu('${v.s}')" style="border:none;border-radius:8px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><i class="ti ti-tag" style="font-size:13px"></i>${v.vendu?'✓':'Vendu'}</button>
+          <button class="${v.mp?'btn-mp-on':'btn-mp-off'}" onclick="toggleMP('${v.s}')"  style="border:none;border-radius:8px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;"><i class="ti ti-brand-facebook" style="font-size:13px"></i>${v.mp?'✓':'MP'}</button>
           <button class="btn-annonce-mobile" onclick="genAnnonceByStock('${v.s}')"><i class="ti ti-speakerphone" style="font-size:13px"></i> Annonce</button>
         </div>
       </div>
@@ -963,6 +969,19 @@ function copyAnnonce(){
 function closeModal(e){if(e.target===document.getElementById('modal-overlay'))closeModalDirect();}
 function closeModalDirect(){document.getElementById('modal-overlay').classList.remove('open');document.body.style.overflow='';}
 
+function toggleVendu(s){
+  var v=INVENTORY.find(function(x){return x.s===s;});
+  if(!v)return;
+  if(!v.vendu && !confirm('Marquer le stock '+s+' comme VENDU ? Il sera retiré à la prochaine mise à jour.')) return;
+  v.vendu=!v.vendu;
+  try{var d=JSON.parse(localStorage.getItem('vendus')||'{}');d[s]=v.vendu;localStorage.setItem('vendus',JSON.stringify(d));}catch(e){}
+  applyFilters();
+}
+
+function loadVenduState(){
+  try{var d=JSON.parse(localStorage.getItem('vendus')||'{}');INVENTORY.forEach(function(v){if(d[v.s]!==undefined)v.vendu=d[v.s];});}catch(e){}
+}
+
 function toggleMP(s){
   var v=INVENTORY.find(function(x){return x.s===s;});
   if(!v)return;
@@ -981,6 +1000,7 @@ function loadMPState(){
 }
 
 loadMPState();
+loadVenduState();
 initSelects();
 // Synchroniser les véhicules mp:true existants vers Supabase au premier chargement
 (async function syncInitialMP(){
