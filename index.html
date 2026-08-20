@@ -146,7 +146,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div class="nav-item"><span class="nav-icon">🏠</span> Tableau de bord</div>
     <div class="nav-item active"><span class="nav-icon">🚗</span> Inventaire <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
     <div class="nav-sub"><div class="nav-item active"><i class="ti ti-list" style="font-size:11px"></i> Inventaire</div></div>
-    <div class="nav-item"><span class="nav-icon">📚</span> Bibliothèque</div>
+    <div class="nav-item" onclick="showTab('remorquage')"><span class="nav-icon">🚛</span> Remorquage</div>
     <div class="nav-item"><span class="nav-icon">🌴</span> Vacances <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
     <div class="nav-item"><span class="nav-icon">✨</span> Plan d'Esthétique</div>
     <div class="nav-item"><span class="nav-icon">📊</span> Performance <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
@@ -216,7 +216,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   <div class="bottom-nav-items">
     <div class="bnav-item"><i class="ti ti-home"></i>Accueil</div>
     <div class="bnav-item active"><i class="ti ti-car"></i>Inventaire</div>
-    <div class="bnav-item"><i class="ti ti-books"></i>Biblio.</div>
+    <div class="bnav-item" onclick="showTab('remorquage')"><i class="ti ti-truck"></i>Remorquage</div>
     <div class="bnav-item"><i class="ti ti-chart-bar"></i>Perf.</div>
   </div>
 </div>
@@ -996,6 +996,1045 @@ initSelects();
   }catch(e){}
 })();
 applyFilters();
+
+
+const KG_PER_LB = 0.45359237;
+const lbToKg = lb => lb * KG_PER_LB;
+const kgToLb = kg => kg / KG_PER_LB;
+const fmt = n => {
+  if (!isFinite(n)) return '—';
+  return Math.round(n).toLocaleString('fr-CA');
+};
+const fmtSigned = n => (n >= 0 ? '+' : '') + fmt(n);
+const kgLb = (kg) => `${fmt(kg)} kg <small>(${fmt(kgToLb(kg))} lb)</small>`;
+const escapeAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+let unit = 'kg'; // 'kg' | 'lb' — unit currently used to READ/WRITE the plain number inputs
+const toKgIn = raw => unit === 'kg' ? raw : lbToKg(raw);
+const fromKgOut = kg => unit === 'kg' ? kg : kgToLb(kg);
+const roundVal = v => Math.round(v);
+
+const el = id => document.getElementById(id);
+
+// ---- Reference weight presets (from "Notions de base du remorquage — Poids courants") ----
+const TRAILER_PRESETS = [
+  {id:'none', label:'Aucun — entrée manuelle', kg:null},
+  {id:'bateau', label:'Remorque pour bateau', kgMin:136, kgMax:686},
+  {id:'fermee64', label:'Remorque fermée 6 x 4', kg:195},
+  {id:'fermee75', label:'Remorque fermée 7 x 5', kg:230},
+  {id:'auto', label:'Remorque pour automobile', kg:1270},
+  {id:'equip', label:"Remorque d'équipements (alu, 2 x 7,5 m / 6 pi 8 po x 24 pi 6 po)", kg:726},
+  {id:'chevaux', label:'Remorque pour chevaux (déchargée)', kg:1089},
+  {id:'kayak', label:'Remorque pour kayak', kg:100},
+  {id:'sellette44', label:"Remorque à sellette d'attelage (13,4 m / 44 pi)", kg:8618, tongueKg:1418, forceType:'sellette'},
+  {id:'voyage', label:'Remorque de voyage (4,9 à 13,4 m / 16 à 44 pi)', kgMin:2268, kgMax:5443},
+  {id:'autocaravane', label:'Autocaravane (déchargée)', kg:1588},
+];
+
+const CARGO_PRESETS = [
+  {cat:'Voitures', id:'course', label:'Voiture de course', kgMin:726, kgMax:1588},
+  {cat:'Voitures', id:'berline', label:'Berline', kg:1361},
+  {cat:'Voitures', id:'familiale', label:'Familiale', kg:1633},
+  {cat:'Voitures', id:'pickup', label:'Camion (pickup)', kg:2495},
+
+  {cat:'Équipement de construction', id:'chargeuse', label:'Chargeuse-pelleteuse', kgMin:6350, kgMax:8618},
+  {cat:'Équipement de construction', id:'bulldozeur', label:'Bulldozeur', kgMin:7257, kgMax:8618},
+  {cat:'Équipement de construction', id:'case580n', label:'Chargeuse-pelleteuse Case 580N', kgMin:6577, kgMax:7938},
+  {cat:'Équipement de construction', id:'bouteur', label:'Bouteur de chenille Case', kgMin:7371, kgMax:20080},
+  {cat:'Équipement de construction', id:'glissementcase', label:'Chargeur à direction à glissement Case', kgMin:2268, kgMax:3765},
+  {cat:'Équipement de construction', id:'betonniere6', label:'Bétonnière (6 pi³)', kg:304},
+  {cat:'Équipement de construction', id:'betonniere1vg', label:'Bétonnière (1 vg³)', kg:3175},
+  {cat:'Équipement de construction', id:'gen3100', label:'Génératrice (3 100 W)', kg:82},
+  {cat:'Équipement de construction', id:'gen6500', label:'Génératrice (6 500 W)', kg:95},
+  {cat:'Équipement de construction', id:'gen9000', label:'Génératrice (9 000 W)', kg:102},
+  {cat:'Équipement de construction', id:'glissement', label:'Chargeur à direction à glissement', kgMin:2041, kgMax:3629},
+  {cat:'Équipement de construction', id:'broyeur', label:'Broyeur de souches', kg:658},
+
+  {cat:'Agricole', id:'tracteur', label:'Tracteur New Holland Série T7000', kg:7257},
+  {cat:'Agricole', id:'balles', label:'Remorques à balles New Holland', kgMin:2495, kgMax:7257},
+  {cat:'Agricole', id:'ensileuse', label:'Ensileuse tractée New Holland', kg:227},
+
+  {cat:'Bateaux', id:'kayakboat', label:'Canoë/kayak', kg:23},
+  {cat:'Bateaux', id:'peche6m', label:'Bateau de pêche de 6 m (20 pi)', kg:1134},
+  {cat:'Bateaux', id:'voilier', label:'Voilier de 8,5 m (28 pi)', kg:3175},
+
+  {cat:'Matériaux de construction', id:'contreplaque', label:"Contreplaqué (par pi² par po d'épaisseur)", kg:1.36, perUnit:'pi²·po', qtyDefault:0, qtyStep:1},
+  {cat:'Matériaux de construction', id:'gravier', label:'Gravier (par verge)', kg:1542, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'ciment', label:'Mélange de ciment (par sac)', kg:36, perUnit:'sac', qtyDefault:0, qtyStep:1},
+  {cat:'Matériaux de construction', id:'paillis', label:'Paillis (par verge)', kg:227, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'sable', label:'Sable (par verge)', kg:1179, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'paves', label:'Pavés (par palette, 624 pavés)', kg:1438, perUnit:'palette', qtyDefault:0, qtyStep:1},
+];
+
+// Valeurs moyennes approximatives par motorisation (configuration Cabine d'équipe / Crew Cab 4x4
+// représentative, année-modèle 2026). PNBV et poids à vide sont les plus fiables ; le PNBC (GCWR)
+// est une estimation plus approximative faute de valeur unique publiée par motorisation — TOUJOURS
+// confirmer les trois valeurs avec l'autocollant de certification du véhicule réel avant de conclure une vente.
+const TRUCK_PRESETS = [
+  {id:'r1500hemi', label:'Ram 1500 — HEMI 5.7L V8 eTorque', classe:'1500', videLb:5465, pnbvLb:7100, pnbcLb:17500, note:'PNBC estimé — non publié par motorisation'},
+  {id:'r1500hurricane', label:'Ram 1500 — Hurricane 3.0L bi-turbo', classe:'1500', videLb:5261, pnbvLb:7100, pnbcLb:19300, note:'PNBC estimé — non publié par motorisation'},
+  {id:'r2500hemi', label:'Ram 2500 — HEMI 6.4L V8', classe:'2500', videLb:7000, pnbvLb:9900, pnbcLb:20000, note:'Poids à vide et PNBC estimés'},
+  {id:'r2500cumminsho', label:'Ram 2500 — Cummins 6.7L Turbo Diesel Haut rendement', classe:'2500', videLb:7800, pnbvLb:9900, pnbcLb:22800, note:'Poids à vide et PNBC estimés'},
+  {id:'r3500dually', label:'Ram 3500 Dually — Cummins 6.7L Turbo Diesel Haut rendement', classe:'3500', videLb:8300, pnbvLb:14000, pnbcLb:45000, note:'Poids à vide et PNBV estimés ; PNBC ≈ config. attelage col-de-cygne max.'},
+];
+
+function midOf(p){ return p.kg != null ? p.kg : (p.kgMin + p.kgMax) / 2; }
+function weightLabel(p){
+  if (p.kg == null && p.kgMin == null) return '';
+  if (p.kg != null && !p.perUnit) return `${fmt(p.kg)} kg (${fmt(kgToLb(p.kg))} lb)`;
+  if (p.kg != null && p.perUnit) return `${p.kg} kg / ${p.perUnit} (${(kgToLb(p.kg)).toFixed(1)} lb / ${p.perUnit})`;
+  return `${fmt(p.kgMin)}–${fmt(p.kgMax)} kg (${fmt(kgToLb(p.kgMin))}–${fmt(kgToLb(p.kgMax))} lb)`;
+}
+
+function buildTrailerPresetsUI(){
+  const wrap = el('trailerPresetsList');
+  wrap.innerHTML = TRAILER_PRESETS.map((p,i) => `
+    <div class="preset-row">
+      <input type="radio" name="trailerPreset" id="tp_${p.id}" value="${p.id}" ${i===0?'checked':''}>
+      <label class="plabel" for="tp_${p.id}"><b>${p.label}</b>${p.kg!=null||p.kgMin!=null ? `<br><span class="pweight">${weightLabel(p)}${p.tongueKg?` · poids sur l'attelage réf. ${fmt(p.tongueKg)} kg (${fmt(kgToLb(p.tongueKg))} lb)`:''}</span>`:''}</label>
+    </div>
+  `).join('');
+  wrap.addEventListener('change', e => {
+    if (e.target.name !== 'trailerPreset') return;
+    const preset = TRAILER_PRESETS.find(p => p.id === e.target.value);
+    if (!preset || (preset.kg == null && preset.kgMin == null)) return;
+    el('pnbr').value = roundVal(fromKgOut(midOf(preset)));
+    if (preset.forceType) {
+      const r = document.querySelector(`input[name=ttype][value=${preset.forceType}]`);
+      if (r) r.checked = true;
+    }
+    if (preset.tongueKg != null) {
+      document.querySelector('input[name=tmode][value=manuel]').checked = true;
+      el('manualTongueWrap').style.display = '';
+      el('tongueManual').value = roundVal(fromKgOut(preset.tongueKg));
+    }
+    renderAll();
+  });
+}
+
+function buildCargoPresetsUI(){
+  const wrap = el('cargoPresetsList');
+  let html = '';
+  let lastCat = null;
+  CARGO_PRESETS.forEach(p => {
+    if (p.cat !== lastCat) { html += `<div class="preset-cat">${p.cat}</div>`; lastCat = p.cat; }
+    const qtyDefault = p.qtyDefault != null ? p.qtyDefault : 1;
+    html += `<div class="preset-row">
+      <input type="checkbox" id="cargo_${p.id}">
+      <label class="plabel" for="cargo_${p.id}"><b>${p.label}</b><br><span class="pweight">${weightLabel(p)}</span></label>
+      <input type="number" class="qty" id="qty_${p.id}" value="${qtyDefault}" min="0" step="${p.qtyStep || 1}" title="Quantité${p.perUnit ? ' (' + p.perUnit + ')' : ''}">
+    </div>`;
+  });
+  wrap.innerHTML = html;
+  wrap.addEventListener('change', renderAll);
+  wrap.addEventListener('input', e => { if (e.target.classList.contains('qty')) renderAll(); });
+}
+
+function computeChecklistSubtotalKg(){
+  let total = 0;
+  CARGO_PRESETS.forEach(p => {
+    const cb = document.getElementById('cargo_' + p.id);
+    if (!cb || !cb.checked) return;
+    const qtyInp = document.getElementById('qty_' + p.id);
+    const qty = qtyInp ? (parseFloat(qtyInp.value) || 0) : 1;
+    total += midOf(p) * qty;
+  });
+  return total;
+}
+
+// ---- Trucks state ----
+let trucks = [
+  {id:1, nom:'Camion A', classe:'1500', pnbv:0, videPoids:0, pnbc:0},
+  {id:2, nom:'Camion B', classe:'2500', pnbv:0, videPoids:0, pnbc:0},
+];
+let nextId = 3;
+
+function getTrailerState(){
+  const type = document.querySelector('input[name=ttype]:checked').value;
+  const pnbrBaseKg = toKgIn(parseFloat(el('pnbr').value) || 0);
+  const occKg = toKgIn(parseFloat(el('occ').value) || 0);
+  const cargoManualKg = toKgIn(parseFloat(el('cargo').value) || 0);
+  const optionsKg = toKgIn(parseFloat(el('options').value) || 0);
+  const tmode = document.querySelector('input[name=tmode]:checked').value;
+  const tongueManualKg = toKgIn(parseFloat(el('tongueManual').value) || 0);
+  const cargoTarget = document.querySelector('input[name=cargoTarget]:checked').value;
+
+  const checklistSubtotalKg = computeChecklistSubtotalKg();
+  const pnbrEffectiveKg = pnbrBaseKg + (cargoTarget === 'remorque' ? checklistSubtotalKg : 0);
+  const cargoTotalKg = cargoManualKg + (cargoTarget === 'camion' ? checklistSubtotalKg : 0);
+
+  const occDelta = occKg - 136;
+  const tonguePct = type === 'sellette' ? 0.15 : 0.10;
+  const tongueAuto = pnbrEffectiveKg * tonguePct;
+  const tongueWeight = tmode === 'manuel' ? tongueManualKg : tongueAuto;
+  const chargeTotale = occDelta + cargoTotalKg + optionsKg + tongueWeight;
+
+  return {
+    type, pnbrBaseKg, pnbrEffectiveKg, checklistSubtotalKg, cargoTarget,
+    occKg, occDelta, cargoManualKg, cargoTotalKg, optionsKg, tmode, tongueWeight, tonguePct,
+    chargeTotale, pnbr: pnbrEffectiveKg
+  };
+}
+
+function hitchClassFor(tongueKg){
+  const lb = kgToLb(tongueKg);
+  if (lb <= 500) return 'Classe III (max. 227 kg / 500 lb)';
+  if (lb <= 1100) return 'Classe IV — Ram 1500 (max. 499 kg / 1100 lb)';
+  if (lb <= 2299) return 'Classe V — 2500/3500 (max. 998–1043 kg / 2200–2299 lb)';
+  return 'Attelage à sellette / gooseneck requis (au-delà des classes standard)';
+}
+
+function updateTrailerOutputs(s){
+  el('pnbrLb').textContent = `${fmt(kgToLb(toKgIn(parseFloat(el('pnbr').value)||0)))} lb`;
+  el('outTongueLabel').textContent = s.type === 'sellette'
+    ? "Poids sur le pivot d'attelage (15 %)"
+    : "Poids sur l'attelage (10 %)";
+
+  el('outOcc').innerHTML = fmtSigned(s.occDelta) + ' kg <small>(' + fmtSigned(Math.round(kgToLb(s.occDelta))) + ' lb)</small>';
+  el('outCargo').innerHTML = kgLb(s.cargoTotalKg) + (s.cargoTarget === 'camion' && s.checklistSubtotalKg > 0 ? `<span class="note">inclut ${fmt(s.checklistSubtotalKg)} kg de la liste</span>` : '');
+  el('outOptions').innerHTML = '+' + kgLb(s.optionsKg);
+  el('outTongue').innerHTML = (s.tmode === 'manuel' ? '' : '+') + kgLb(s.tongueWeight);
+  el('outPnbrEff').innerHTML = kgLb(s.pnbrEffectiveKg) + (s.cargoTarget === 'remorque' && s.checklistSubtotalKg > 0 ? `<span class="note">base ${fmt(s.pnbrBaseKg)} kg + liste ${fmt(s.checklistSubtotalKg)} kg</span>` : '');
+  el('outCharge').innerHTML = kgLb(s.chargeTotale);
+
+  el('checklistSubtotal').textContent = `${fmt(s.checklistSubtotalKg)} kg (${fmt(kgToLb(s.checklistSubtotalKg))} lb)`;
+}
+
+function ruleItem(state, title, detail){
+  const cls = state === 'on' ? 'on' : (state === 'watch' ? 'watch' : 'off');
+  const icon = state === 'on' ? '✓' : (state === 'watch' ? '!' : '—');
+  return `<div class="rule-item">
+    <div class="rule-icon ${cls}">${icon}</div>
+    <div class="rule-text"><b>${title}</b><span class="detail">${detail}</span></div>
+  </div>`;
+}
+
+function renderRules(s){
+  const lb = kgToLb(s.pnbr);
+  const tongueLb = kgToLb(s.tongueWeight);
+  let html = '';
+
+  html += ruleItem(
+    lb > 1000 ? 'on' : 'off',
+    '1 000 lb — Freins de remorque',
+    `Remorque de plus de 1 000 lb (453 kg) : freins de remorque requis. PNBR effectif actuel : ${fmt(s.pnbr)} kg (${fmt(lb)} lb).`
+  );
+  html += ruleItem(
+    lb > 2000 ? 'on' : 'off',
+    '2 000 lb — Refroidissement moteur',
+    `Remorque de plus de 2 000 lb (907 kg) : système de refroidissement du moteur amélioré requis.`
+  );
+  const repartiteur = (lb >= 5000) || (tongueLb >= 500);
+  html += ruleItem(
+    repartiteur ? 'on' : 'off',
+    '5 000 lb / 500 lb au timon — Attelage à répartition de charge',
+    `Remorque ≥ 5 000 lb (2 268 kg) OU poids au timon ≥ 500 lb (227 kg) : barre de torsion / attelage à répartiteur de charge requis. Poids sur l'attelage actuel : ${fmt(s.tongueWeight)} kg (${fmt(tongueLb)} lb).`
+  );
+  const sellette = lb >= 12000;
+  html += ruleItem(
+    sellette ? 'watch' : 'off',
+    '12 000 lb — Attelage à sellette recommandé',
+    `Repère général de l'industrie : au-delà de 12 000 lb (5 443 kg), un attelage à sellette (5th wheel) ou gooseneck est recommandé pour la stabilité. Vérifiez le guide officiel du constructeur.`
+  );
+  html += `<div class="rule-item"><div class="rule-icon off">i</div><div class="rule-text"><b>Classe d'attelage requise (estimée)</b><span class="detail">${hitchClassFor(s.tongueWeight)}</span></div></div>`;
+
+  el('ruleList').innerHTML = html;
+}
+
+function statusFor(ratio){
+  if (ratio > 1) return 'critical';
+  if (ratio >= 0.9) return 'warning';
+  return 'good';
+}
+function statusLabel(st){
+  return st === 'critical' ? 'SURCHARGÉ' : (st === 'warning' ? 'Proche de la limite' : 'OK');
+}
+function statusIcon(st){
+  return st === 'critical' ? '✕' : (st === 'warning' ? '⚠' : '✓');
+}
+
+function meterHtml(label, used, max, status){
+  const pct = max > 0 ? Math.min(used / max, 1.4) * 100 : 0;
+  const color = status === 'critical' ? 'var(--critical)' : (status === 'warning' ? 'var(--warning)' : 'var(--good)');
+  const pctDisplay = max > 0 ? Math.round((used/max)*100) : 0;
+  return `<div class="meter">
+    <div class="meter-label">
+      <span>${label}</span>
+      <span class="status" style="color:${color};">${statusIcon(status)} ${statusLabel(status)} (${pctDisplay}%)</span>
+    </div>
+    <div class="meter-track"><div class="meter-fill" style="width:${Math.min(pct,100)}%; background:${color};"></div></div>
+    <div class="meter-note">${fmt(used)} kg (${fmt(kgToLb(used))} lb) utilisés sur ${fmt(max)} kg (${fmt(kgToLb(max))} lb) disponibles</div>
+  </div>`;
+}
+
+function truckCardTemplate(t){
+  return `
+    <div class="truck-head">
+      <input type="text" class="t-nom" value="${escapeAttr(t.nom)}" placeholder="Nom / configuration">
+      <select class="classe">
+        <option value="1500" ${t.classe==='1500'?'selected':''}>Série 1500</option>
+        <option value="2500" ${t.classe==='2500'?'selected':''}>Série 2500</option>
+        <option value="3500" ${t.classe==='3500'?'selected':''}>Série 3500</option>
+      </select>
+      <button class="remove-btn no-print" type="button" data-remove="${t.id}">Retirer</button>
+    </div>
+    <div class="field" style="margin-bottom:10px;">
+      <label>Préremplir avec un modèle courant (moyenne approx.)</label>
+      <select class="truck-preset">
+        <option value="">— Personnalisé / entrée manuelle —</option>
+        ${TRUCK_PRESETS.map(p => `<option value="${p.id}">${p.label}</option>`).join('')}
+      </select>
+      <div class="sub preset-note" style="display:none;"></div>
+    </div>
+    <div class="truck-inputs">
+      <div class="field"><label>PNBV (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-pnbv" min="0" step="1" value="${roundVal(fromKgOut(t.pnbv))}"></div>
+      <div class="field"><label>Poids à vide (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-vide" min="0" step="1" value="${roundVal(fromKgOut(t.videPoids))}"></div>
+      <div class="field"><label>PNBC (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-pnbc" min="0" step="1" value="${roundVal(fromKgOut(t.pnbc))}"></div>
+    </div>
+    <div class="meters"></div>
+  `;
+}
+
+function applyTruckPreset(card, t, preset){
+  t.classe = preset.classe;
+  t.videPoids = lbToKg(preset.videLb);
+  t.pnbv = lbToKg(preset.pnbvLb);
+  t.pnbc = lbToKg(preset.pnbcLb);
+  card.querySelector('.classe').value = t.classe;
+  card.querySelector('.t-vide').value = roundVal(fromKgOut(t.videPoids));
+  card.querySelector('.t-pnbv').value = roundVal(fromKgOut(t.pnbv));
+  card.querySelector('.t-pnbc').value = roundVal(fromKgOut(t.pnbc));
+  const noteEl = card.querySelector('.preset-note');
+  noteEl.style.display = '';
+  noteEl.textContent = `Valeurs moyennes approximatives (Cabine d'équipe 4x4, 2026) — ${preset.note}. À confirmer avec l'autocollant du véhicule.`;
+}
+
+function ensureTruckCards(){
+  const wrap = el('trucksWrap');
+  const existingNodes = Array.from(wrap.querySelectorAll('.truck-card'));
+  const existingIds = existingNodes.map(c => +c.dataset.id);
+  const currentIds = trucks.map(t => t.id);
+
+  existingNodes.forEach(node => {
+    if (!currentIds.includes(+node.dataset.id)) node.remove();
+  });
+  trucks.forEach(t => {
+    if (!existingIds.includes(t.id)) {
+      const div = document.createElement('div');
+      div.className = 'truck-card';
+      div.dataset.id = t.id;
+      div.innerHTML = truckCardTemplate(t);
+      wrap.appendChild(div);
+    }
+  });
+}
+
+function updateTruckMeters(s){
+  document.querySelectorAll('.truck-card').forEach(card => {
+    const id = +card.dataset.id;
+    const t = trucks.find(x => x.id === id);
+    if (!t) return;
+    const pbv = t.videPoids + s.chargeTotale;
+    const pbvStatus = t.pnbv > 0 ? statusFor(pbv / t.pnbv) : 'good';
+    const pbvNet = pbv - s.tongueWeight;
+    const pbc = pbvNet + s.pnbr;
+    const pbcStatus = t.pnbc > 0 ? statusFor(pbc / t.pnbc) : 'good';
+    t._pbv = pbv; t._pbc = pbc; t._pbvStatus = pbvStatus; t._pbcStatus = pbcStatus;
+
+    const meters = card.querySelector('.meters');
+    meters.innerHTML =
+      meterHtml('Poids brut du véhicule (PBV) vs PNBV', pbv, t.pnbv, pbvStatus) +
+      meterHtml('Poids brut combiné (PBC) vs PNBC', pbc, t.pnbc, pbcStatus);
+  });
+}
+
+function renderReco(s){
+  const rankOrder = {'1500':0,'2500':1,'3500':2};
+  const withData = trucks.filter(t => t.pnbv > 0 && t.pnbc > 0);
+  const passing = withData.filter(t => t._pbvStatus !== 'critical' && t._pbcStatus !== 'critical');
+  const wrap = el('recoWrap');
+
+  if (withData.length === 0){
+    wrap.innerHTML = `<div class="reco-box"><div class="reco-title">En attente de données</div><div class="reco-detail">Entrez le PNBV et le PNBC d'au moins un camion à l'étape 3 pour obtenir une recommandation.</div></div>`;
+    return;
+  }
+
+  if (passing.length === 0){
+    wrap.innerHTML = `<div class="reco-box fail">
+      <div class="reco-title" style="color:var(--critical);">✕ Aucun camion entré ne suffit</div>
+      <div class="reco-detail">Avec une charge totale de ${fmt(s.chargeTotale)} kg et une remorque (PNBR effectif) de ${fmt(s.pnbr)} kg, tous les camions comparés dépassent leur PNBV et/ou PNBC. Envisagez une remorque plus légère, un attelage à sellette (répartit davantage de poids sur le camion plutôt que sur l'attelage), ou une configuration de camion à capacité supérieure.</div>
+    </div>`;
+    return;
+  }
+
+  passing.sort((a,b) => (rankOrder[a.classe]-rankOrder[b.classe]) || (a._pbv - b._pbv));
+  const best = passing[0];
+  const margePbv = best.pnbv - best._pbv;
+  const margePbc = best.pnbc - best._pbc;
+
+  wrap.innerHTML = `<div class="reco-box pass">
+    <div class="reco-title" style="color:var(--good);">✓ Recommandé : ${best.nom} (Série ${best.classe})</div>
+    <div class="reco-detail">
+      Ce camion respecte à la fois le PNBV et le PNBC pour la charge du client.<br>
+      Marge PBV restante : ${fmt(margePbv)} kg (${fmt(kgToLb(margePbv))} lb) · Marge PBC restante : ${fmt(margePbc)} kg (${fmt(kgToLb(margePbc))} lb).
+    </div>
+  </div>`;
+}
+
+function renderAll(){
+  ensureTruckCards();
+  const s = getTrailerState();
+  updateTrailerOutputs(s);
+  renderRules(s);
+  updateTruckMeters(s);
+  renderReco(s);
+}
+
+// ---- Event wiring (delegated where possible so typing never loses focus) ----
+document.querySelectorAll('input[name=ttype]').forEach(r => r.addEventListener('change', renderAll));
+document.querySelectorAll('input[name=cargoTarget]').forEach(r => r.addEventListener('change', renderAll));
+document.querySelectorAll('input[name=tmode]').forEach(r => r.addEventListener('change', e => {
+  el('manualTongueWrap').style.display = e.target.value === 'manuel' ? '' : 'none';
+  renderAll();
+}));
+['pnbr','occ','cargo','options','tongueManual'].forEach(id => el(id).addEventListener('input', renderAll));
+
+el('trucksWrap').addEventListener('input', e => {
+  const card = e.target.closest('.truck-card'); if (!card) return;
+  const t = trucks.find(x => x.id === +card.dataset.id); if (!t) return;
+  if (e.target.classList.contains('t-nom')) t.nom = e.target.value;
+  else if (e.target.classList.contains('t-pnbv')) t.pnbv = toKgIn(parseFloat(e.target.value) || 0);
+  else if (e.target.classList.contains('t-vide')) t.videPoids = toKgIn(parseFloat(e.target.value) || 0);
+  else if (e.target.classList.contains('t-pnbc')) t.pnbc = toKgIn(parseFloat(e.target.value) || 0);
+  const s = getTrailerState();
+  updateTruckMeters(s);
+  renderReco(s);
+});
+el('trucksWrap').addEventListener('change', e => {
+  const card = e.target.closest('.truck-card'); if (!card) return;
+  const t = trucks.find(x => x.id === +card.dataset.id); if (!t) return;
+  if (e.target.classList.contains('classe')) t.classe = e.target.value;
+  if (e.target.classList.contains('truck-preset')) {
+    const preset = TRUCK_PRESETS.find(p => p.id === e.target.value);
+    if (preset) applyTruckPreset(card, t, preset);
+  }
+  const s = getTrailerState();
+  updateTruckMeters(s);
+  renderReco(s);
+});
+el('trucksWrap').addEventListener('click', e => {
+  const btn = e.target.closest('[data-remove]'); if (!btn) return;
+  trucks = trucks.filter(t => t.id !== +btn.dataset.remove);
+  renderAll();
+});
+
+el('addTruck').addEventListener('click', () => {
+  trucks.push({id: nextId++, nom: `Camion ${String.fromCharCode(65 + trucks.length)}`, classe:'2500', pnbv:0, videPoids:0, pnbc:0});
+  renderAll();
+});
+
+el('printBtn').addEventListener('click', () => window.print());
+el('resetBtn').addEventListener('click', () => {
+  if (!confirm('Réinitialiser toutes les valeurs entrées ?')) return;
+  if (unit !== 'kg') { unit = 'kg'; setUnitButtons(); }
+  el('cNom').value=''; el('cAdresse').value=''; el('cTel').value='';
+  el('pnbr').value=0; el('occ').value=136; el('cargo').value=0; el('options').value=0; el('tongueManual').value=0;
+  document.querySelector('input[name=ttype][value=conventionnelle]').checked = true;
+  document.querySelector('input[name=tmode][value=auto]').checked = true;
+  document.querySelector('input[name=cargoTarget][value=remorque]').checked = true;
+  document.querySelector('input[name=trailerPreset][value=none]').checked = true;
+  el('manualTongueWrap').style.display='none';
+  el('need4wd').checked = false;
+  CARGO_PRESETS.forEach(p => {
+    const cb = document.getElementById('cargo_' + p.id); if (cb) cb.checked = false;
+    const qtyInp = document.getElementById('qty_' + p.id); if (qtyInp) qtyInp.value = p.qtyDefault != null ? p.qtyDefault : 1;
+  });
+  el('trucksWrap').innerHTML = '';
+  trucks = [
+    {id:1, nom:'Camion A', classe:'1500', pnbv:0, videPoids:0, pnbc:0},
+    {id:2, nom:'Camion B', classe:'2500', pnbv:0, videPoids:0, pnbc:0},
+  ];
+  nextId = 3;
+  renderAll();
+});
+
+const themeBtn = el('themeToggle');
+themeBtn.addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+});
+
+function setUnitButtons(){
+  document.querySelectorAll('.unit-btn').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
+  document.querySelectorAll('.unit-tag').forEach(t => t.textContent = unit);
+}
+
+function convertAllInputs(oldU, newU){
+  const convert = raw => {
+    if (isNaN(raw)) return raw;
+    const kg = oldU === 'kg' ? raw : lbToKg(raw);
+    return roundVal(newU === 'kg' ? kg : kgToLb(kg));
+  };
+  ['pnbr','occ','cargo','options','tongueManual'].forEach(id => {
+    const inp = el(id);
+    const raw = parseFloat(inp.value);
+    if (!isNaN(raw)) inp.value = convert(raw);
+  });
+  document.querySelectorAll('.truck-card').forEach(card => {
+    ['t-pnbv','t-vide','t-pnbc'].forEach(cls => {
+      const inp = card.querySelector('.' + cls);
+      const raw = parseFloat(inp.value);
+      if (!isNaN(raw)) inp.value = convert(raw);
+    });
+  });
+}
+
+document.querySelectorAll('.unit-btn').forEach(btn => btn.addEventListener('click', () => {
+  const newUnit = btn.dataset.unit;
+  if (newUnit === unit) return;
+  convertAllInputs(unit, newUnit);
+  unit = newUnit;
+  setUnitButtons();
+  renderAll();
+}));
+
+buildTrailerPresetsUI();
+buildCargoPresetsUI();
+renderAll();
+
+
+function showTab(tab){
+  if(tab==='remorquage'){
+    document.getElementById('panel-remorquage').style.display='block';
+    document.body.style.overflow='hidden';
+    // Init l'outil si pas encore fait
+    if(!window._remInit){
+      window._remInit=true;
+      // L'outil s'initialise automatiquement
+    }
+  }
+}
+function hideRemorquage(){
+  document.getElementById('panel-remorquage').style.display='none';
+  document.body.style.overflow='';
+}
+
+
+// ===== OUTIL REMORQUAGE =====
+(function(){
+  'use strict';
+  
+const KG_PER_LB = 0.45359237;
+const lbToKg = lb => lb * KG_PER_LB;
+const kgToLb = kg => kg / KG_PER_LB;
+const fmt = n => {
+  if (!isFinite(n)) return '—';
+  return Math.round(n).toLocaleString('fr-CA');
+};
+const fmtSigned = n => (n >= 0 ? '+' : '') + fmt(n);
+const kgLb = (kg) => `${fmt(kg)} kg <small>(${fmt(kgToLb(kg))} lb)</small>`;
+const escapeAttr = s => String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+
+let unit = 'kg'; // 'kg' | 'lb' — unit currently used to READ/WRITE the plain number inputs
+const toKgIn = raw => unit === 'kg' ? raw : lbToKg(raw);
+const fromKgOut = kg => unit === 'kg' ? kg : kgToLb(kg);
+const roundVal = v => Math.round(v);
+
+const el = id => document.getElementById(id);
+
+// ---- Reference weight presets (from "Notions de base du remorquage — Poids courants") ----
+const TRAILER_PRESETS = [
+  {id:'none', label:'Aucun — entrée manuelle', kg:null},
+  {id:'bateau', label:'Remorque pour bateau', kgMin:136, kgMax:686},
+  {id:'fermee64', label:'Remorque fermée 6 x 4', kg:195},
+  {id:'fermee75', label:'Remorque fermée 7 x 5', kg:230},
+  {id:'auto', label:'Remorque pour automobile', kg:1270},
+  {id:'equip', label:"Remorque d'équipements (alu, 2 x 7,5 m / 6 pi 8 po x 24 pi 6 po)", kg:726},
+  {id:'chevaux', label:'Remorque pour chevaux (déchargée)', kg:1089},
+  {id:'kayak', label:'Remorque pour kayak', kg:100},
+  {id:'sellette44', label:"Remorque à sellette d'attelage (13,4 m / 44 pi)", kg:8618, tongueKg:1418, forceType:'sellette'},
+  {id:'voyage', label:'Remorque de voyage (4,9 à 13,4 m / 16 à 44 pi)', kgMin:2268, kgMax:5443},
+  {id:'autocaravane', label:'Autocaravane (déchargée)', kg:1588},
+];
+
+const CARGO_PRESETS = [
+  {cat:'Voitures', id:'course', label:'Voiture de course', kgMin:726, kgMax:1588},
+  {cat:'Voitures', id:'berline', label:'Berline', kg:1361},
+  {cat:'Voitures', id:'familiale', label:'Familiale', kg:1633},
+  {cat:'Voitures', id:'pickup', label:'Camion (pickup)', kg:2495},
+
+  {cat:'Équipement de construction', id:'chargeuse', label:'Chargeuse-pelleteuse', kgMin:6350, kgMax:8618},
+  {cat:'Équipement de construction', id:'bulldozeur', label:'Bulldozeur', kgMin:7257, kgMax:8618},
+  {cat:'Équipement de construction', id:'case580n', label:'Chargeuse-pelleteuse Case 580N', kgMin:6577, kgMax:7938},
+  {cat:'Équipement de construction', id:'bouteur', label:'Bouteur de chenille Case', kgMin:7371, kgMax:20080},
+  {cat:'Équipement de construction', id:'glissementcase', label:'Chargeur à direction à glissement Case', kgMin:2268, kgMax:3765},
+  {cat:'Équipement de construction', id:'betonniere6', label:'Bétonnière (6 pi³)', kg:304},
+  {cat:'Équipement de construction', id:'betonniere1vg', label:'Bétonnière (1 vg³)', kg:3175},
+  {cat:'Équipement de construction', id:'gen3100', label:'Génératrice (3 100 W)', kg:82},
+  {cat:'Équipement de construction', id:'gen6500', label:'Génératrice (6 500 W)', kg:95},
+  {cat:'Équipement de construction', id:'gen9000', label:'Génératrice (9 000 W)', kg:102},
+  {cat:'Équipement de construction', id:'glissement', label:'Chargeur à direction à glissement', kgMin:2041, kgMax:3629},
+  {cat:'Équipement de construction', id:'broyeur', label:'Broyeur de souches', kg:658},
+
+  {cat:'Agricole', id:'tracteur', label:'Tracteur New Holland Série T7000', kg:7257},
+  {cat:'Agricole', id:'balles', label:'Remorques à balles New Holland', kgMin:2495, kgMax:7257},
+  {cat:'Agricole', id:'ensileuse', label:'Ensileuse tractée New Holland', kg:227},
+
+  {cat:'Bateaux', id:'kayakboat', label:'Canoë/kayak', kg:23},
+  {cat:'Bateaux', id:'peche6m', label:'Bateau de pêche de 6 m (20 pi)', kg:1134},
+  {cat:'Bateaux', id:'voilier', label:'Voilier de 8,5 m (28 pi)', kg:3175},
+
+  {cat:'Matériaux de construction', id:'contreplaque', label:"Contreplaqué (par pi² par po d'épaisseur)", kg:1.36, perUnit:'pi²·po', qtyDefault:0, qtyStep:1},
+  {cat:'Matériaux de construction', id:'gravier', label:'Gravier (par verge)', kg:1542, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'ciment', label:'Mélange de ciment (par sac)', kg:36, perUnit:'sac', qtyDefault:0, qtyStep:1},
+  {cat:'Matériaux de construction', id:'paillis', label:'Paillis (par verge)', kg:227, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'sable', label:'Sable (par verge)', kg:1179, perUnit:'verge', qtyDefault:0, qtyStep:0.5},
+  {cat:'Matériaux de construction', id:'paves', label:'Pavés (par palette, 624 pavés)', kg:1438, perUnit:'palette', qtyDefault:0, qtyStep:1},
+];
+
+// Valeurs moyennes approximatives par motorisation (configuration Cabine d'équipe / Crew Cab 4x4
+// représentative, année-modèle 2026). PNBV et poids à vide sont les plus fiables ; le PNBC (GCWR)
+// est une estimation plus approximative faute de valeur unique publiée par motorisation — TOUJOURS
+// confirmer les trois valeurs avec l'autocollant de certification du véhicule réel avant de conclure une vente.
+const TRUCK_PRESETS = [
+  {id:'r1500hemi', label:'Ram 1500 — HEMI 5.7L V8 eTorque', classe:'1500', videLb:5465, pnbvLb:7100, pnbcLb:17500, note:'PNBC estimé — non publié par motorisation'},
+  {id:'r1500hurricane', label:'Ram 1500 — Hurricane 3.0L bi-turbo', classe:'1500', videLb:5261, pnbvLb:7100, pnbcLb:19300, note:'PNBC estimé — non publié par motorisation'},
+  {id:'r2500hemi', label:'Ram 2500 — HEMI 6.4L V8', classe:'2500', videLb:7000, pnbvLb:9900, pnbcLb:20000, note:'Poids à vide et PNBC estimés'},
+  {id:'r2500cumminsho', label:'Ram 2500 — Cummins 6.7L Turbo Diesel Haut rendement', classe:'2500', videLb:7800, pnbvLb:9900, pnbcLb:22800, note:'Poids à vide et PNBC estimés'},
+  {id:'r3500dually', label:'Ram 3500 Dually — Cummins 6.7L Turbo Diesel Haut rendement', classe:'3500', videLb:8300, pnbvLb:14000, pnbcLb:45000, note:'Poids à vide et PNBV estimés ; PNBC ≈ config. attelage col-de-cygne max.'},
+];
+
+function midOf(p){ return p.kg != null ? p.kg : (p.kgMin + p.kgMax) / 2; }
+function weightLabel(p){
+  if (p.kg == null && p.kgMin == null) return '';
+  if (p.kg != null && !p.perUnit) return `${fmt(p.kg)} kg (${fmt(kgToLb(p.kg))} lb)`;
+  if (p.kg != null && p.perUnit) return `${p.kg} kg / ${p.perUnit} (${(kgToLb(p.kg)).toFixed(1)} lb / ${p.perUnit})`;
+  return `${fmt(p.kgMin)}–${fmt(p.kgMax)} kg (${fmt(kgToLb(p.kgMin))}–${fmt(kgToLb(p.kgMax))} lb)`;
+}
+
+function buildTrailerPresetsUI(){
+  const wrap = el('trailerPresetsList');
+  wrap.innerHTML = TRAILER_PRESETS.map((p,i) => `
+    <div class="preset-row">
+      <input type="radio" name="trailerPreset" id="tp_${p.id}" value="${p.id}" ${i===0?'checked':''}>
+      <label class="plabel" for="tp_${p.id}"><b>${p.label}</b>${p.kg!=null||p.kgMin!=null ? `<br><span class="pweight">${weightLabel(p)}${p.tongueKg?` · poids sur l'attelage réf. ${fmt(p.tongueKg)} kg (${fmt(kgToLb(p.tongueKg))} lb)`:''}</span>`:''}</label>
+    </div>
+  `).join('');
+  wrap.addEventListener('change', e => {
+    if (e.target.name !== 'trailerPreset') return;
+    const preset = TRAILER_PRESETS.find(p => p.id === e.target.value);
+    if (!preset || (preset.kg == null && preset.kgMin == null)) return;
+    el('pnbr').value = roundVal(fromKgOut(midOf(preset)));
+    if (preset.forceType) {
+      const r = document.querySelector(`input[name=ttype][value=${preset.forceType}]`);
+      if (r) r.checked = true;
+    }
+    if (preset.tongueKg != null) {
+      document.querySelector('input[name=tmode][value=manuel]').checked = true;
+      el('manualTongueWrap').style.display = '';
+      el('tongueManual').value = roundVal(fromKgOut(preset.tongueKg));
+    }
+    renderAll();
+  });
+}
+
+function buildCargoPresetsUI(){
+  const wrap = el('cargoPresetsList');
+  let html = '';
+  let lastCat = null;
+  CARGO_PRESETS.forEach(p => {
+    if (p.cat !== lastCat) { html += `<div class="preset-cat">${p.cat}</div>`; lastCat = p.cat; }
+    const qtyDefault = p.qtyDefault != null ? p.qtyDefault : 1;
+    html += `<div class="preset-row">
+      <input type="checkbox" id="cargo_${p.id}">
+      <label class="plabel" for="cargo_${p.id}"><b>${p.label}</b><br><span class="pweight">${weightLabel(p)}</span></label>
+      <input type="number" class="qty" id="qty_${p.id}" value="${qtyDefault}" min="0" step="${p.qtyStep || 1}" title="Quantité${p.perUnit ? ' (' + p.perUnit + ')' : ''}">
+    </div>`;
+  });
+  wrap.innerHTML = html;
+  wrap.addEventListener('change', renderAll);
+  wrap.addEventListener('input', e => { if (e.target.classList.contains('qty')) renderAll(); });
+}
+
+function computeChecklistSubtotalKg(){
+  let total = 0;
+  CARGO_PRESETS.forEach(p => {
+    const cb = document.getElementById('cargo_' + p.id);
+    if (!cb || !cb.checked) return;
+    const qtyInp = document.getElementById('qty_' + p.id);
+    const qty = qtyInp ? (parseFloat(qtyInp.value) || 0) : 1;
+    total += midOf(p) * qty;
+  });
+  return total;
+}
+
+// ---- Trucks state ----
+let trucks = [
+  {id:1, nom:'Camion A', classe:'1500', pnbv:0, videPoids:0, pnbc:0},
+  {id:2, nom:'Camion B', classe:'2500', pnbv:0, videPoids:0, pnbc:0},
+];
+let nextId = 3;
+
+function getTrailerState(){
+  const type = document.querySelector('input[name=ttype]:checked').value;
+  const pnbrBaseKg = toKgIn(parseFloat(el('pnbr').value) || 0);
+  const occKg = toKgIn(parseFloat(el('occ').value) || 0);
+  const cargoManualKg = toKgIn(parseFloat(el('cargo').value) || 0);
+  const optionsKg = toKgIn(parseFloat(el('options').value) || 0);
+  const tmode = document.querySelector('input[name=tmode]:checked').value;
+  const tongueManualKg = toKgIn(parseFloat(el('tongueManual').value) || 0);
+  const cargoTarget = document.querySelector('input[name=cargoTarget]:checked').value;
+
+  const checklistSubtotalKg = computeChecklistSubtotalKg();
+  const pnbrEffectiveKg = pnbrBaseKg + (cargoTarget === 'remorque' ? checklistSubtotalKg : 0);
+  const cargoTotalKg = cargoManualKg + (cargoTarget === 'camion' ? checklistSubtotalKg : 0);
+
+  const occDelta = occKg - 136;
+  const tonguePct = type === 'sellette' ? 0.15 : 0.10;
+  const tongueAuto = pnbrEffectiveKg * tonguePct;
+  const tongueWeight = tmode === 'manuel' ? tongueManualKg : tongueAuto;
+  const chargeTotale = occDelta + cargoTotalKg + optionsKg + tongueWeight;
+
+  return {
+    type, pnbrBaseKg, pnbrEffectiveKg, checklistSubtotalKg, cargoTarget,
+    occKg, occDelta, cargoManualKg, cargoTotalKg, optionsKg, tmode, tongueWeight, tonguePct,
+    chargeTotale, pnbr: pnbrEffectiveKg
+  };
+}
+
+function hitchClassFor(tongueKg){
+  const lb = kgToLb(tongueKg);
+  if (lb <= 500) return 'Classe III (max. 227 kg / 500 lb)';
+  if (lb <= 1100) return 'Classe IV — Ram 1500 (max. 499 kg / 1100 lb)';
+  if (lb <= 2299) return 'Classe V — 2500/3500 (max. 998–1043 kg / 2200–2299 lb)';
+  return 'Attelage à sellette / gooseneck requis (au-delà des classes standard)';
+}
+
+function updateTrailerOutputs(s){
+  el('pnbrLb').textContent = `${fmt(kgToLb(toKgIn(parseFloat(el('pnbr').value)||0)))} lb`;
+  el('outTongueLabel').textContent = s.type === 'sellette'
+    ? "Poids sur le pivot d'attelage (15 %)"
+    : "Poids sur l'attelage (10 %)";
+
+  el('outOcc').innerHTML = fmtSigned(s.occDelta) + ' kg <small>(' + fmtSigned(Math.round(kgToLb(s.occDelta))) + ' lb)</small>';
+  el('outCargo').innerHTML = kgLb(s.cargoTotalKg) + (s.cargoTarget === 'camion' && s.checklistSubtotalKg > 0 ? `<span class="note">inclut ${fmt(s.checklistSubtotalKg)} kg de la liste</span>` : '');
+  el('outOptions').innerHTML = '+' + kgLb(s.optionsKg);
+  el('outTongue').innerHTML = (s.tmode === 'manuel' ? '' : '+') + kgLb(s.tongueWeight);
+  el('outPnbrEff').innerHTML = kgLb(s.pnbrEffectiveKg) + (s.cargoTarget === 'remorque' && s.checklistSubtotalKg > 0 ? `<span class="note">base ${fmt(s.pnbrBaseKg)} kg + liste ${fmt(s.checklistSubtotalKg)} kg</span>` : '');
+  el('outCharge').innerHTML = kgLb(s.chargeTotale);
+
+  el('checklistSubtotal').textContent = `${fmt(s.checklistSubtotalKg)} kg (${fmt(kgToLb(s.checklistSubtotalKg))} lb)`;
+}
+
+function ruleItem(state, title, detail){
+  const cls = state === 'on' ? 'on' : (state === 'watch' ? 'watch' : 'off');
+  const icon = state === 'on' ? '✓' : (state === 'watch' ? '!' : '—');
+  return `<div class="rule-item">
+    <div class="rule-icon ${cls}">${icon}</div>
+    <div class="rule-text"><b>${title}</b><span class="detail">${detail}</span></div>
+  </div>`;
+}
+
+function renderRules(s){
+  const lb = kgToLb(s.pnbr);
+  const tongueLb = kgToLb(s.tongueWeight);
+  let html = '';
+
+  html += ruleItem(
+    lb > 1000 ? 'on' : 'off',
+    '1 000 lb — Freins de remorque',
+    `Remorque de plus de 1 000 lb (453 kg) : freins de remorque requis. PNBR effectif actuel : ${fmt(s.pnbr)} kg (${fmt(lb)} lb).`
+  );
+  html += ruleItem(
+    lb > 2000 ? 'on' : 'off',
+    '2 000 lb — Refroidissement moteur',
+    `Remorque de plus de 2 000 lb (907 kg) : système de refroidissement du moteur amélioré requis.`
+  );
+  const repartiteur = (lb >= 5000) || (tongueLb >= 500);
+  html += ruleItem(
+    repartiteur ? 'on' : 'off',
+    '5 000 lb / 500 lb au timon — Attelage à répartition de charge',
+    `Remorque ≥ 5 000 lb (2 268 kg) OU poids au timon ≥ 500 lb (227 kg) : barre de torsion / attelage à répartiteur de charge requis. Poids sur l'attelage actuel : ${fmt(s.tongueWeight)} kg (${fmt(tongueLb)} lb).`
+  );
+  const sellette = lb >= 12000;
+  html += ruleItem(
+    sellette ? 'watch' : 'off',
+    '12 000 lb — Attelage à sellette recommandé',
+    `Repère général de l'industrie : au-delà de 12 000 lb (5 443 kg), un attelage à sellette (5th wheel) ou gooseneck est recommandé pour la stabilité. Vérifiez le guide officiel du constructeur.`
+  );
+  html += `<div class="rule-item"><div class="rule-icon off">i</div><div class="rule-text"><b>Classe d'attelage requise (estimée)</b><span class="detail">${hitchClassFor(s.tongueWeight)}</span></div></div>`;
+
+  el('ruleList').innerHTML = html;
+}
+
+function statusFor(ratio){
+  if (ratio > 1) return 'critical';
+  if (ratio >= 0.9) return 'warning';
+  return 'good';
+}
+function statusLabel(st){
+  return st === 'critical' ? 'SURCHARGÉ' : (st === 'warning' ? 'Proche de la limite' : 'OK');
+}
+function statusIcon(st){
+  return st === 'critical' ? '✕' : (st === 'warning' ? '⚠' : '✓');
+}
+
+function meterHtml(label, used, max, status){
+  const pct = max > 0 ? Math.min(used / max, 1.4) * 100 : 0;
+  const color = status === 'critical' ? 'var(--critical)' : (status === 'warning' ? 'var(--warning)' : 'var(--good)');
+  const pctDisplay = max > 0 ? Math.round((used/max)*100) : 0;
+  return `<div class="meter">
+    <div class="meter-label">
+      <span>${label}</span>
+      <span class="status" style="color:${color};">${statusIcon(status)} ${statusLabel(status)} (${pctDisplay}%)</span>
+    </div>
+    <div class="meter-track"><div class="meter-fill" style="width:${Math.min(pct,100)}%; background:${color};"></div></div>
+    <div class="meter-note">${fmt(used)} kg (${fmt(kgToLb(used))} lb) utilisés sur ${fmt(max)} kg (${fmt(kgToLb(max))} lb) disponibles</div>
+  </div>`;
+}
+
+function truckCardTemplate(t){
+  return `
+    <div class="truck-head">
+      <input type="text" class="t-nom" value="${escapeAttr(t.nom)}" placeholder="Nom / configuration">
+      <select class="classe">
+        <option value="1500" ${t.classe==='1500'?'selected':''}>Série 1500</option>
+        <option value="2500" ${t.classe==='2500'?'selected':''}>Série 2500</option>
+        <option value="3500" ${t.classe==='3500'?'selected':''}>Série 3500</option>
+      </select>
+      <button class="remove-btn no-print" type="button" data-remove="${t.id}">Retirer</button>
+    </div>
+    <div class="field" style="margin-bottom:10px;">
+      <label>Préremplir avec un modèle courant (moyenne approx.)</label>
+      <select class="truck-preset">
+        <option value="">— Personnalisé / entrée manuelle —</option>
+        ${TRUCK_PRESETS.map(p => `<option value="${p.id}">${p.label}</option>`).join('')}
+      </select>
+      <div class="sub preset-note" style="display:none;"></div>
+    </div>
+    <div class="truck-inputs">
+      <div class="field"><label>PNBV (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-pnbv" min="0" step="1" value="${roundVal(fromKgOut(t.pnbv))}"></div>
+      <div class="field"><label>Poids à vide (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-vide" min="0" step="1" value="${roundVal(fromKgOut(t.videPoids))}"></div>
+      <div class="field"><label>PNBC (<span class="unit-tag">${unit}</span>)</label><input type="number" class="t-pnbc" min="0" step="1" value="${roundVal(fromKgOut(t.pnbc))}"></div>
+    </div>
+    <div class="meters"></div>
+  `;
+}
+
+function applyTruckPreset(card, t, preset){
+  t.classe = preset.classe;
+  t.videPoids = lbToKg(preset.videLb);
+  t.pnbv = lbToKg(preset.pnbvLb);
+  t.pnbc = lbToKg(preset.pnbcLb);
+  card.querySelector('.classe').value = t.classe;
+  card.querySelector('.t-vide').value = roundVal(fromKgOut(t.videPoids));
+  card.querySelector('.t-pnbv').value = roundVal(fromKgOut(t.pnbv));
+  card.querySelector('.t-pnbc').value = roundVal(fromKgOut(t.pnbc));
+  const noteEl = card.querySelector('.preset-note');
+  noteEl.style.display = '';
+  noteEl.textContent = `Valeurs moyennes approximatives (Cabine d'équipe 4x4, 2026) — ${preset.note}. À confirmer avec l'autocollant du véhicule.`;
+}
+
+function ensureTruckCards(){
+  const wrap = el('trucksWrap');
+  const existingNodes = Array.from(wrap.querySelectorAll('.truck-card'));
+  const existingIds = existingNodes.map(c => +c.dataset.id);
+  const currentIds = trucks.map(t => t.id);
+
+  existingNodes.forEach(node => {
+    if (!currentIds.includes(+node.dataset.id)) node.remove();
+  });
+  trucks.forEach(t => {
+    if (!existingIds.includes(t.id)) {
+      const div = document.createElement('div');
+      div.className = 'truck-card';
+      div.dataset.id = t.id;
+      div.innerHTML = truckCardTemplate(t);
+      wrap.appendChild(div);
+    }
+  });
+}
+
+function updateTruckMeters(s){
+  document.querySelectorAll('.truck-card').forEach(card => {
+    const id = +card.dataset.id;
+    const t = trucks.find(x => x.id === id);
+    if (!t) return;
+    const pbv = t.videPoids + s.chargeTotale;
+    const pbvStatus = t.pnbv > 0 ? statusFor(pbv / t.pnbv) : 'good';
+    const pbvNet = pbv - s.tongueWeight;
+    const pbc = pbvNet + s.pnbr;
+    const pbcStatus = t.pnbc > 0 ? statusFor(pbc / t.pnbc) : 'good';
+    t._pbv = pbv; t._pbc = pbc; t._pbvStatus = pbvStatus; t._pbcStatus = pbcStatus;
+
+    const meters = card.querySelector('.meters');
+    meters.innerHTML =
+      meterHtml('Poids brut du véhicule (PBV) vs PNBV', pbv, t.pnbv, pbvStatus) +
+      meterHtml('Poids brut combiné (PBC) vs PNBC', pbc, t.pnbc, pbcStatus);
+  });
+}
+
+function renderReco(s){
+  const rankOrder = {'1500':0,'2500':1,'3500':2};
+  const withData = trucks.filter(t => t.pnbv > 0 && t.pnbc > 0);
+  const passing = withData.filter(t => t._pbvStatus !== 'critical' && t._pbcStatus !== 'critical');
+  const wrap = el('recoWrap');
+
+  if (withData.length === 0){
+    wrap.innerHTML = `<div class="reco-box"><div class="reco-title">En attente de données</div><div class="reco-detail">Entrez le PNBV et le PNBC d'au moins un camion à l'étape 3 pour obtenir une recommandation.</div></div>`;
+    return;
+  }
+
+  if (passing.length === 0){
+    wrap.innerHTML = `<div class="reco-box fail">
+      <div class="reco-title" style="color:var(--critical);">✕ Aucun camion entré ne suffit</div>
+      <div class="reco-detail">Avec une charge totale de ${fmt(s.chargeTotale)} kg et une remorque (PNBR effectif) de ${fmt(s.pnbr)} kg, tous les camions comparés dépassent leur PNBV et/ou PNBC. Envisagez une remorque plus légère, un attelage à sellette (répartit davantage de poids sur le camion plutôt que sur l'attelage), ou une configuration de camion à capacité supérieure.</div>
+    </div>`;
+    return;
+  }
+
+  passing.sort((a,b) => (rankOrder[a.classe]-rankOrder[b.classe]) || (a._pbv - b._pbv));
+  const best = passing[0];
+  const margePbv = best.pnbv - best._pbv;
+  const margePbc = best.pnbc - best._pbc;
+
+  wrap.innerHTML = `<div class="reco-box pass">
+    <div class="reco-title" style="color:var(--good);">✓ Recommandé : ${best.nom} (Série ${best.classe})</div>
+    <div class="reco-detail">
+      Ce camion respecte à la fois le PNBV et le PNBC pour la charge du client.<br>
+      Marge PBV restante : ${fmt(margePbv)} kg (${fmt(kgToLb(margePbv))} lb) · Marge PBC restante : ${fmt(margePbc)} kg (${fmt(kgToLb(margePbc))} lb).
+    </div>
+  </div>`;
+}
+
+function renderAll(){
+  ensureTruckCards();
+  const s = getTrailerState();
+  updateTrailerOutputs(s);
+  renderRules(s);
+  updateTruckMeters(s);
+  renderReco(s);
+}
+
+// ---- Event wiring (delegated where possible so typing never loses focus) ----
+document.querySelectorAll('input[name=ttype]').forEach(r => r.addEventListener('change', renderAll));
+document.querySelectorAll('input[name=cargoTarget]').forEach(r => r.addEventListener('change', renderAll));
+document.querySelectorAll('input[name=tmode]').forEach(r => r.addEventListener('change', e => {
+  el('manualTongueWrap').style.display = e.target.value === 'manuel' ? '' : 'none';
+  renderAll();
+}));
+['pnbr','occ','cargo','options','tongueManual'].forEach(id => el(id).addEventListener('input', renderAll));
+
+el('trucksWrap').addEventListener('input', e => {
+  const card = e.target.closest('.truck-card'); if (!card) return;
+  const t = trucks.find(x => x.id === +card.dataset.id); if (!t) return;
+  if (e.target.classList.contains('t-nom')) t.nom = e.target.value;
+  else if (e.target.classList.contains('t-pnbv')) t.pnbv = toKgIn(parseFloat(e.target.value) || 0);
+  else if (e.target.classList.contains('t-vide')) t.videPoids = toKgIn(parseFloat(e.target.value) || 0);
+  else if (e.target.classList.contains('t-pnbc')) t.pnbc = toKgIn(parseFloat(e.target.value) || 0);
+  const s = getTrailerState();
+  updateTruckMeters(s);
+  renderReco(s);
+});
+el('trucksWrap').addEventListener('change', e => {
+  const card = e.target.closest('.truck-card'); if (!card) return;
+  const t = trucks.find(x => x.id === +card.dataset.id); if (!t) return;
+  if (e.target.classList.contains('classe')) t.classe = e.target.value;
+  if (e.target.classList.contains('truck-preset')) {
+    const preset = TRUCK_PRESETS.find(p => p.id === e.target.value);
+    if (preset) applyTruckPreset(card, t, preset);
+  }
+  const s = getTrailerState();
+  updateTruckMeters(s);
+  renderReco(s);
+});
+el('trucksWrap').addEventListener('click', e => {
+  const btn = e.target.closest('[data-remove]'); if (!btn) return;
+  trucks = trucks.filter(t => t.id !== +btn.dataset.remove);
+  renderAll();
+});
+
+el('addTruck').addEventListener('click', () => {
+  trucks.push({id: nextId++, nom: `Camion ${String.fromCharCode(65 + trucks.length)}`, classe:'2500', pnbv:0, videPoids:0, pnbc:0});
+  renderAll();
+});
+
+el('printBtn').addEventListener('click', () => window.print());
+el('resetBtn').addEventListener('click', () => {
+  if (!confirm('Réinitialiser toutes les valeurs entrées ?')) return;
+  if (unit !== 'kg') { unit = 'kg'; setUnitButtons(); }
+  el('cNom').value=''; el('cAdresse').value=''; el('cTel').value='';
+  el('pnbr').value=0; el('occ').value=136; el('cargo').value=0; el('options').value=0; el('tongueManual').value=0;
+  document.querySelector('input[name=ttype][value=conventionnelle]').checked = true;
+  document.querySelector('input[name=tmode][value=auto]').checked = true;
+  document.querySelector('input[name=cargoTarget][value=remorque]').checked = true;
+  document.querySelector('input[name=trailerPreset][value=none]').checked = true;
+  el('manualTongueWrap').style.display='none';
+  el('need4wd').checked = false;
+  CARGO_PRESETS.forEach(p => {
+    const cb = document.getElementById('cargo_' + p.id); if (cb) cb.checked = false;
+    const qtyInp = document.getElementById('qty_' + p.id); if (qtyInp) qtyInp.value = p.qtyDefault != null ? p.qtyDefault : 1;
+  });
+  el('trucksWrap').innerHTML = '';
+  trucks = [
+    {id:1, nom:'Camion A', classe:'1500', pnbv:0, videPoids:0, pnbc:0},
+    {id:2, nom:'Camion B', classe:'2500', pnbv:0, videPoids:0, pnbc:0},
+  ];
+  nextId = 3;
+  renderAll();
+});
+
+const themeBtn = el('themeToggle');
+themeBtn.addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+});
+
+function setUnitButtons(){
+  document.querySelectorAll('.unit-btn').forEach(b => b.classList.toggle('active', b.dataset.unit === unit));
+  document.querySelectorAll('.unit-tag').forEach(t => t.textContent = unit);
+}
+
+function convertAllInputs(oldU, newU){
+  const convert = raw => {
+    if (isNaN(raw)) return raw;
+    const kg = oldU === 'kg' ? raw : lbToKg(raw);
+    return roundVal(newU === 'kg' ? kg : kgToLb(kg));
+  };
+  ['pnbr','occ','cargo','options','tongueManual'].forEach(id => {
+    const inp = el(id);
+    const raw = parseFloat(inp.value);
+    if (!isNaN(raw)) inp.value = convert(raw);
+  });
+  document.querySelectorAll('.truck-card').forEach(card => {
+    ['t-pnbv','t-vide','t-pnbc'].forEach(cls => {
+      const inp = card.querySelector('.' + cls);
+      const raw = parseFloat(inp.value);
+      if (!isNaN(raw)) inp.value = convert(raw);
+    });
+  });
+}
+
+document.querySelectorAll('.unit-btn').forEach(btn => btn.addEventListener('click', () => {
+  const newUnit = btn.dataset.unit;
+  if (newUnit === unit) return;
+  convertAllInputs(unit, newUnit);
+  unit = newUnit;
+  setUnitButtons();
+  renderAll();
+}));
+
+buildTrailerPresetsUI();
+buildCargoPresetsUI();
+renderAll();
+
+})();
+
+
 </script>
+
+  </div>
+</div>
+
 </body>
 </html>
