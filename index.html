@@ -35,7 +35,7 @@ body{font-family:'Inter',sans-serif;background:#f0f2f5;color:#1a1a2e;font-size:1
 .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
 .page-title{font-size:15px;font-weight:700;color:#1a1a2e;}
 .ts-badge{font-size:10px;color:#94a3b8;background:#f1f5f9;padding:3px 8px;border-radius:4px;white-space:nowrap;}
-.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px;}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px;}
 .stat-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 8px;text-align:center;cursor:pointer;transition:border-color .15s;}
 .stat-card:hover{border-color:#93c5fd;}
 .stat-card.active{border-color:#003DA5;background:#eff6ff;}
@@ -55,6 +55,8 @@ select.filter-sel{flex:1;min-width:90px;border:1px solid #e2e8f0;border-radius:7
 .badge-used{background:#f1f5f9;color:#475569;}
 .badge-demo{background:#ede9fe;color:#6d28d9;}
 .badge-vendu{background:#fee2e2;color:#991b1b;}
+.badge-cmd{background:#fef3c7;color:#92400e;font-weight:700;}
+.card-cmd{border-left:3px solid #f59e0b;}
 .badge-eco{background:#fef3c7;color:#92400e;font-size:9px;}
 .table-wrap{background:#fff;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;}
 .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
@@ -279,7 +281,10 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
         <div class="stat-num" id="num-all">—</div><div class="stat-label">Total</div>
       </div>
       <div class="stat-card" id="stat-neuf" onclick="filterByType('NEUF')">
-        <div class="stat-num" id="num-neuf">—</div><div class="stat-label">Neufs</div>
+        <div class="stat-num" id="num-neuf">—</div><div class="stat-label">Neufs en stock</div>
+      </div>
+      <div class="stat-card" id="stat-cmd" onclick="filterByType('CMD')">
+        <div class="stat-num" id="num-cmd" style="color:#b45309">—</div><div class="stat-label">En commande</div>
       </div>
       <div class="stat-card" id="stat-used" onclick="filterByType('USED')">
         <div class="stat-num" id="num-used">—</div><div class="stat-label">Usagés</div>
@@ -641,13 +646,13 @@ const INVENTORY=[
   {s:'13937892',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5FL5TG359874',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:113490,r:124490,mp:false},
   {s:'13911620',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5FL1TG343929',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:114085,r:125085,mp:false},
   {s:'13937904',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'LARAMIE',c:'NOIR',km:10,e:'NEUF',v:'3C6UR5FL7TG359875',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:114085,r:125085,mp:false},
-  {s:'13884595',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'LIMITED',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5SL2TG343945',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:116610,r:127610,mp:false},
+  {s:'13884595',stk:true,eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'2500',t:'LIMITED',c:'BLANC',km:10,e:'NEUF',v:'3C6UR5SL2TG343945',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:116610,r:127610,mp:false},
   {s:'13963131',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'GRIS',km:10,e:'NEUF',v:'3C63RRHL6TG363173',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:100040,r:111040,mp:false},
-  {s:'13963129',eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C63RRHL4TG363172',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:100635,r:111635,mp:false},
+  {s:'13963129',stk:true,eng:'6.7L Cummins Diesel HO',y:'2026',b:'RAM',m:'3500',t:'BIG HORN',c:'NOIR',km:10,e:'NEUF',v:'3C63RRHL4TG363172',tr:'Auto. 8 vit. ZF',vitre:false,vendu:false,p:100635,r:111635,mp:false},
   {s:'14072929',eng:'5.7L HEMI V8',y:'2027',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFTP6TN377960',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:78260,r:86510,mp:false},
-  {s:'14041682',eng:'3.0L I-6 Twin Turbo',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'GRIS',km:10,e:'NEUF',v:'1C6SRFLT6TN445073',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:79970,r:88220,mp:false},
+  {s:'14041682',stk:true,eng:'3.0L I-6 Twin Turbo',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'GRIS',km:10,e:'NEUF',v:'1C6SRFLT6TN445073',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:79970,r:88220,mp:false},
   {s:'13986282',eng:'5.7L HEMI V8',y:'2026',b:'RAM',m:'1500',t:'SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C6SRFVT5TN408657',tr:'Auto. 8 vit.',vitre:false,vendu:true,p:77465,r:85715,mp:false},
-  {s:'14013520',eng:'3.0L I-6 Twin Turbo',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:10,e:'NEUF',v:'1C6SRFTP8TN377961',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:76185,r:84435,mp:false},
+  {s:'14013520',stk:true,eng:'3.0L I-6 Twin Turbo',y:'2026',b:'RAM',m:'1500',t:'REBEL',c:'BLANC',km:10,e:'NEUF',v:'1C6SRFTP8TN377961',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:76185,r:84435,mp:false},
   {s:'13937898',eng:'5.7L HEMI V8',y:'2026',b:'RAM',m:'1500',t:'BIG HORN',c:'GRIS',km:10,e:'NEUF',v:'1C6SRFMP8TN424565',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:84400,r:null,mp:false},
   {s:'26385A',y:'2015',b:'MAZDA',m:'MAZDA3',t:'GX',c:'BLANC',km:170158,e:'USED',v:'3MZBM1U79FM170158',tr:'Auto.',vitre:false,vendu:true,p:9995,r:null,mp:false},
   {s:'26399B',y:'2023',b:'NISSAN',m:'KICKS',t:'SV',c:'BLANC',km:17719,e:'USED',v:'3N1CP5CV0PL499489',tr:'Auto.',vitre:false,vendu:true,p:19995,r:null,mp:false},
@@ -769,6 +774,13 @@ const INVENTORY=[
   {s:'',eng:'3.6L V6',y:'2027',b:'RAM',m:'1500',t:'TRADESMAN',c:'GRANIT',km:10,e:'NEUF',v:'V4501560',tr:'Auto. 8 vit.',vitre:false,vendu:false,p:null,r:null,mp:false},
   {s:'',eng:'3.6L Pentastar V6',y:'2027',b:'CHRYSLER',m:'GRAND CARAVAN',t:'SXT',c:'NOIR',km:10,e:'NEUF',v:'VR561430',tr:'Auto. 9 vit.',vitre:false,vendu:false,p:null,r:null,mp:false},
 ];
+// Réf. générique du site (13XXXXXX/14XXXXXX) = véhicule EN COMMANDE, sauf stk:true (déjà en concession)
+function isGen(v){return /^1[34]\d{6}$/.test(v.s||'');}
+function isCmd(v){return v.e==='NEUF'&&isGen(v)&&!v.stk;}
+// Retirer les réf. génériques qui doublent un véhicule déjà présent avec un vrai no de stock
+(function(){var k={};INVENTORY.forEach(function(v){if(!isGen(v)&&v.v)k[v.v.slice(-8)]=1;});
+for(var i=INVENTORY.length-1;i>=0;i--){var v=INVENTORY[i];if(isGen(v)&&v.v&&k[v.v.slice(-8)])INVENTORY.splice(i,1);}})();
+
 
 const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','ceramique':'#a0a8b0','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','raie':'#8fa0a8'};
 function cx(s){if(!s)return'#9ca3af';const l=s.toLowerCase();for(const[k,v]of Object.entries(CM))if(l.includes(k))return v;return'#9ca3af';}
@@ -788,7 +800,7 @@ function filterByMP(){
   activeMPFilter = !activeMPFilter;
   if(activeMPFilter){
     activeType='';
-    ['all','neuf','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
+    ['all','neuf','cmd','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
     document.getElementById('stat-mp').classList.add('active');
   } else {
     document.getElementById('stat-mp').classList.remove('active');
@@ -801,9 +813,10 @@ function filterByType(t){
   activeMPFilter=false;
   document.getElementById('stat-mp').classList.remove('active');
   activeType=t;
-  ['all','neuf','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
+  ['all','neuf','cmd','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
   if(!t)document.getElementById('stat-all').classList.add('active');
   else if(t==='NEUF')document.getElementById('stat-neuf').classList.add('active');
+  else if(t==='CMD')document.getElementById('stat-cmd').classList.add('active');
   else if(t==='USED')document.getElementById('stat-used').classList.add('active');
   else document.getElementById('stat-demo').classList.add('active');
   applyFilters();
@@ -817,7 +830,7 @@ function resetFilters(){
   activeMPFilter=false;
   document.getElementById('stat-mp').classList.remove('active');
   activeType='';
-  ['all','neuf','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
+  ['all','neuf','cmd','used','demo'].forEach(k=>document.getElementById('stat-'+k).classList.remove('active'));
   document.getElementById('stat-all').classList.add('active');
   applyFilters();
 }
@@ -829,7 +842,7 @@ function applyFilters(){
   const so=document.getElementById('sort').value;
   let r=INVENTORY.filter(v=>{
     const ms=!q||[v.b,v.m,v.t,v.y,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
-    const me=!activeType||(activeType==='USED'?(v.e==='USED'):v.e===activeType);
+    const me=!activeType||(activeType==='CMD'?isCmd(v):activeType==='NEUF'?(v.e==='NEUF'&&!isCmd(v)):activeType==='USED'?(v.e==='USED'):v.e===activeType);
     const mmp=!activeMPFilter||v.mp===true;
     const mvendu=activeMPFilter||!v.vendu;
     return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me&&mmp&&mvendu;
@@ -844,7 +857,8 @@ function applyFilters(){
   else if(so==='name')r.sort((a,b)=>(a.b+a.m).localeCompare(b.b+b.m));
 
   document.getElementById('num-all').textContent=INVENTORY.length;
-  document.getElementById('num-neuf').textContent=INVENTORY.filter(v=>v.e==='NEUF').length;
+  document.getElementById('num-neuf').textContent=INVENTORY.filter(v=>v.e==='NEUF'&&!isCmd(v)&&!v.vendu).length;
+  document.getElementById('num-cmd').textContent=INVENTORY.filter(v=>isCmd(v)&&!v.vendu).length;
   document.getElementById('num-used').textContent=INVENTORY.filter(v=>v.e==='USED').length;
   document.getElementById('num-demo').textContent=INVENTORY.filter(v=>v.e==='DÉMO').length;
   document.getElementById('num-mp').textContent=INVENTORY.filter(v=>v.mp===true).length;
@@ -864,7 +878,7 @@ function renderTable(vv){
   document.getElementById('table-body').innerHTML=vv.map(v=>{
     const eco=v.r&&v.p?v.r-v.p:0;
     return`<tr class="${v.vendu?'row-vendu':''}">
-      <td>${stateBadge(v.e)}${v.mp?' <span class="badge-mp">✓ MP</span>':''} ${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</td>
+      <td>${isCmd(v)?'<span class="badge badge-cmd">EN COMMANDE</span>':stateBadge(v.e)}${v.mp?' <span class="badge-mp">✓ MP</span>':''} ${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</td>
       <td><strong>${v.s||'—'}</strong></td>
       <td>${v.y}</td>
       <td>${v.b}</td>
@@ -887,12 +901,12 @@ function renderTable(vv){
 function renderCards(vv){
   document.getElementById('cards-list').innerHTML=vv.map(v=>{
     const eco=v.r&&v.p?v.r-v.p:0;
-    return`<div class="vcard${v.vendu?' card-vendu':''}">
+    return`<div class="vcard${v.vendu?' card-vendu':''}${isCmd(v)?' card-cmd':''}">
       <div class="vcard-header">
         <div>
           <div class="vcard-title">${v.y} ${v.b} ${v.m}</div>
           ${v.t?`<div class="vcard-trim">${v.t}</div>`:''}
-          <div class="vcard-sub">${stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</div>
+          <div class="vcard-sub">${isCmd(v)?'<span class="badge badge-cmd">EN COMMANDE</span>':stateBadge(v.e)}${v.vendu?' <span class="badge badge-vendu">VENDU</span>':''}</div>
         </div>
         <div class="vcard-right">
           ${v.p?`<div class="vcard-prix">${fp(v.p)}</div>`:''}
@@ -2252,7 +2266,7 @@ function renderDashboard(){
   var now=new Date();
   document.getElementById('dash-date-str').textContent=days[now.getDay()]+' '+now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
 
-  var neufs=INVENTORY.filter(function(v){return v.e==='NEUF'&&!v.vendu;});
+  var neufs=INVENTORY.filter(function(v){return v.e==='NEUF'&&!isCmd(v)&&!v.vendu;});
   var used=INVENTORY.filter(function(v){return v.e==='USED'&&!v.vendu;});
   var mp=INVENTORY.filter(function(v){return v.mp&&!v.vendu;});
   var sold=INVENTORY.filter(function(v){return v.vendu;});
