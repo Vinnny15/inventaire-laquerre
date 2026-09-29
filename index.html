@@ -299,6 +299,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
       <div class="filters-row">
         <select class="filter-sel" id="filter-brand" onchange="applyFilters()"><option value="">Toutes marques</option></select>
         <select class="filter-sel" id="filter-model" onchange="applyFilters()"><option value="">Tous modèles</option></select>
+        <select class="filter-sel" id="filter-trim" onchange="applyFilters()"><option value="">Tous trim</option></select>
         <select class="filter-sel" id="sort" onchange="applyFilters()">
           <option value="stock-asc">Stock ↑</option>
           <option value="stock-desc">Stock ↓</option>
@@ -798,6 +799,7 @@ function resetFilters(){
   document.getElementById('search').value='';
   document.getElementById('filter-brand').value='';
   document.getElementById('filter-model').value='';
+  document.getElementById('filter-trim').value='';
   document.getElementById('sort').value='stock-asc';
   activeMPFilter=false;
   document.getElementById('stat-mp').classList.remove('active');
@@ -811,13 +813,15 @@ function applyFilters(){
   const q=document.getElementById('search').value.toLowerCase();
   const br=document.getElementById('filter-brand').value;
   const mo=document.getElementById('filter-model').value;
+  const tr=document.getElementById('filter-trim').value;
   const so=document.getElementById('sort').value;
   let r=INVENTORY.filter(v=>{
     const ms=!q||[v.b,v.m,v.t,v.y,v.s,v.v,v.c,v.e].join(' ').toLowerCase().includes(q);
     const me=!activeType||(activeType==='USED'?(v.e==='USED'):v.e===activeType);
     const mmp=!activeMPFilter||v.mp===true;
     const mvendu=activeMPFilter||!v.vendu;
-    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&me&&mmp&&mvendu;
+    const mtr=!tr||normalizeTrim(v.t)===tr;
+    return ms&&(!br||v.b===br)&&(!mo||v.m===mo)&&mtr&&me&&mmp&&mvendu;
   });
   if(so==='stock-asc')r.sort((a,b)=>a.s.localeCompare(b.s,undefined,{numeric:true}));
   else if(so==='stock-desc')r.sort((a,b)=>b.s.localeCompare(a.s,undefined,{numeric:true}));
@@ -906,11 +910,43 @@ function renderCards(vv){
     </div>`;}).join('');
 }
 
+function normalizeTrim(t){
+  if(!t)return'';
+  const u=t.toUpperCase();
+  if(u.startsWith('TRADESMAN'))return'TRADESMAN';
+  if(u.startsWith('WARLOCK')||u==='WARLOCK')return'WARLOCK';
+  if(u.startsWith('BIG HORN')||u==='BIGHORN')return'BIG HORN';
+  if(u.startsWith('REBEL'))return'REBEL';
+  if(u.startsWith('POWER WAGON'))return'POWER WAGON';
+  if(u.startsWith('LARAMIE'))return'LARAMIE';
+  if(u.startsWith('LONGHORN')||u.startsWith('LIMITED LONGHORN'))return'LONGHORN';
+  if(u.startsWith('LIMITED'))return'LIMITED';
+  if(u.startsWith('TREMOR'))return'TREMOR';
+  if(u.startsWith('RHO'))return'RHO';
+  if(u.startsWith('RUBICON'))return'RUBICON';
+  if(u.startsWith('SAHARA'))return'SAHARA';
+  if(u.startsWith('WILLYS')||u.startsWith('4XE WILLYS'))return'WILLYS';
+  if(u.startsWith('MOJAVE'))return'MOJAVE';
+  if(u.startsWith('OVERLAND'))return'OVERLAND';
+  if(u.startsWith('SUMMIT'))return'SUMMIT';
+  if(u.startsWith('ALTITUDE'))return'ALTITUDE';
+  if(u.startsWith('NORTH')||u==='NORD')return'NORTH';
+  if(u.startsWith('SPORT'))return'SPORT';
+  if(u.startsWith('SLT'))return'SLT';
+  if(u.startsWith('LAREDO'))return'LAREDO';
+  if(u.startsWith('SXT'))return'SXT';
+  if(u.startsWith('EXPRESS'))return'EXPRESS';
+  if(u.startsWith('CLASSIC'))return'CLASSIC';
+  return t;
+}
+
 function initSelects(){
   const brands=[...new Set(INVENTORY.map(v=>v.b))].sort();
   const models=[...new Set(INVENTORY.map(v=>v.m))].sort();
+  const trims=[...new Set(INVENTORY.map(v=>normalizeTrim(v.t)).filter(t=>t))].sort();
   document.getElementById('filter-brand').innerHTML='<option value="">Toutes marques</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
   document.getElementById('filter-model').innerHTML='<option value="">Tous modèles</option>'+models.map(m=>`<option value="${m}">${m}</option>`).join('');
+  document.getElementById('filter-trim').innerHTML='<option value="">Tous trim</option>'+trims.map(t=>`<option value="${t}">${t}</option>`).join('');
 }
 
 // ── ANNONCE MARKETPLACE ───────────────────────────────────────────────
