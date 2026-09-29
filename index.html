@@ -297,8 +297,8 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
         <input class="search-input" type="text" id="search" placeholder="Stock, VIN, modèle, couleur, marque..." oninput="applyFilters()">
       </div>
       <div class="filters-row">
-        <select class="filter-sel" id="filter-brand" onchange="applyFilters()"><option value="">Toutes marques</option></select>
-        <select class="filter-sel" id="filter-model" onchange="applyFilters()"><option value="">Tous modèles</option></select>
+        <select class="filter-sel" id="filter-brand" onchange="updateTrimOptions();applyFilters()"><option value="">Toutes marques</option></select>
+        <select class="filter-sel" id="filter-model" onchange="updateTrimOptions();applyFilters()"><option value="">Tous modèles</option></select>
         <select class="filter-sel" id="filter-trim" onchange="applyFilters()"><option value="">Tous trim</option></select>
         <select class="filter-sel" id="sort" onchange="applyFilters()">
           <option value="stock-asc">Stock ↑</option>
@@ -799,8 +799,8 @@ function resetFilters(){
   document.getElementById('search').value='';
   document.getElementById('filter-brand').value='';
   document.getElementById('filter-model').value='';
-  document.getElementById('filter-trim').value='';
   document.getElementById('sort').value='stock-asc';
+  updateTrimOptions();
   activeMPFilter=false;
   document.getElementById('stat-mp').classList.remove('active');
   activeType='';
@@ -943,10 +943,18 @@ function normalizeTrim(t){
 function initSelects(){
   const brands=[...new Set(INVENTORY.map(v=>v.b))].sort();
   const models=[...new Set(INVENTORY.map(v=>v.m))].sort();
-  const trims=[...new Set(INVENTORY.map(v=>normalizeTrim(v.t)).filter(t=>t))].sort();
   document.getElementById('filter-brand').innerHTML='<option value="">Toutes marques</option>'+brands.map(b=>`<option value="${b}">${b}</option>`).join('');
   document.getElementById('filter-model').innerHTML='<option value="">Tous modèles</option>'+models.map(m=>`<option value="${m}">${m}</option>`).join('');
-  document.getElementById('filter-trim').innerHTML='<option value="">Tous trim</option>'+trims.map(t=>`<option value="${t}">${t}</option>`).join('');
+  updateTrimOptions();
+}
+
+function updateTrimOptions(){
+  const br=document.getElementById('filter-brand').value;
+  const mo=document.getElementById('filter-model').value;
+  const currentTrim=document.getElementById('filter-trim').value;
+  const subset=INVENTORY.filter(v=>(!br||v.b===br)&&(!mo||v.m===mo));
+  const trims=[...new Set(subset.map(v=>normalizeTrim(v.t)).filter(t=>t))].sort();
+  document.getElementById('filter-trim').innerHTML='<option value="">Tous trim</option>'+trims.map(t=>`<option value="${t}"${t===currentTrim?' selected':''}>${t}</option>`).join('');
 }
 
 // ── ANNONCE MARKETPLACE ───────────────────────────────────────────────
