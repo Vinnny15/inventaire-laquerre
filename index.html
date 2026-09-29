@@ -943,7 +943,7 @@ Profitez d'un rabais exclusif de 20 000$ sur location commerciale. ${is3500?"Le 
 ⛓️ Remorquage jusqu'à ${remorquage} (compatible attelage col-de-cygne)
 📲 Uconnect 5 · Apple CarPlay / Android Auto
 
-📋 Stock : ${v.s} | NIV : ${v.v}
+${v.r?`💰 Prix régulier : ${fp(v.r)}\n💥 Prix location commerciale : ${fp(v.r-20000)} (rabais 20 000$)\n`:''}📋 Stock : ${v.s} | NIV : ${v.v}
 
 ✅ Nouveau camion à chaque renouvellement
 ✅ Déductible fiscalement pour votre entreprise
