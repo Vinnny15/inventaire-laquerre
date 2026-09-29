@@ -933,9 +933,14 @@ function buildAnnonceLocation(v){
   const tr=v.tr||'Auto. 8 vit.';
   const nomComplet=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
   return `💼 LOCATION COMMERCIALE — RABAIS 20 000$
-${nomComplet} — ${v.c}
+${nomComplet}
 
-Profitez d'un rabais exclusif de 20 000$ sur location commerciale. ${is3500?"Le camion de travail ultime pour les pros qui ne font aucun compromis.":"L'outil de travail idéal pour entrepreneurs, contracteurs et PME qui exigent le meilleur."}
+✅ Nouveau camion à chaque 18-24 mois
+✅ Déductible fiscalement pour votre entreprise
+✅ Kilométrage adapté à votre usage
+
+${v.r?`💰 Prix régulier : ${fp(v.r)}\n💥 Prix location commerciale : ${fp(v.r-20000)} (rabais 20 000$)\n`:''}📋 Stock : ${v.s}
+📋 NIV : ${v.v}
 
 🔧 6.7L Cummins Diesel High Output
    430 HP · 1 075 lb-pi de couple
@@ -943,20 +948,10 @@ Profitez d'un rabais exclusif de 20 000$ sur location commerciale. ${is3500?"Le 
 ⛓️ Remorquage jusqu'à ${remorquage} (compatible attelage col-de-cygne)
 📲 Uconnect 5 · Apple CarPlay / Android Auto
 
-${v.r?`💰 Prix régulier : ${fp(v.r)}\n💥 Prix location commerciale : ${fp(v.r-20000)} (rabais 20 000$)\n`:''}📋 Stock : ${v.s} | NIV : ${v.v}
-
-✅ Nouveau camion à chaque renouvellement
-✅ Déductible fiscalement pour votre entreprise
-✅ Kilométrage adapté à votre usage
-
----
 Laquerre Chrysler — Gestion de flotte commerciale
-Nous accompagnons les entrepreneurs et gestionnaires de flotte dans l'acquisition de véhicules de travail adaptés à leurs besoins. Contactez-moi pour une soumission personnalisée.
 
-📞 873-300-4687
-🌐 www.laquerrechrysler.com
-📍 34 Boul. Arthabaska Est, Victoriaville QC
-— Vincent`;
+Vincent Tourigny
+📍 34 Boul. Arthabaska Est, Victoriaville QC`;
 }
 
 function genAnnonceLocationByStock(s){
