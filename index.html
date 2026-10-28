@@ -204,8 +204,37 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   <div class="main">
     <div class="page-header">
       <div class="page-title">Inventaire des véhicules</div>
-      <span class="ts-badge">24 août 2026 · <span id="total-count">0</span> véhicules</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <span class="ts-badge"><span id="total-count">0</span> véhicules</span>
+        <button onclick="document.getElementById('excel-panel').style.display='flex'" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:7px 13px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px;"><i class="ti ti-table-import"></i> Mise à jour Excel</button>
+      </div>
     </div>
+
+<!-- PANNEAU MISE À JOUR EXCEL -->
+<div id="excel-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:14px;padding:28px 28px 24px;max-width:520px;width:94%;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative;">
+    <button onclick="document.getElementById('excel-panel').style.display='none'" style="position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#94a3b8;">✕</button>
+    <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:4px;"><i class="ti ti-table-import" style="color:#16a34a"></i> Mise à jour par fichier Excel</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:20px;">Sélectionne le fichier <strong>Inventaire_neuf_et_usag_.xlsx</strong> — les nouveaux véhicules seront ajoutés, les statuts vendus mis à jour.</div>
+
+    <label for="excel-upload" style="display:block;border:2px dashed #cbd5e1;border-radius:10px;padding:30px;text-align:center;cursor:pointer;transition:border-color .15s;" id="drop-zone"
+      ondragover="event.preventDefault();this.style.borderColor='#16a34a'"
+      ondragleave="this.style.borderColor='#cbd5e1'"
+      ondrop="event.preventDefault();this.style.borderColor='#cbd5e1';handleExcelFile(event.dataTransfer.files[0])">
+      <i class="ti ti-file-spreadsheet" style="font-size:36px;color:#16a34a;display:block;margin-bottom:8px;"></i>
+      <div style="font-weight:600;color:#374151;font-size:13px;">Glisser le fichier ici</div>
+      <div style="font-size:11px;color:#94a3b8;margin-top:4px;">ou cliquer pour choisir (.xlsx)</div>
+    </label>
+    <input type="file" id="excel-upload" accept=".xlsx" style="display:none" onchange="handleExcelFile(this.files[0])">
+
+    <div id="excel-log" style="display:none;margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:14px;font-size:12px;color:#374151;max-height:220px;overflow-y:auto;line-height:1.8;"></div>
+
+    <div id="excel-actions" style="display:none;margin-top:16px;display:none;gap:10px;justify-content:flex-end;">
+      <button onclick="document.getElementById('excel-panel').style.display='none'" style="padding:9px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;">Annuler</button>
+      <button id="btn-apply-excel" onclick="applyExcelChanges()" style="padding:9px 18px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;"><i class="ti ti-check"></i> Appliquer les changements</button>
+    </div>
+  </div>
+</div>
     
 <!-- SECTION TABLEAU DE BORD -->
 <div id="section-dashboard">
@@ -2499,6 +2528,169 @@ function showInventaire(){
   document.getElementById('section-dashboard').classList.remove('active');
   document.querySelectorAll('.bnav-item').forEach(function(el){el.classList.remove('active');});
   document.getElementById('bnav-inv').classList.add('active');
+}
+
+
+// ──────────────────────────────────────────
+// MISE À JOUR EXCEL — fonctionnalité client
+// ──────────────────────────────────────────
+const VITRE_BRANDS = new Set(['JEEP','RAM','DODGE','CHRYSLER']);
+const VITRE_BASE = 'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=';
+
+let _excelPending = null; // {toAdd:[], toUpdate:[]}
+
+function handleExcelFile(file){
+  if(!file) return;
+  const log = document.getElementById('excel-log');
+  const actions = document.getElementById('excel-actions');
+  log.style.display = 'block';
+  log.innerHTML = '<span style="color:#2563eb">⏳ Lecture du fichier en cours…</span>';
+  actions.style.display = 'none';
+
+  // Charger SheetJS dynamiquement si pas encore présent
+  function parseWithXLSX(){
+    const reader = new FileReader();
+    reader.onload = function(e){
+      try{
+        const data = new Uint8Array(e.target.result);
+        const wb = XLSX.read(data, {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+
+        // Trouver la ligne d'en-tête
+        let headerRow = -1;
+        for(let i=0;i<Math.min(5,rows.length);i++){
+          const r = rows[i].map(c=>String(c).toUpperCase().trim());
+          if(r.includes('STOCK') || r.includes('NIV')){headerRow=i;break;}
+        }
+        if(headerRow<0){log.innerHTML='<span style="color:#dc2626">❌ En-têtes introuvables (STOCK, NIV attendus)</span>';return;}
+
+        const hdr = rows[headerRow].map(c=>String(c).toUpperCase().trim());
+        const col = k => hdr.indexOf(k);
+        const iSTOCK=col('STOCK'), iANNEE=col('ANNÉE')||col('ANNEE')||col('AN'),
+              iMARQUE=col('MARQUE'), iMODELE=col('MODÈLE')||col('MODELE'),
+              iCOULEUR=col('COULEUR'), iKM=col('KM'),
+              iETAT=col('ÉTAT')||col('ETAT'), iNIV=col('NIV'),
+              iVENDU=col('VENDU');
+
+        const toUpdate=[], toAdd=[];
+        const stockMap = {};
+        INVENTORY.forEach((v,i)=>stockMap[v.s]=i);
+
+        for(let i=headerRow+1;i<rows.length;i++){
+          const r=rows[i];
+          const stock = String(r[iSTOCK]||'').trim();
+          if(!stock || stock==='0') continue;
+
+          const venduRaw = String(r[iVENDU]||'').toUpperCase().trim();
+          const vendu = venduRaw==='OUI' || venduRaw==='YES' || venduRaw==='1' || venduRaw==='TRUE' || venduRaw==='VENDU';
+          const niv = String(r[iNIV]||'').trim();
+          const marque = String(r[iMARQUE]||'').trim().toUpperCase();
+
+          if(stock in stockMap){
+            // Véhicule existant — vérifier statut vendu
+            const idx = stockMap[stock];
+            if(INVENTORY[idx].vendu !== vendu){
+              toUpdate.push({stock, idx, vendu});
+            }
+          } else {
+            // Nouveau véhicule
+            const km = parseInt(String(r[iKM]||0).replace(/\s/g,'').replace(',',''))||0;
+            const fv = (niv && VITRE_BRANDS.has(marque)) ? VITRE_BASE+niv : '';
+            toAdd.push({
+              s: stock,
+              y: String(r[iANNEE]||'').trim(),
+              b: marque,
+              m: String(r[iMODELE]||'').trim().toUpperCase(),
+              c: String(r[iCOULEUR]||'').trim().toUpperCase(),
+              km,
+              e: String(r[iETAT]||'').trim().toUpperCase()==='USAGÉ'||String(r[iETAT]||'').trim().toUpperCase()==='USAGE'||String(r[iETAT]||'').trim().toUpperCase()==='USED' ? 'USED':'NEUF',
+              v: niv,
+              t:'', tr:'', eng:'',
+              vendu, mp:false,
+              p:null, r:null, fv,
+              vitre: !!fv
+            });
+          }
+        }
+
+        _excelPending = {toUpdate, toAdd};
+
+        // Afficher le résumé
+        let html = '';
+        if(toUpdate.length===0 && toAdd.length===0){
+          html='<span style="color:#16a34a">✅ Aucune modification nécessaire — inventaire déjà à jour.</span>';
+          actions.style.display='none';
+        } else {
+          if(toUpdate.length){
+            html+=`<div style="font-weight:600;color:#92400e;margin-bottom:4px">🏷️ Statut vendu à mettre à jour (${toUpdate.length})</div>`;
+            toUpdate.forEach(u=>{
+              html+=`<div style="padding-left:12px">• Stock <strong>${u.stock}</strong> → <span style="color:${u.vendu?'#dc2626':'#16a34a'}">${u.vendu?'VENDU':'DISPONIBLE'}</span></div>`;
+            });
+          }
+          if(toAdd.length){
+            html+=`<div style="font-weight:600;color:#1d4ed8;margin-top:${toUpdate.length?'10':'0'}px;margin-bottom:4px">🚗 Nouveaux véhicules à ajouter (${toAdd.length})</div>`;
+            toAdd.forEach(a=>{
+              html+=`<div style="padding-left:12px">• <strong>${a.s}</strong> — ${a.y} ${a.b} ${a.m} ${a.c} ${a.e==='USED'?'(usagé)':'(neuf)'}${a.fv?' 🔖':''}</div>`;
+            });
+          }
+          log.innerHTML=html;
+          actions.style.display='flex';
+        }
+      } catch(err){
+        log.innerHTML=`<span style="color:#dc2626">❌ Erreur de lecture: ${err.message}</span>`;
+        console.error(err);
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  if(typeof XLSX !== 'undefined'){
+    parseWithXLSX();
+  } else {
+    log.innerHTML='<span style="color:#2563eb">⏳ Chargement de SheetJS…</span>';
+    const s=document.createElement('script');
+    s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+    s.onload=parseWithXLSX;
+    s.onerror=()=>{log.innerHTML='<span style="color:#dc2626">❌ Impossible de charger SheetJS. Vérifiez votre connexion.</span>';};
+    document.head.appendChild(s);
+  }
+}
+
+function applyExcelChanges(){
+  if(!_excelPending) return;
+  const {toUpdate, toAdd} = _excelPending;
+
+  // Appliquer les mises à jour de statut vendu
+  toUpdate.forEach(u=>{
+    INVENTORY[u.idx].vendu = u.vendu;
+  });
+
+  // Ajouter les nouveaux véhicules
+  toAdd.forEach(a=>INVENTORY.push(a));
+
+  // Re-rendre
+  if(typeof applyFilters === 'function') applyFilters();
+  else if(typeof renderTable === 'function'){
+    renderTable(INVENTORY);
+    renderCards(INVENTORY);
+  }
+
+  // Mettre à jour le compteur
+  const tc = document.getElementById('total-count');
+  if(tc) tc.textContent = INVENTORY.filter(v=>!v.vendu).length;
+
+  // Fermer le panneau et notifier
+  document.getElementById('excel-panel').style.display='none';
+  _excelPending = null;
+  document.getElementById('excel-upload').value='';
+
+  // Toast de confirmation
+  const toast = document.createElement('div');
+  toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
+  toast.textContent = `✅ ${toUpdate.length} statut(s) mis à jour · ${toAdd.length} véhicule(s) ajouté(s)`;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(), 4000);
 }
 
 </script>
