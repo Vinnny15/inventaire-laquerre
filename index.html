@@ -376,36 +376,50 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     </div>
     <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">Source : Inventaire + laquerrechrysler.com · 2 juillet 2026</div>
   </div>
-</div>
-<!-- ══════════════════════ SECTION CLIENTS ══════════════════════ -->
-<div id="section-clients" style="display:none;padding:16px 12px 100px;">
 
-  <!-- En-tête -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-    <div>
-      <div style="font-size:18px;font-weight:700;color:#1a1a2e;">👤 Clients</div>
-      <div style="font-size:12px;color:#64748b;margin-top:2px;"><span id="clients-count">0</span> client(s) enregistré(s)</div>
+  <!-- ══════════════════════ SECTION CLIENTS ══════════════════════ -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- ══════════ VUE CLIENTS (plein écran) ══════════ -->
+<div id="section-clients" style="display:none;position:fixed;inset:0;background:#f4f6fa;z-index:100;overflow-y:auto;flex-direction:column;">
+
+  <!-- Topbar clients -->
+  <div style="background:#003DA5;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15);">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button onclick="showDashboard()" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:7px;padding:6px 10px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif;font-weight:600;">
+        <i class="ti ti-arrow-left" style="font-size:15px;"></i>
+      </button>
+      <div>
+        <div style="font-weight:700;font-size:15px;">👤 Clients</div>
+        <div style="font-size:10px;opacity:.8;"><span id="clients-count">0</span> client(s) enregistré(s)</div>
+      </div>
     </div>
-    <button onclick="openClientForm(null)" style="background:#003DA5;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><i class="ti ti-user-plus"></i> Nouveau client</button>
+    <button onclick="openClientForm(null)" style="background:#fff;color:#003DA5;border:none;border-radius:8px;padding:8px 14px;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;"><i class="ti ti-user-plus"></i> Nouveau client</button>
   </div>
 
-  <!-- Barre de recherche clients -->
-  <div style="position:relative;margin-bottom:14px;">
-    <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;"></i>
-    <input id="clients-search" type="text" placeholder="Rechercher un client, un stock, un NIV…" oninput="filterClients()" style="width:100%;box-sizing:border-box;padding:9px 12px 9px 32px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+  <!-- Barre de recherche -->
+  <div style="padding:12px 16px;">
+    <div style="position:relative;">
+      <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;"></i>
+      <input id="clients-search" type="text" placeholder="Rechercher un client, un stock, un NIV…" oninput="filterClients()" style="width:100%;box-sizing:border-box;padding:9px 12px 9px 32px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;background:#fff;outline:none;">
+    </div>
   </div>
 
   <!-- Liste clients -->
-  <div id="clients-list"></div>
-  <div id="clients-empty" style="display:none;text-align:center;padding:40px 20px;color:#94a3b8;">
-    <i class="ti ti-user-off" style="font-size:36px;display:block;margin-bottom:8px;"></i>
-    <div style="font-size:13px;">Aucun client trouvé.</div>
+  <div style="padding:0 16px 80px;">
+    <div id="clients-list"></div>
+    <div id="clients-empty" style="display:none;text-align:center;padding:60px 20px;color:#94a3b8;">
+      <i class="ti ti-user-off" style="font-size:48px;display:block;margin-bottom:10px;"></i>
+      <div style="font-size:13px;">Aucun client trouvé.</div>
+    </div>
   </div>
+
 </div>
 
 <!-- ══════════ FORMULAIRE CLIENT (modal) ══════════ -->
 <div id="client-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 12px;">
-  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:540px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
 
     <!-- Titre modal -->
     <div style="background:#003DA5;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;">
@@ -416,62 +430,39 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div style="padding:20px;">
       <input type="hidden" id="cf-id">
 
+      <!-- ── SECTION : INFORMATIONS CLIENT ── -->
+      <div style="font-size:10px;font-weight:700;color:#003DA5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0eaff;">
+        <i class="ti ti-user"></i> Informations client
+      </div>
+
       <!-- Nom complet -->
-      <div style="margin-bottom:14px;">
+      <div style="margin-bottom:12px;">
         <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Nom complet *</label>
-        <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+        <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;background:#fff;outline:none;">
       </div>
 
-      <!-- Numéro de stock + lookup -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Numéro de stock</label>
-        <div style="display:flex;gap:8px;">
-          <input id="cf-stock" type="text" placeholder="ex: 27041" oninput="lookupStock()" style="flex:1;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
-          <div id="cf-stock-status" style="display:flex;align-items:center;font-size:11px;color:#94a3b8;min-width:90px;"></div>
+      <!-- Client commercial -->
+      <div style="margin-bottom:16px;">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;">
+          <input type="checkbox" id="cf-is-commercial" onchange="toggleCommercial()" style="width:16px;height:16px;accent-color:#003DA5;cursor:pointer;">
+          <span style="font-size:12px;font-weight:600;color:#374151;">Client commercial (entreprise)</span>
+        </label>
+        <div id="bloc-entreprise" style="display:none;">
+          <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Nom d'entreprise *</label>
+          <input id="cf-entreprise" type="text" placeholder="ex: Transport Tremblay Inc." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;background:#fff;outline:none;">
         </div>
       </div>
 
-      <!-- Véhicule (auto-rempli ou manuel) -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Véhicule</label>
-        <input id="cf-vehicule" type="text" placeholder="ex: 2027 RAM 1500 BIG HORN" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+      <!-- ── SECTION : VÉHICULES ── -->
+      <div style="font-size:10px;font-weight:700;color:#003DA5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0eaff;display:flex;align-items:center;justify-content:space-between;">
+        <span><i class="ti ti-car"></i> Véhicules</span>
+        <button type="button" onclick="addVehicule()" style="font-size:10px;font-weight:700;background:#e0eaff;color:#003DA5;border:none;border-radius:5px;padding:3px 9px;cursor:pointer;font-family:'Inter',sans-serif;">+ Ajouter véhicule</button>
       </div>
 
-      <!-- Numéro de série (auto-rempli ou manuel) -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Numéro de série (NIV)</label>
-        <input id="cf-niv" type="text" placeholder="ex: 1C6SRFLT0SN123456" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;font-family:monospace;font-size:12px;">
-      </div>
-
-      <!-- Date d'achat -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Date d'achat</label>
-        <input id="cf-date" type="date" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
-      </div>
-
-      <!-- Type d'achat -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Type d'achat</label>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="cf-type-btns">
-          <button type="button" class="type-btn" data-type="comptant" onclick="selectType('comptant')">💵 Comptant</button>
-          <button type="button" class="type-btn" data-type="financement" onclick="selectType('financement')">📋 Financement</button>
-          <button type="button" class="type-btn" data-type="location-sci" onclick="selectType('location-sci')">🏠 Location SCI</button>
-          <button type="button" class="type-btn" data-type="location-comm" onclick="selectType('location-comm')">🏢 Location commerciale</button>
-        </div>
-        <input type="hidden" id="cf-type">
-      </div>
-
-      <!-- Solde approximatif (placeholder futur) -->
-      <div style="margin-bottom:20px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Solde approximatif</label>
-        <div style="padding:10px 12px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:7px;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px;">
-          <i class="ti ti-tool" style="font-size:16px;"></i>
-          <span>Outil de calcul à venir — sera développé prochainement</span>
-        </div>
-      </div>
+      <div id="cf-vehicules-list"></div>
 
       <!-- Boutons -->
-      <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
         <button onclick="closeClientForm()" style="padding:9px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;">Annuler</button>
         <button onclick="saveClient()" style="padding:9px 20px;background:#003DA5;color:#fff;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;"><i class="ti ti-check"></i> Enregistrer</button>
       </div>
@@ -2637,7 +2628,16 @@ function renderDashboard(){
   }).join(''):'<div class="dash-empty">Aucune annonce active</div>';
 }
 
+function _exitClientView(){
+  // Remet la sidebar et la bottom nav visibles
+  const sidebar=document.querySelector('.sidebar');
+  const bnav=document.querySelector('.bottom-nav');
+  if(sidebar) sidebar.style.display='';
+  if(bnav) bnav.style.removeProperty('display');
+}
+
 function showDashboard(){
+  _exitClientView();
   document.getElementById('section-dashboard').classList.add('active');
   document.getElementById('section-clients').style.display='none';
   document.querySelectorAll('.bnav-item').forEach(function(el){el.classList.remove('active');});
@@ -2646,6 +2646,7 @@ function showDashboard(){
 }
 
 function showInventaire(){
+  _exitClientView();
   document.getElementById('section-dashboard').classList.remove('active');
   document.getElementById('section-clients').style.display='none';
   document.querySelectorAll('.bnav-item').forEach(function(el){el.classList.remove('active');});
@@ -2663,11 +2664,14 @@ function saveClientsToStorage(){
 }
 
 function showClients(){
+  // Plein-écran : cacher sidebar et bottom nav
+  const sidebar=document.querySelector('.sidebar');
+  const bnav=document.querySelector('.bottom-nav');
+  if(sidebar) sidebar.style.display='none';
+  if(bnav) bnav.style.display='none';
   document.getElementById('section-dashboard').classList.remove('active');
-  document.querySelectorAll('.bnav-item').forEach(el=>el.classList.remove('active'));
-  const b=document.getElementById('bnav-clients');
-  if(b) b.classList.add('active');
-  document.getElementById('section-clients').style.display='block';
+  const sc=document.getElementById('section-clients');
+  sc.style.display='flex';
   renderClients();
 }
 
@@ -2675,34 +2679,95 @@ function hideClients(){
   document.getElementById('section-clients').style.display='none';
 }
 
+// ── Termes disponibles par type ──
+const TERMES = {
+  'financement':    [24,36,48,60,72,84,96],
+  'location-sci':   [24,36,48,60],
+  'location-comm':  [24,36,48,60],
+  'comptant':       []
+};
+
+// ── État temporaire des véhicules en cours d'édition ──
+let _cfVehicules = [];          // tableau de véhicules du client en édition
+let _cfVehiculeEdit = null;     // null = nouveau véhicule, index = édition
+
+// ── Migration : anciens clients à modèle plat → nouveau modèle avec vehicles[] ──
+(function migrateClients(){
+  CLIENTS = CLIENTS.map(c=>{
+    if(!c.vehicles){
+      // Ancien format → migrer vers vehicles[]
+      const veh = (c.stock||c.vehicule||c.niv||c.date||c.type) ? [{
+        id: 'v'+Date.now()+Math.random().toString(36).slice(2),
+        stock: c.stock||'', vehicule: c.vehicule||'', niv: c.niv||'',
+        date: c.date||'', type: c.type||'',
+        montant: c.montant||'', taux: c.taux||'', terme: c.terme||'', freq: c.freq||'12'
+      }] : [];
+      return {id:c.id, nom:c.nom, entreprise:c.entreprise||'', vehicles: veh};
+    }
+    return c;
+  });
+  saveClientsToStorage();
+})();
+
+// ── renderClients ──
 function renderClients(filter){
   const q = (filter||document.getElementById('clients-search').value||'').toLowerCase().trim();
   let list = CLIENTS;
-  if(q) list = CLIENTS.filter(c=>(c.nom||'').toLowerCase().includes(q)||(c.stock||'').toLowerCase().includes(q)||(c.niv||'').toLowerCase().includes(q)||(c.vehicule||'').toLowerCase().includes(q));
+  if(q) list = CLIENTS.filter(c=>{
+    const inNom=(c.nom||'').toLowerCase().includes(q);
+    const inEntreprise=(c.entreprise||'').toLowerCase().includes(q);
+    const inVeh=(c.vehicles||[]).some(v=>(v.stock||'').toLowerCase().includes(q)||(v.vehicule||'').toLowerCase().includes(q)||(v.niv||'').toLowerCase().includes(q));
+    return inNom||inEntreprise||inVeh;
+  });
 
   document.getElementById('clients-count').textContent = CLIENTS.length;
   const el = document.getElementById('clients-list');
   const empty = document.getElementById('clients-empty');
-
   if(!list.length){ el.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display='none';
 
   const TYPE_LABEL = {'comptant':'💵 Comptant','financement':'📋 Financement','location-sci':'🏠 Location SCI','location-comm':'🏢 Location comm.'};
   const TYPE_CLASS = {'comptant':'comptant','financement':'financement','location-sci':'location-sci','location-comm':'location-comm'};
+  const fmDate = d=>{ if(!d)return'—'; const[y,m,j]=d.split('-'); return`${j}/${m}/${y}`; };
+  const fmt = v=>v.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const FREQ_LABEL={'12':'/ mois','26':'/ 2 sem.','24':'/ 2x mois','52':'/ sem.'};
+
+  function calcP(v){
+    const freq=parseInt(v.freq)||12;const n=Math.round(parseInt(v.terme)/12*freq);
+    const taux=parseFloat(v.taux)||0;const m=parseFloat(v.montant)||0;
+    if(!m||!n) return null;
+    let p;if(taux===0){p=m/n;}else{const r=(taux/100)/freq;p=m*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+    return {p,n,freq,taux:v.taux,terme:v.terme};
+  }
 
   el.innerHTML = list.slice().reverse().map(c=>{
-    const fmDate = d=>{ if(!d)return'—'; const[y,m,j]=d.split('-'); return`${j}/${m}/${y}`; };
+    const vehs = c.vehicles||[];
+    const vehRows = vehs.map((v,vi)=>{
+      const paiement = (v.montant&&v.terme&&v.type!=='comptant') ? calcP(v) : null;
+      return`<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px;">
+          <div>
+            ${v.vehicule?`<div style="font-weight:700;font-size:13px;color:#1a1a2e;">${v.vehicule}</div>`:'<div style="color:#94a3b8;font-size:12px;">Véhicule non spécifié</div>'}
+            ${v.type?`<span class="client-badge-type ${TYPE_CLASS[v.type]||''}" style="margin-top:3px;display:inline-block;">${TYPE_LABEL[v.type]||v.type}</span>`:''}
+          </div>
+          <div style="font-size:10px;color:#94a3b8;white-space:nowrap;">${fmDate(v.date)}</div>
+        </div>
+        ${v.stock?`<div class="client-info-row"><i class="ti ti-tag" style="font-size:11px"></i>Stock : <strong>${v.stock}</strong></div>`:''}
+        ${v.niv?`<div class="client-info-row"><i class="ti ti-fingerprint" style="font-size:11px"></i><span style="font-family:monospace;font-size:10px">${v.niv}</span></div>`:''}
+        ${paiement?`<div class="client-info-row"><i class="ti ti-credit-card" style="font-size:11px;color:#003DA5"></i><strong style="color:#003DA5">${fmt(paiement.p)} $</strong><span style="color:#94a3b8;font-size:10px">${FREQ_LABEL[String(paiement.freq)]||''} · ${paiement.terme} mois · ${paiement.taux}%</span></div>`:''}
+        ${v.type==='comptant'?`<div class="client-info-row"><i class="ti ti-cash" style="font-size:11px;color:#16a34a"></i><span style="color:#16a34a;font-size:11px;">Transaction au comptant</span></div>`:''}
+      </div>`;
+    }).join('');
+
     return`<div class="client-card">
       <div class="client-card-top">
         <div>
           <div class="client-name">${c.nom||'—'}</div>
-          ${c.type?`<span class="client-badge-type ${TYPE_CLASS[c.type]||''}">${TYPE_LABEL[c.type]||c.type}</span>`:''}
+          ${c.entreprise?`<div style="font-size:11px;color:#6366f1;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:3px;"><i class="ti ti-building" style="font-size:12px"></i>${c.entreprise}</div>`:''}
         </div>
-        <div style="font-size:10px;color:#94a3b8;white-space:nowrap;">${fmDate(c.date)}</div>
+        <div style="font-size:10px;color:#94a3b8;">${vehs.length} véhicule${vehs.length!==1?'s':''}</div>
       </div>
-      ${c.vehicule?`<div class="client-info-row"><i class="ti ti-car" style="font-size:12px;color:#003DA5"></i><strong style="color:#374151">${c.vehicule}</strong></div>`:''}
-      ${c.stock?`<div class="client-info-row"><i class="ti ti-tag" style="font-size:12px"></i>Stock : <strong>${c.stock}</strong></div>`:''}
-      ${c.niv?`<div class="client-info-row"><i class="ti ti-fingerprint" style="font-size:12px"></i><span style="font-family:monospace;font-size:10px;letter-spacing:.05em">${c.niv}</span></div>`:''}
+      ${vehRows||'<div style="font-size:12px;color:#94a3b8;padding:6px 0;">Aucun véhicule enregistré.</div>'}
       <div class="client-actions">
         <button class="client-btn" onclick="openClientForm('${c.id}')"><i class="ti ti-edit"></i> Modifier</button>
         <button class="client-btn danger" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i> Supprimer</button>
@@ -2711,91 +2776,278 @@ function renderClients(filter){
   }).join('');
 }
 
-function filterClients(){
-  renderClients();
-}
+function filterClients(){ renderClients(); }
 
+// ── Ouvrir/fermer le formulaire client ──
 function openClientForm(id){
   const overlay = document.getElementById('client-form-overlay');
   overlay.style.display='flex';
-  // Reset
+
   document.getElementById('cf-id').value='';
   document.getElementById('cf-nom').value='';
-  document.getElementById('cf-stock').value='';
-  document.getElementById('cf-vehicule').value='';
-  document.getElementById('cf-niv').value='';
-  document.getElementById('cf-date').value='';
-  document.getElementById('cf-type').value='';
-  document.getElementById('cf-stock-status').innerHTML='';
-  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('cf-entreprise').value='';
+  document.getElementById('cf-is-commercial').checked=false;
+  document.getElementById('bloc-entreprise').style.display='none';
+  _cfVehicules=[];
+  _cfVehiculeEdit=null;
 
   if(id){
-    const c = CLIENTS.find(x=>x.id===id);
+    const c=CLIENTS.find(x=>x.id===id);
     if(!c) return;
     document.getElementById('client-form-title').textContent='Modifier le client';
     document.getElementById('cf-id').value=c.id;
     document.getElementById('cf-nom').value=c.nom||'';
-    document.getElementById('cf-stock').value=c.stock||'';
-    document.getElementById('cf-vehicule').value=c.vehicule||'';
-    document.getElementById('cf-niv').value=c.niv||'';
-    document.getElementById('cf-date').value=c.date||'';
-    if(c.type){
-      document.getElementById('cf-type').value=c.type;
-      const btn=document.querySelector(`.type-btn[data-type="${c.type}"]`);
-      if(btn) btn.classList.add('selected');
+    if(c.entreprise){
+      document.getElementById('cf-entreprise').value=c.entreprise;
+      document.getElementById('cf-is-commercial').checked=true;
+      document.getElementById('bloc-entreprise').style.display='block';
     }
-    if(c.stock) lookupStock();
+    _cfVehicules=(c.vehicles||[]).map(v=>({...v}));
   } else {
     document.getElementById('client-form-title').textContent='Nouveau client';
   }
+  renderVehiculesList();
 }
 
 function closeClientForm(){
   document.getElementById('client-form-overlay').style.display='none';
 }
 
-function lookupStock(){
-  const s = document.getElementById('cf-stock').value.trim();
-  const status = document.getElementById('cf-stock-status');
-  if(!s){ status.innerHTML=''; return; }
-  const v = INVENTORY.find(x=>x.s===s);
-  if(v){
-    const label = `${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
-    document.getElementById('cf-vehicule').value=label;
-    document.getElementById('cf-niv').value=v.v||'';
-    status.innerHTML=`<i class="ti ti-circle-check" style="color:#16a34a;font-size:14px"></i><span style="color:#16a34a;font-weight:600">Trouvé</span>`;
-  } else {
-    status.innerHTML=`<i class="ti ti-circle-x" style="color:#dc2626;font-size:14px"></i><span style="color:#dc2626">Introuvable</span>`;
+function toggleCommercial(){
+  const checked=document.getElementById('cf-is-commercial').checked;
+  document.getElementById('bloc-entreprise').style.display=checked?'block':'none';
+  if(!checked) document.getElementById('cf-entreprise').value='';
+}
+
+// ── Rendu de la liste de véhicules dans le formulaire ──
+function renderVehiculesList(){
+  const TYPE_LABEL={'comptant':'💵 Comptant','financement':'📋 Financement','location-sci':'🏠 Location SCI','location-comm':'🏢 Loc. commerciale'};
+  const el=document.getElementById('cf-vehicules-list');
+
+  // Mini-formulaire ajout/édition véhicule
+  const vehFormHtml = `<div id="cf-veh-form" style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;margin-bottom:12px;">
+    <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">${_cfVehiculeEdit!==null?'✏️ Modifier le véhicule':'🚗 Nouveau véhicule'}</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+      <div>
+        <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">N° de stock</label>
+        <div style="display:flex;gap:6px;">
+          <input id="vf-stock" type="text" placeholder="ex: 27041" oninput="lookupStockVeh()" style="flex:1;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
+          <span id="vf-stock-status" style="display:flex;align-items:center;font-size:11px;"></span>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Date d'achat</label>
+        <input id="vf-date" type="date" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
+      </div>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Véhicule</label>
+      <input id="vf-vehicule" type="text" placeholder="ex: 2027 RAM 1500 BIG HORN" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">NIV / Numéro de série</label>
+      <input id="vf-niv" type="text" placeholder="ex: 1C6SRFLT0SN123456" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:monospace;outline:none;">
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:6px;text-transform:uppercase;">Type d'achat</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="vf-type-btns">
+        <button type="button" class="type-btn" data-type="comptant" onclick="selectTypeVeh('comptant')">💵 Comptant</button>
+        <button type="button" class="type-btn" data-type="financement" onclick="selectTypeVeh('financement')">📋 Financement</button>
+        <button type="button" class="type-btn" data-type="location-sci" onclick="selectTypeVeh('location-sci')">🏠 Location SCI</button>
+        <button type="button" class="type-btn" data-type="location-comm" onclick="selectTypeVeh('location-comm')">🏢 Location commerciale</button>
+      </div>
+      <input type="hidden" id="vf-type">
+    </div>
+
+    <div id="vf-bloc-financement" style="display:none;background:#fff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;"><i class="ti ti-calculator"></i> Calculateur de paiement</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+        <div>
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Montant financé ($)</label>
+          <input id="vf-montant" type="number" min="0" step="100" placeholder="ex: 45000" oninput="calcPaiementVeh()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Taux d'intérêt (%)</label>
+          <input id="vf-taux" type="number" min="0" step="0.1" placeholder="ex: 6.99" oninput="calcPaiementVeh()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Terme</label>
+          <select id="vf-terme" onchange="calcPaiementVeh()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
+            <option value="">-- Choisir --</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Fréquence</label>
+          <select id="vf-freq" onchange="calcPaiementVeh()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
+            <option value="26">Aux 2 semaines</option>
+            <option value="12" selected>Mensuel</option>
+            <option value="24">Bi-mensuel (2x/mois)</option>
+            <option value="52">Hebdomadaire</option>
+          </select>
+        </div>
+      </div>
+      <div id="vf-resultat" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:10px;text-align:center;">
+        <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Paiement estimé</div>
+        <div id="vf-paiement-val" style="font-size:22px;font-weight:800;color:#003DA5;"></div>
+        <div id="vf-paiement-freq" style="font-size:11px;color:#64748b;margin-top:2px;"></div>
+        <div id="vf-total-interet" style="font-size:10px;color:#94a3b8;margin-top:5px;border-top:1px solid #dbeafe;padding-top:5px;"></div>
+      </div>
+      <div id="vf-resultat-vide" style="font-size:11px;color:#94a3b8;text-align:center;padding:4px 0;">Remplis les champs pour voir le paiement estimé.</div>
+    </div>
+
+    <div id="vf-bloc-comptant" style="display:none;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;font-size:12px;color:#16a34a;margin-bottom:10px;">
+      <i class="ti ti-cash"></i> Transaction au comptant — pas de financement applicable.
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button type="button" onclick="cancelVehEdit()" style="padding:7px 14px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;font-family:'Inter',sans-serif;">Annuler</button>
+      <button type="button" onclick="confirmVehEdit()" style="padding:7px 14px;background:#003DA5;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="ti ti-check"></i> Confirmer</button>
+    </div>
+  </div>`;
+
+  // Liste des véhicules existants
+  const TYPE_LABEL_SHORT={'comptant':'Comptant','financement':'Financement','location-sci':'Loc. SCI','location-comm':'Loc. comm.'};
+  const existingHtml = _cfVehicules.map((v,i)=>`
+    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:600;font-size:12px;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.vehicule||'Véhicule non spécifié'}</div>
+        <div style="font-size:10px;color:#64748b;margin-top:2px;">${v.type?TYPE_LABEL_SHORT[v.type]||v.type:''} ${v.stock?'· Stock '+v.stock:''} ${v.date?'· '+v.date:''}</div>
+      </div>
+      <div style="display:flex;gap:5px;flex-shrink:0;">
+        <button type="button" onclick="editVeh(${i})" style="padding:4px 9px;border:1px solid #bfdbfe;border-radius:5px;background:#eff6ff;font-size:11px;font-weight:600;cursor:pointer;color:#003DA5;font-family:'Inter',sans-serif;"><i class="ti ti-edit"></i></button>
+        <button type="button" onclick="removeVeh(${i})" style="padding:4px 9px;border:1px solid #fecaca;border-radius:5px;background:#fff5f5;font-size:11px;font-weight:600;cursor:pointer;color:#dc2626;font-family:'Inter',sans-serif;"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+
+  el.innerHTML = existingHtml + (_cfVehiculeEdit!==null || (_cfVehicules.length===0 && _cfVehiculeEdit===null) || document.getElementById('cf-vehicules-list').dataset.showForm==='1' ? vehFormHtml : '');
+
+  // Si on éditait un véhicule, pré-remplir le formulaire
+  if(_cfVehiculeEdit!==null){
+    const v=_cfVehicules[_cfVehiculeEdit];
+    document.getElementById('vf-stock').value=v.stock||'';
+    document.getElementById('vf-vehicule').value=v.vehicule||'';
+    document.getElementById('vf-niv').value=v.niv||'';
+    document.getElementById('vf-date').value=v.date||'';
+    if(v.type) selectTypeVeh(v.type);
+    if(v.montant) document.getElementById('vf-montant').value=v.montant;
+    if(v.taux) document.getElementById('vf-taux').value=v.taux;
+    if(v.terme){ const sel=document.getElementById('vf-terme'); if([...sel.options].some(o=>o.value===String(v.terme))) sel.value=v.terme; }
+    if(v.freq){ document.getElementById('vf-freq').value=v.freq; }
+    calcPaiementVeh();
   }
 }
 
-function selectType(t){
-  document.getElementById('cf-type').value=t;
-  document.querySelectorAll('.type-btn').forEach(b=>{
-    b.classList.toggle('selected', b.dataset.type===t);
-  });
+function addVehicule(){
+  _cfVehiculeEdit=null;
+  document.getElementById('cf-vehicules-list').dataset.showForm='1';
+  renderVehiculesList();
+}
+
+function editVeh(i){
+  _cfVehiculeEdit=i;
+  document.getElementById('cf-vehicules-list').dataset.showForm='0';
+  renderVehiculesList();
+}
+
+function removeVeh(i){
+  _cfVehicules.splice(i,1);
+  _cfVehiculeEdit=null;
+  renderVehiculesList();
+}
+
+function cancelVehEdit(){
+  _cfVehiculeEdit=null;
+  document.getElementById('cf-vehicules-list').dataset.showForm='0';
+  renderVehiculesList();
+}
+
+function confirmVehEdit(){
+  const veh={
+    id: (_cfVehiculeEdit!==null && _cfVehicules[_cfVehiculeEdit]?.id) || ('v'+Date.now()+Math.random().toString(36).slice(2)),
+    stock: (document.getElementById('vf-stock').value||'').trim(),
+    vehicule: (document.getElementById('vf-vehicule').value||'').trim(),
+    niv: (document.getElementById('vf-niv').value||'').trim(),
+    date: document.getElementById('vf-date').value||'',
+    type: document.getElementById('vf-type').value||'',
+    montant: document.getElementById('vf-montant')?.value||'',
+    taux: document.getElementById('vf-taux')?.value||'',
+    terme: document.getElementById('vf-terme')?.value||'',
+    freq: document.getElementById('vf-freq')?.value||'12',
+  };
+  if(_cfVehiculeEdit!==null) _cfVehicules[_cfVehiculeEdit]=veh;
+  else _cfVehicules.push(veh);
+  _cfVehiculeEdit=null;
+  document.getElementById('cf-vehicules-list').dataset.showForm='0';
+  renderVehiculesList();
+}
+
+function lookupStockVeh(){
+  const s=(document.getElementById('vf-stock').value||'').trim();
+  const status=document.getElementById('vf-stock-status');
+  if(!s){ status.innerHTML=''; return; }
+  const v=INVENTORY.find(x=>x.s===s);
+  if(v){
+    document.getElementById('vf-vehicule').value=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
+    document.getElementById('vf-niv').value=v.v||'';
+    status.innerHTML=`<i class="ti ti-circle-check" style="color:#16a34a;font-size:14px;margin-left:4px;"></i>`;
+  } else {
+    status.innerHTML=`<i class="ti ti-circle-x" style="color:#dc2626;font-size:14px;margin-left:4px;"></i>`;
+  }
+}
+
+function selectTypeVeh(t){
+  document.getElementById('vf-type').value=t;
+  document.querySelectorAll('#vf-type-btns .type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type===t));
+  if(t==='comptant'){
+    document.getElementById('vf-bloc-financement').style.display='none';
+    document.getElementById('vf-bloc-comptant').style.display='block';
+  } else {
+    document.getElementById('vf-bloc-comptant').style.display='none';
+    document.getElementById('vf-bloc-financement').style.display='block';
+    const sel=document.getElementById('vf-terme');
+    const termes=TERMES[t]||[];
+    sel.innerHTML='<option value="">-- Choisir --</option>'+termes.map(tm=>`<option value="${tm}">${tm} mois</option>`).join('');
+    calcPaiementVeh();
+  }
+}
+
+function calcPaiementVeh(){
+  const montant=parseFloat(document.getElementById('vf-montant')?.value)||0;
+  const taux=parseFloat(document.getElementById('vf-taux')?.value)||0;
+  const terme=parseInt(document.getElementById('vf-terme')?.value)||0;
+  const freq=parseInt(document.getElementById('vf-freq')?.value)||12;
+  const res=document.getElementById('vf-resultat');
+  const resVide=document.getElementById('vf-resultat-vide');
+  if(!res) return;
+  if(!montant||!terme){ res.style.display='none'; resVide.style.display='block'; return; }
+  const n=Math.round(terme/12*freq);
+  let p;if(taux===0){p=montant/n;}else{const r=(taux/100)/freq;p=montant*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+  const totalPaye=p*n; const totalInteret=totalPaye-montant;
+  const FREQ_LABEL={'12':'/ mois','26':'/ 2 semaines','24':'/ 2 fois par mois','52':'/ semaine'};
+  const fmt=v=>v.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('vf-paiement-val').textContent=fmt(p)+' $';
+  document.getElementById('vf-paiement-freq').textContent=(FREQ_LABEL[String(freq)]||'/ paiement')+' · '+n+' paiements';
+  document.getElementById('vf-total-interet').textContent=`Total payé : ${fmt(totalPaye)} $  ·  Intérêts : ${fmt(totalInteret)} $`;
+  res.style.display='block'; resVide.style.display='none';
 }
 
 function saveClient(){
-  const nom = document.getElementById('cf-nom').value.trim();
+  const nom=document.getElementById('cf-nom').value.trim();
   if(!nom){ alert('Le nom du client est requis.'); document.getElementById('cf-nom').focus(); return; }
-  const id = document.getElementById('cf-id').value || 'c'+Date.now();
-  const c = {
-    id,
-    nom,
-    stock: document.getElementById('cf-stock').value.trim(),
-    vehicule: document.getElementById('cf-vehicule').value.trim(),
-    niv: document.getElementById('cf-niv').value.trim(),
-    date: document.getElementById('cf-date').value,
-    type: document.getElementById('cf-type').value,
-  };
-  const idx = CLIENTS.findIndex(x=>x.id===id);
+  const id=document.getElementById('cf-id').value||'c'+Date.now();
+  const entreprise=document.getElementById('cf-is-commercial').checked ? (document.getElementById('cf-entreprise').value||'').trim() : '';
+  const c={id, nom, entreprise, vehicles:[..._cfVehicules]};
+  const idx=CLIENTS.findIndex(x=>x.id===id);
   if(idx>=0) CLIENTS[idx]=c; else CLIENTS.push(c);
   saveClientsToStorage();
   closeClientForm();
   renderClients();
-
-  // Toast
   const toast=document.createElement('div');
   toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#003DA5;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
   toast.textContent=`✅ Client "${nom}" enregistré`;
@@ -2811,6 +3063,11 @@ function deleteClient(id){
   saveClientsToStorage();
   renderClients();
 }
+
+// Legacy stubs (au cas où l'ancien HTML aurait des refs)
+function lookupStock(){}
+function selectType(){}
+function calcPaiement(){}
 
 // ──────────────────────────────────────────
 // MISE À JOUR EXCEL — fonctionnalité client
