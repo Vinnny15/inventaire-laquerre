@@ -171,6 +171,24 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 .dash-count-badge{background:#003DA5;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
 .dash-count-badge.red{background:#dc2626;}
 .dash-count-badge.blue{background:#1877f2;}
+/* Clients */
+.type-btn{padding:8px 10px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;color:#374151;transition:all .15s;text-align:center;}
+.type-btn:hover{border-color:#003DA5;color:#003DA5;background:#eff6ff;}
+.type-btn.selected{border-color:#003DA5;background:#003DA5;color:#fff;}
+.client-card{background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+.client-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;}
+.client-name{font-weight:700;font-size:14px;color:#1a1a2e;}
+.client-badge-type{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;background:#eff6ff;color:#003DA5;}
+.client-badge-type.comptant{background:#f0fdf4;color:#16a34a;}
+.client-badge-type.financement{background:#eff6ff;color:#003DA5;}
+.client-badge-type.location-sci{background:#fef3c7;color:#92400e;}
+.client-badge-type.location-comm{background:#fdf4ff;color:#7c3aed;}
+.client-info-row{font-size:11px;color:#64748b;display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.client-actions{display:flex;gap:6px;margin-top:10px;}
+.client-btn{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #e2e8f0;background:#f8fafc;color:#374151;font-family:'Inter',sans-serif;}
+.client-btn:hover{background:#e2e8f0;}
+.client-btn.danger{border-color:#fecaca;background:#fff5f5;color:#dc2626;}
+.client-btn.danger:hover{background:#fecaca;}
 
 </style>
 </head>
@@ -195,7 +213,7 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div class="nav-item" onclick="showDashboard()" style="cursor:pointer"><span class="nav-icon">🏠</span> Tableau de bord</div>
     <div class="nav-item active"><span class="nav-icon">🚗</span> Inventaire <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
     <div class="nav-sub"><div class="nav-item active"><i class="ti ti-list" style="font-size:11px"></i> Inventaire</div></div>
-    <div class="nav-item"><span class="nav-icon">📚</span> Bibliothèque</div>
+    <div class="nav-item" onclick="showClients()" style="cursor:pointer"><span class="nav-icon">👤</span> Clients</div>
     <div class="nav-item"><span class="nav-icon">🌴</span> Vacances <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
     <div class="nav-item"><span class="nav-icon">✨</span> Plan d'Esthétique</div>
     <div class="nav-item"><span class="nav-icon">📊</span> Performance <span class="nav-arrow"><i class="ti ti-chevron-down"></i></span></div>
@@ -359,11 +377,113 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div style="font-size:10px;color:#94a3b8;text-align:right;padding:6px 0 2px;">Source : Inventaire + laquerrechrysler.com · 2 juillet 2026</div>
   </div>
 </div>
+<!-- ══════════════════════ SECTION CLIENTS ══════════════════════ -->
+<div id="section-clients" style="display:none;padding:16px 12px 100px;">
+
+  <!-- En-tête -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
+    <div>
+      <div style="font-size:18px;font-weight:700;color:#1a1a2e;">👤 Clients</div>
+      <div style="font-size:12px;color:#64748b;margin-top:2px;"><span id="clients-count">0</span> client(s) enregistré(s)</div>
+    </div>
+    <button onclick="openClientForm(null)" style="background:#003DA5;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><i class="ti ti-user-plus"></i> Nouveau client</button>
+  </div>
+
+  <!-- Barre de recherche clients -->
+  <div style="position:relative;margin-bottom:14px;">
+    <i class="ti ti-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#94a3b8;font-size:14px;"></i>
+    <input id="clients-search" type="text" placeholder="Rechercher un client, un stock, un NIV…" oninput="filterClients()" style="width:100%;box-sizing:border-box;padding:9px 12px 9px 32px;border:1px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+  </div>
+
+  <!-- Liste clients -->
+  <div id="clients-list"></div>
+  <div id="clients-empty" style="display:none;text-align:center;padding:40px 20px;color:#94a3b8;">
+    <i class="ti ti-user-off" style="font-size:36px;display:block;margin-bottom:8px;"></i>
+    <div style="font-size:13px;">Aucun client trouvé.</div>
+  </div>
+</div>
+
+<!-- ══════════ FORMULAIRE CLIENT (modal) ══════════ -->
+<div id="client-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 12px;">
+  <div style="background:#fff;border-radius:14px;width:100%;max-width:500px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
+
+    <!-- Titre modal -->
+    <div style="background:#003DA5;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-weight:700;font-size:15px;" id="client-form-title">Nouveau client</div>
+      <button onclick="closeClientForm()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;">✕</button>
+    </div>
+
+    <div style="padding:20px;">
+      <input type="hidden" id="cf-id">
+
+      <!-- Nom complet -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Nom complet *</label>
+        <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+      </div>
+
+      <!-- Numéro de stock + lookup -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Numéro de stock</label>
+        <div style="display:flex;gap:8px;">
+          <input id="cf-stock" type="text" placeholder="ex: 27041" oninput="lookupStock()" style="flex:1;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+          <div id="cf-stock-status" style="display:flex;align-items:center;font-size:11px;color:#94a3b8;min-width:90px;"></div>
+        </div>
+      </div>
+
+      <!-- Véhicule (auto-rempli ou manuel) -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Véhicule</label>
+        <input id="cf-vehicule" type="text" placeholder="ex: 2027 RAM 1500 BIG HORN" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+      </div>
+
+      <!-- Numéro de série (auto-rempli ou manuel) -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Numéro de série (NIV)</label>
+        <input id="cf-niv" type="text" placeholder="ex: 1C6SRFLT0SN123456" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;font-family:monospace;font-size:12px;">
+      </div>
+
+      <!-- Date d'achat -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Date d'achat</label>
+        <input id="cf-date" type="date" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#374151;outline:none;">
+      </div>
+
+      <!-- Type d'achat -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Type d'achat</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="cf-type-btns">
+          <button type="button" class="type-btn" data-type="comptant" onclick="selectType('comptant')">💵 Comptant</button>
+          <button type="button" class="type-btn" data-type="financement" onclick="selectType('financement')">📋 Financement</button>
+          <button type="button" class="type-btn" data-type="location-sci" onclick="selectType('location-sci')">🏠 Location SCI</button>
+          <button type="button" class="type-btn" data-type="location-comm" onclick="selectType('location-comm')">🏢 Location commerciale</button>
+        </div>
+        <input type="hidden" id="cf-type">
+      </div>
+
+      <!-- Solde approximatif (placeholder futur) -->
+      <div style="margin-bottom:20px;">
+        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Solde approximatif</label>
+        <div style="padding:10px 12px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:7px;font-size:12px;color:#94a3b8;display:flex;align-items:center;gap:8px;">
+          <i class="ti ti-tool" style="font-size:16px;"></i>
+          <span>Outil de calcul à venir — sera développé prochainement</span>
+        </div>
+      </div>
+
+      <!-- Boutons -->
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button onclick="closeClientForm()" style="padding:9px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;">Annuler</button>
+        <button onclick="saveClient()" style="padding:9px 20px;background:#003DA5;color:#fff;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;"><i class="ti ti-check"></i> Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="bottom-nav">
   <div class="bottom-nav-items">
     <div class="bnav-item" id="bnav-home" onclick="showDashboard()"><i class="ti ti-home"></i>Accueil</div>
     <div class="bnav-item active" id="bnav-inv" onclick="showInventaire()"><i class="ti ti-car"></i>Inventaire</div>
-    <div class="bnav-item"><i class="ti ti-books"></i>Biblio.</div>
+    <div class="bnav-item" id="bnav-clients" onclick="showClients()"><i class="ti ti-users"></i>Clients</div>
     <div class="bnav-item"><i class="ti ti-chart-bar"></i>Perf.</div>
   </div>
 </div>
@@ -2519,6 +2639,7 @@ function renderDashboard(){
 
 function showDashboard(){
   document.getElementById('section-dashboard').classList.add('active');
+  document.getElementById('section-clients').style.display='none';
   document.querySelectorAll('.bnav-item').forEach(function(el){el.classList.remove('active');});
   document.getElementById('bnav-home').classList.add('active');
   renderDashboard();
@@ -2526,10 +2647,170 @@ function showDashboard(){
 
 function showInventaire(){
   document.getElementById('section-dashboard').classList.remove('active');
+  document.getElementById('section-clients').style.display='none';
   document.querySelectorAll('.bnav-item').forEach(function(el){el.classList.remove('active');});
   document.getElementById('bnav-inv').classList.add('active');
 }
 
+
+// ──────────────────────────────────────────
+// CLIENTS
+// ──────────────────────────────────────────
+let CLIENTS = JSON.parse(localStorage.getItem('laquerre_clients')||'[]');
+
+function saveClientsToStorage(){
+  try{ localStorage.setItem('laquerre_clients', JSON.stringify(CLIENTS)); } catch(e){}
+}
+
+function showClients(){
+  document.getElementById('section-dashboard').classList.remove('active');
+  document.querySelectorAll('.bnav-item').forEach(el=>el.classList.remove('active'));
+  const b=document.getElementById('bnav-clients');
+  if(b) b.classList.add('active');
+  document.getElementById('section-clients').style.display='block';
+  renderClients();
+}
+
+function hideClients(){
+  document.getElementById('section-clients').style.display='none';
+}
+
+function renderClients(filter){
+  const q = (filter||document.getElementById('clients-search').value||'').toLowerCase().trim();
+  let list = CLIENTS;
+  if(q) list = CLIENTS.filter(c=>(c.nom||'').toLowerCase().includes(q)||(c.stock||'').toLowerCase().includes(q)||(c.niv||'').toLowerCase().includes(q)||(c.vehicule||'').toLowerCase().includes(q));
+
+  document.getElementById('clients-count').textContent = CLIENTS.length;
+  const el = document.getElementById('clients-list');
+  const empty = document.getElementById('clients-empty');
+
+  if(!list.length){ el.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  const TYPE_LABEL = {'comptant':'💵 Comptant','financement':'📋 Financement','location-sci':'🏠 Location SCI','location-comm':'🏢 Location comm.'};
+  const TYPE_CLASS = {'comptant':'comptant','financement':'financement','location-sci':'location-sci','location-comm':'location-comm'};
+
+  el.innerHTML = list.slice().reverse().map(c=>{
+    const fmDate = d=>{ if(!d)return'—'; const[y,m,j]=d.split('-'); return`${j}/${m}/${y}`; };
+    return`<div class="client-card">
+      <div class="client-card-top">
+        <div>
+          <div class="client-name">${c.nom||'—'}</div>
+          ${c.type?`<span class="client-badge-type ${TYPE_CLASS[c.type]||''}">${TYPE_LABEL[c.type]||c.type}</span>`:''}
+        </div>
+        <div style="font-size:10px;color:#94a3b8;white-space:nowrap;">${fmDate(c.date)}</div>
+      </div>
+      ${c.vehicule?`<div class="client-info-row"><i class="ti ti-car" style="font-size:12px;color:#003DA5"></i><strong style="color:#374151">${c.vehicule}</strong></div>`:''}
+      ${c.stock?`<div class="client-info-row"><i class="ti ti-tag" style="font-size:12px"></i>Stock : <strong>${c.stock}</strong></div>`:''}
+      ${c.niv?`<div class="client-info-row"><i class="ti ti-fingerprint" style="font-size:12px"></i><span style="font-family:monospace;font-size:10px;letter-spacing:.05em">${c.niv}</span></div>`:''}
+      <div class="client-actions">
+        <button class="client-btn" onclick="openClientForm('${c.id}')"><i class="ti ti-edit"></i> Modifier</button>
+        <button class="client-btn danger" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i> Supprimer</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterClients(){
+  renderClients();
+}
+
+function openClientForm(id){
+  const overlay = document.getElementById('client-form-overlay');
+  overlay.style.display='flex';
+  // Reset
+  document.getElementById('cf-id').value='';
+  document.getElementById('cf-nom').value='';
+  document.getElementById('cf-stock').value='';
+  document.getElementById('cf-vehicule').value='';
+  document.getElementById('cf-niv').value='';
+  document.getElementById('cf-date').value='';
+  document.getElementById('cf-type').value='';
+  document.getElementById('cf-stock-status').innerHTML='';
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
+
+  if(id){
+    const c = CLIENTS.find(x=>x.id===id);
+    if(!c) return;
+    document.getElementById('client-form-title').textContent='Modifier le client';
+    document.getElementById('cf-id').value=c.id;
+    document.getElementById('cf-nom').value=c.nom||'';
+    document.getElementById('cf-stock').value=c.stock||'';
+    document.getElementById('cf-vehicule').value=c.vehicule||'';
+    document.getElementById('cf-niv').value=c.niv||'';
+    document.getElementById('cf-date').value=c.date||'';
+    if(c.type){
+      document.getElementById('cf-type').value=c.type;
+      const btn=document.querySelector(`.type-btn[data-type="${c.type}"]`);
+      if(btn) btn.classList.add('selected');
+    }
+    if(c.stock) lookupStock();
+  } else {
+    document.getElementById('client-form-title').textContent='Nouveau client';
+  }
+}
+
+function closeClientForm(){
+  document.getElementById('client-form-overlay').style.display='none';
+}
+
+function lookupStock(){
+  const s = document.getElementById('cf-stock').value.trim();
+  const status = document.getElementById('cf-stock-status');
+  if(!s){ status.innerHTML=''; return; }
+  const v = INVENTORY.find(x=>x.s===s);
+  if(v){
+    const label = `${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
+    document.getElementById('cf-vehicule').value=label;
+    document.getElementById('cf-niv').value=v.v||'';
+    status.innerHTML=`<i class="ti ti-circle-check" style="color:#16a34a;font-size:14px"></i><span style="color:#16a34a;font-weight:600">Trouvé</span>`;
+  } else {
+    status.innerHTML=`<i class="ti ti-circle-x" style="color:#dc2626;font-size:14px"></i><span style="color:#dc2626">Introuvable</span>`;
+  }
+}
+
+function selectType(t){
+  document.getElementById('cf-type').value=t;
+  document.querySelectorAll('.type-btn').forEach(b=>{
+    b.classList.toggle('selected', b.dataset.type===t);
+  });
+}
+
+function saveClient(){
+  const nom = document.getElementById('cf-nom').value.trim();
+  if(!nom){ alert('Le nom du client est requis.'); document.getElementById('cf-nom').focus(); return; }
+  const id = document.getElementById('cf-id').value || 'c'+Date.now();
+  const c = {
+    id,
+    nom,
+    stock: document.getElementById('cf-stock').value.trim(),
+    vehicule: document.getElementById('cf-vehicule').value.trim(),
+    niv: document.getElementById('cf-niv').value.trim(),
+    date: document.getElementById('cf-date').value,
+    type: document.getElementById('cf-type').value,
+  };
+  const idx = CLIENTS.findIndex(x=>x.id===id);
+  if(idx>=0) CLIENTS[idx]=c; else CLIENTS.push(c);
+  saveClientsToStorage();
+  closeClientForm();
+  renderClients();
+
+  // Toast
+  const toast=document.createElement('div');
+  toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#003DA5;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
+  toast.textContent=`✅ Client "${nom}" enregistré`;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.remove(),3000);
+}
+
+function deleteClient(id){
+  const c=CLIENTS.find(x=>x.id===id);
+  if(!c) return;
+  if(!confirm(`Supprimer le client "${c.nom}" ?`)) return;
+  CLIENTS=CLIENTS.filter(x=>x.id!==id);
+  saveClientsToStorage();
+  renderClients();
+}
 
 // ──────────────────────────────────────────
 // MISE À JOUR EXCEL — fonctionnalité client
