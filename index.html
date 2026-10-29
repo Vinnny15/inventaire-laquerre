@@ -1,3 +1,4 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -421,7 +422,6 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
 <div id="client-form-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 12px;">
   <div style="background:#fff;border-radius:14px;width:100%;max-width:540px;margin:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden;">
 
-    <!-- Titre modal -->
     <div style="background:#003DA5;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;">
       <div style="font-weight:700;font-size:15px;" id="client-form-title">Nouveau client</div>
       <button onclick="closeClientForm()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;">✕</button>
@@ -430,39 +430,127 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
     <div style="padding:20px;">
       <input type="hidden" id="cf-id">
 
-      <!-- ── SECTION : INFORMATIONS CLIENT ── -->
+      <!-- Infos client -->
       <div style="font-size:10px;font-weight:700;color:#003DA5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0eaff;">
         <i class="ti ti-user"></i> Informations client
       </div>
-
-      <!-- Nom complet -->
-      <div style="margin-bottom:12px;">
-        <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Nom complet *</label>
-        <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;background:#fff;outline:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div>
+          <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;">Nom complet *</label>
+          <input id="cf-nom" type="text" placeholder="Prénom Nom" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;">Téléphone *</label>
+          <input id="cf-telephone" type="tel" placeholder="819 555-1234" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;outline:none;">
+        </div>
       </div>
 
-      <!-- Client commercial -->
       <div style="margin-bottom:16px;">
         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:8px;">
           <input type="checkbox" id="cf-is-commercial" onchange="toggleCommercial()" style="width:16px;height:16px;accent-color:#003DA5;cursor:pointer;">
           <span style="font-size:12px;font-weight:600;color:#374151;">Client commercial (entreprise)</span>
         </label>
         <div id="bloc-entreprise" style="display:none;">
-          <label style="font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em;">Nom d'entreprise *</label>
-          <input id="cf-entreprise" type="text" placeholder="ex: Transport Tremblay Inc." style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;color:#111827;background:#fff;outline:none;">
+          <input id="cf-entreprise" type="text" placeholder="Nom d'entreprise" style="width:100%;box-sizing:border-box;padding:9px 12px;border:1px solid #e2e8f0;border-radius:7px;font-family:'Inter',sans-serif;font-size:13px;outline:none;">
         </div>
       </div>
 
-      <!-- ── SECTION : VÉHICULES ── -->
-      <div style="font-size:10px;font-weight:700;color:#003DA5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e0eaff;display:flex;align-items:center;justify-content:space-between;">
-        <span><i class="ti ti-car"></i> Véhicules</span>
-        <button type="button" onclick="addVehicule()" style="font-size:10px;font-weight:700;background:#e0eaff;color:#003DA5;border:none;border-radius:5px;padding:3px 9px;cursor:pointer;font-family:'Inter',sans-serif;">+ Ajouter véhicule</button>
+      <!-- Véhicule -->
+      <div style="font-size:10px;font-weight:700;color:#003DA5;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #e0eaff;">
+        <i class="ti ti-car"></i> Véhicule acheté
       </div>
 
-      <div id="cf-vehicules-list"></div>
+      <div style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;margin-bottom:12px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">N° de stock</label>
+            <input id="cf-stock" type="text" placeholder="ex: 27041" oninput="cfLookupStock()" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Date d'achat</label>
+            <input id="cf-date" type="date" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+          </div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Véhicule *</label>
+          <input id="cf-vehicule" type="text" placeholder="ex: 2027 RAM 1500 BIG HORN" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+        </div>
+        <div style="margin-bottom:10px;">
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">NIV / Numéro de série</label>
+          <input id="cf-niv" type="text" placeholder="ex: 1C6SRFLT0SN123456" style="width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:monospace;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:6px;text-transform:uppercase;">Type d'achat</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <button type="button" class="type-btn" onclick="cfSelectType('comptant')">💵 Comptant</button>
+            <button type="button" class="type-btn" onclick="cfSelectType('financement')">📋 Financement</button>
+            <button type="button" class="type-btn" onclick="cfSelectType('location-sci')">🏠 Location SCI</button>
+            <button type="button" class="type-btn" onclick="cfSelectType('location-comm')">🏢 Location comm.</button>
+          </div>
+          <input type="hidden" id="cf-type">
+        </div>
 
-      <!-- Boutons -->
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;">
+        <!-- Bloc comptant -->
+        <div id="cf-bloc-comptant" style="display:none;margin-top:10px;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;font-size:12px;color:#16a34a;">
+          <i class="ti ti-cash"></i> Transaction au comptant — pas de financement applicable.
+        </div>
+
+        <!-- Bloc financement / location -->
+        <div id="cf-bloc-financement" style="display:none;margin-top:10px;background:#fff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;">
+          <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;"><i class="ti ti-calculator"></i> Calculateur de paiement</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
+            <div>
+              <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Montant financé ($)</label>
+              <input id="cf-montant" type="number" min="0" step="100" placeholder="ex: 45000" oninput="cfCalcPaiement()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+            </div>
+            <div>
+              <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Taux d'intérêt (%)</label>
+              <input id="cf-taux" type="number" min="0" step="0.1" placeholder="ex: 6.99" oninput="cfCalcPaiement()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+            </div>
+          </div>
+          <div id="cf-residuelle-row" style="display:none;margin-bottom:8px;">
+            <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Valeur résiduelle ($)</label>
+            <input id="cf-residuelle" type="number" min="0" step="100" placeholder="ex: 18000" oninput="cfCalcPaiement()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Terme</label>
+              <select id="cf-terme" onchange="cfCalcPaiement()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
+                <option value="">-- Choisir --</option>
+                <option value="24" data-types="financement location-sci">24 mois</option>
+                <option value="36" data-types="financement location-sci location-comm">36 mois</option>
+                <option value="42" data-types="location-sci">42 mois</option>
+                <option value="48" data-types="financement location-sci location-comm">48 mois</option>
+                <option value="51" data-types="location-sci">51 mois</option>
+                <option value="60" data-types="financement location-sci location-comm">60 mois</option>
+                <option value="72" data-types="financement">72 mois</option>
+                <option value="84" data-types="financement">84 mois</option>
+                <option value="96" data-types="financement">96 mois</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Fréquence</label>
+              <select id="cf-freq" onchange="cfCalcPaiement()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
+                <option value="26">Aux 2 semaines</option>
+                <option value="12" selected>Mensuel</option>
+                <option value="24">Bi-mensuel (2x/mois)</option>
+                <option value="52">Hebdomadaire</option>
+              </select>
+            </div>
+          </div>
+          <div id="cf-resultat" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:10px;text-align:center;">
+            <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Paiement estimé</div>
+            <div id="cf-paiement-val" style="font-size:22px;font-weight:800;color:#003DA5;"></div>
+            <div id="cf-paiement-freq" style="font-size:11px;color:#64748b;margin-top:2px;"></div>
+            <div id="cf-total-interet" style="font-size:10px;color:#94a3b8;margin-top:5px;border-top:1px solid #dbeafe;padding-top:5px;"></div>
+          </div>
+          <div id="cf-resultat-vide" style="font-size:11px;color:#94a3b8;text-align:center;padding:4px 0;">Remplis les champs pour voir le paiement estimé.</div>
+        </div>
+      </div>
+
+      <div id="cf-error-msg" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:6px;padding:8px 12px;font-size:12px;color:#dc2626;margin-bottom:10px;"></div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:4px;">
         <button onclick="closeClientForm()" style="padding:9px 18px;border:1px solid #e2e8f0;border-radius:7px;background:#fff;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;">Annuler</button>
         <button onclick="saveClient()" style="padding:9px 20px;background:#003DA5;color:#fff;border:none;border-radius:7px;font-family:'Inter',sans-serif;font-size:12px;font-weight:600;cursor:pointer;"><i class="ti ti-check"></i> Enregistrer</button>
       </div>
@@ -496,8 +584,8 @@ td{padding:8px 10px;font-size:12px;color:#1a1a2e;white-space:nowrap;}
   </div>
 </div>
 <script>
-const SUPABASE_URL='https://vwcomupmwtfvcrcodkyq.supabase.co';
-const SUPABASE_KEY='sb_publishable_yOTtOHl7HVnfn01_L4SzrA_FeeDF4Y3';
+var SUPABASE_URL='https://vwcomupmwtfvcrcodkyq.supabase.co';
+var SUPABASE_KEY='sb_publishable_yOTtOHl7HVnfn01_L4SzrA_FeeDF4Y3';
 
 async function sbFetch(path, opts={}){
   const res = await fetch(SUPABASE_URL+'/rest/v1/'+path, {
@@ -522,12 +610,12 @@ async function saveMPToSupabase(stock, mp){
   // Supabase temporairement désactivé — données sauvegardées dans localStorage
 }
 
-const EMAIL='vtourigny@laquerrechrysler.com';
-const SITE='www.laquerrechrysler.com';
-const ADR='34 Boulevard Arthabaska Est, Victoriaville, QC';
+var EMAIL='vtourigny@laquerrechrysler.com';
+var SITE='www.laquerrechrysler.com';
+var ADR='34 Boulevard Arthabaska Est, Victoriaville, QC';
 
 // p=prix, r=prix régulier (avant rabais)
-const INVENTORY=[
+var INVENTORY=[
   {s:'25124',y:'2025',b:'JEEP',m:'WRANGLER',t:'4XE SPORT',c:'NOIR',km:10,e:'NEUF',v:'1C4RJXN62SW611495',vitre:true,vendu:false,p:62130,r:68075,fv:'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=1C4RJXN62SW611495',mp:false},
   {s:'25160',y:'2025',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:5583,e:'DÉMO',v:'3C4NJDBN4ST625784',vitre:true,vendu:false,p:null,r:null,fv:'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=3C4NJDBN4ST625784',mp:false},
   {s:'26027',eng:'2.0L Turbo 4 cyl.',y:'2026',b:'JEEP',m:'COMPASS',t:'NORTH',c:'NOIR',km:10,e:'NEUF',v:'3C4NJDBN1TT185525',tr:'Auto. 8 vit.',vitre:true,vendu:false,p:39190,r:45190,fv:'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=3C4NJDBN1TT185525',mp:false},
@@ -969,7 +1057,7 @@ const INVENTORY=[
   {s:'26462B',eng:'',y:'2021',b:'RAM',m:'1500 CLASSIC EXPRESS',t:'',c:'NOIR',km:79995,e:'USED',v:'3C6RR7KT7MG694174',tr:'Auto.',vitre:true,vendu:false,p:null,r:null,fv:'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=3C6RR7KT7MG694174',mp:false}
 ];
 
-const CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','ceramique':'#a0a8b0','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','raie':'#8fa0a8'};
+var CM={'noir':'#2a2a2a','blanc':'#e0e0d8','gris':'#9ca3af','rouge':'#dc2626','bleu':'#2563eb','vert':'#16a34a','hydro':'#1e6fa8','argent':'#b0b8c4','or':'#d97706','orange':'#ea580c','granit':'#7a7a7a','ceramique':'#a0a8b0','céramique':'#a0a8b0','charcoal':'#4b5563','forge':'#1a3a6b','olive':'#6b7c2a','serano':'#3d7a5a','destroyer':'#8a9aac','mer':'#5b7a8a','profondeurs':'#1a5f8a','anvil':'#6b7280','canyon':'#7a9cb8','raie':'#8fa0a8'};
 function cx(s){if(!s)return'#9ca3af';const l=s.toLowerCase();for(const[k,v]of Object.entries(CM))if(l.includes(k))return v;return'#9ca3af';}
 function fmKm(k){if(k<=10)return'—';return parseInt(k).toLocaleString('fr-CA')+' km';}
 function fp(p){if(!p)return'—';return parseInt(p).toLocaleString('fr-CA')+'\u00a0$';}
@@ -1506,7 +1594,7 @@ function closeModalDirect(){document.getElementById('modal-overlay').classList.r
 function toggleVendu(s){
   var v=INVENTORY.find(function(x){return x.s===s;});
   if(!v)return;
-  if(!v.vendu && !confirm('Marquer le stock '+s+' comme VENDU ? Il sera retiré à la prochaine mise à jour.')) return;
+  // confirm() bloqué dans sandbox — action directe (toggle)
   v.vendu=!v.vendu;
   try{var d=JSON.parse(localStorage.getItem('vendus')||'{}');d[s]=v.vendu;localStorage.setItem('vendus',JSON.stringify(d));}catch(e){}
   applyFilters();
@@ -1533,9 +1621,16 @@ function loadMPState(){
   loadMPFromSupabase();
 }
 
-loadMPState();
-loadVenduState();
-initSelects();
+function _initOnReady(){
+  loadMPState();
+  loadVenduState();
+  initSelects();
+}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',_initOnReady);
+}else{
+  _initOnReady();
+}
 // Synchroniser les véhicules mp:true existants vers Supabase au premier chargement
 (async function syncInitialMP(){
   try{
@@ -1551,10 +1646,14 @@ initSelects();
     }
   }catch(e){}
 })();
-applyFilters();
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',function(){applyFilters();});
+}else{
+  applyFilters();
+}
 
 
-const KG_PER_LB = 0.45359237;
+var KG_PER_LB = 0.45359237;
 const lbToKg = lb => lb * KG_PER_LB;
 const kgToLb = kg => kg / KG_PER_LB;
 const fmt = n => {
@@ -1573,7 +1672,7 @@ const roundVal = v => Math.round(v);
 const el = id => document.getElementById(id);
 
 // ---- Reference weight presets (from "Notions de base du remorquage — Poids courants") ----
-const TRAILER_PRESETS = [
+var TRAILER_PRESETS = [
   {id:'none', label:'Aucun — entrée manuelle', kg:null},
   {id:'bateau', label:'Remorque pour bateau', kgMin:136, kgMax:686},
   {id:'fermee64', label:'Remorque fermée 6 x 4', kg:195},
@@ -1587,7 +1686,7 @@ const TRAILER_PRESETS = [
   {id:'autocaravane', label:'Autocaravane (déchargée)', kg:1588},
 ];
 
-const CARGO_PRESETS = [
+var CARGO_PRESETS = [
   {cat:'Voitures', id:'course', label:'Voiture de course', kgMin:726, kgMax:1588},
   {cat:'Voitures', id:'berline', label:'Berline', kg:1361},
   {cat:'Voitures', id:'familiale', label:'Familiale', kg:1633},
@@ -1626,7 +1725,7 @@ const CARGO_PRESETS = [
 // représentative, année-modèle 2026). PNBV et poids à vide sont les plus fiables ; le PNBC (GCWR)
 // est une estimation plus approximative faute de valeur unique publiée par motorisation — TOUJOURS
 // confirmer les trois valeurs avec l'autocollant de certification du véhicule réel avant de conclure une vente.
-const TRUCK_PRESETS = [
+var TRUCK_PRESETS = [
   {id:'r1500hemi', label:'Ram 1500 — HEMI 5.7L V8 eTorque', classe:'1500', videLb:5465, pnbvLb:7100, pnbcLb:17500, note:'PNBC estimé — non publié par motorisation'},
   {id:'r1500hurricane', label:'Ram 1500 — Hurricane 3.0L bi-turbo', classe:'1500', videLb:5261, pnbvLb:7100, pnbcLb:19300, note:'PNBC estimé — non publié par motorisation'},
   {id:'r2500hemi', label:'Ram 2500 — HEMI 6.4L V8', classe:'2500', videLb:7000, pnbvLb:9900, pnbcLb:20000, note:'Poids à vide et PNBC estimés'},
@@ -1997,7 +2096,7 @@ el('addTruck').addEventListener('click', () => {
 
 el('printBtn').addEventListener('click', () => window.print());
 el('resetBtn').addEventListener('click', () => {
-  if (!confirm('Réinitialiser toutes les valeurs entrées ?')) return;
+  // confirm() bloqué dans sandbox — reset direct
   if (unit !== 'kg') { unit = 'kg'; setUnitButtons(); }
   el('cNom').value=''; el('cAdresse').value=''; el('cTel').value='';
   el('pnbr').value=0; el('occ').value=136; el('cargo').value=0; el('options').value=0; el('tongueManual').value=0;
@@ -2068,7 +2167,7 @@ document.querySelectorAll('.unit-btn').forEach(btn => btn.addEventListener('clic
 // ===== OUTIL REMORQUAGE =====
 (function(){
   'use strict';
-const KG_PER_LB = 0.45359237;
+var KG_PER_LB = 0.45359237;
 const lbToKg = lb => lb * KG_PER_LB;
 const kgToLb = kg => kg / KG_PER_LB;
 const fmt = n => {
@@ -2087,7 +2186,7 @@ const roundVal = v => Math.round(v);
 const el = id => document.getElementById(id);
 
 // ---- Reference weight presets (from "Notions de base du remorquage — Poids courants") ----
-const TRAILER_PRESETS = [
+var TRAILER_PRESETS = [
   {id:'none', label:'Aucun — entrée manuelle', kg:null},
   {id:'bateau', label:'Remorque pour bateau', kgMin:136, kgMax:686},
   {id:'fermee64', label:'Remorque fermée 6 x 4', kg:195},
@@ -2101,7 +2200,7 @@ const TRAILER_PRESETS = [
   {id:'autocaravane', label:'Autocaravane (déchargée)', kg:1588},
 ];
 
-const CARGO_PRESETS = [
+var CARGO_PRESETS = [
   {cat:'Voitures', id:'course', label:'Voiture de course', kgMin:726, kgMax:1588},
   {cat:'Voitures', id:'berline', label:'Berline', kg:1361},
   {cat:'Voitures', id:'familiale', label:'Familiale', kg:1633},
@@ -2140,7 +2239,7 @@ const CARGO_PRESETS = [
 // représentative, année-modèle 2026). PNBV et poids à vide sont les plus fiables ; le PNBC (GCWR)
 // est une estimation plus approximative faute de valeur unique publiée par motorisation — TOUJOURS
 // confirmer les trois valeurs avec l'autocollant de certification du véhicule réel avant de conclure une vente.
-const TRUCK_PRESETS = [
+var TRUCK_PRESETS = [
   {id:'r1500hemi', label:'Ram 1500 — HEMI 5.7L V8 eTorque', classe:'1500', videLb:5465, pnbvLb:7100, pnbcLb:17500, note:'PNBC estimé — non publié par motorisation'},
   {id:'r1500hurricane', label:'Ram 1500 — Hurricane 3.0L bi-turbo', classe:'1500', videLb:5261, pnbvLb:7100, pnbcLb:19300, note:'PNBC estimé — non publié par motorisation'},
   {id:'r2500hemi', label:'Ram 2500 — HEMI 6.4L V8', classe:'2500', videLb:7000, pnbvLb:9900, pnbcLb:20000, note:'Poids à vide et PNBC estimés'},
@@ -2505,7 +2604,7 @@ el('addTruck').addEventListener('click', () => {
 
 el('printBtn').addEventListener('click', () => window.print());
 el('resetBtn').addEventListener('click', () => {
-  if (!confirm('Réinitialiser toutes les valeurs entrées ?')) return;
+  // confirm() bloqué dans sandbox — reset direct
   if (unit !== 'kg') { unit = 'kg'; setUnitButtons(); }
   el('cNom').value=''; el('cAdresse').value=''; el('cTel').value='';
   el('pnbr').value=0; el('occ').value=136; el('cargo').value=0; el('options').value=0; el('tongueManual').value=0;
@@ -2657,7 +2756,14 @@ function showInventaire(){
 // ──────────────────────────────────────────
 // CLIENTS
 // ──────────────────────────────────────────
-let CLIENTS = JSON.parse(localStorage.getItem('laquerre_clients')||'[]');
+// DEBUG - affiche les erreurs JS à l'écran
+window.onerror=function(msg,src,line,col,err){
+  let d=document.getElementById('_debug_panel');
+  if(!d){d=document.createElement('div');d.id='_debug_panel';d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#7f1d1d;color:#fca5a5;font-size:11px;font-family:monospace;padding:8px 12px;z-index:99999;max-height:120px;overflow:auto;';document.body.appendChild(d);}
+  d.innerHTML+=`<div>❌ ${msg} (ligne ${line})</div>`;
+  return false;
+};
+var CLIENTS = (()=>{ try{ return JSON.parse(localStorage.getItem('laquerre_clients')||'[]'); } catch(e){ return []; } })();
 
 function saveClientsToStorage(){
   try{ localStorage.setItem('laquerre_clients', JSON.stringify(CLIENTS)); } catch(e){}
@@ -2680,16 +2786,17 @@ function hideClients(){
 }
 
 // ── Termes disponibles par type ──
-const TERMES = {
+var TERMES = {
   'financement':    [24,36,48,60,72,84,96],
-  'location-sci':   [24,36,48,60],
-  'location-comm':  [24,36,48,60],
+  'location-sci':   [24,36,42,48,51,60],
+  'location-comm':  [36,48,60],
   'comptant':       []
 };
 
 // ── État temporaire des véhicules en cours d'édition ──
 let _cfVehicules = [];          // tableau de véhicules du client en édition
 let _cfVehiculeEdit = null;     // null = nouveau véhicule, index = édition
+let _cfShowVehForm = false;     // afficher le mini-formulaire ajout/édition
 
 // ── Migration : anciens clients à modèle plat → nouveau modèle avec vehicles[] ──
 (function migrateClients(){
@@ -2711,7 +2818,8 @@ let _cfVehiculeEdit = null;     // null = nouveau véhicule, index = édition
 
 // ── renderClients ──
 function renderClients(filter){
-  const q = (filter||document.getElementById('clients-search').value||'').toLowerCase().trim();
+  const searchEl = document.getElementById('clients-search');
+  const q = (filter||(searchEl?searchEl.value:'')||'').toLowerCase().trim();
   let list = CLIENTS;
   if(q) list = CLIENTS.filter(c=>{
     const inNom=(c.nom||'').toLowerCase().includes(q);
@@ -2720,11 +2828,13 @@ function renderClients(filter){
     return inNom||inEntreprise||inVeh;
   });
 
-  document.getElementById('clients-count').textContent = CLIENTS.length;
+  const countEl = document.getElementById('clients-count');
+  if(countEl) countEl.textContent = CLIENTS.length;
   const el = document.getElementById('clients-list');
   const empty = document.getElementById('clients-empty');
-  if(!list.length){ el.innerHTML=''; empty.style.display='block'; return; }
-  empty.style.display='none';
+  if(!el) return;
+  if(!list.length){ el.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
 
   const TYPE_LABEL = {'comptant':'💵 Comptant','financement':'📋 Financement','location-sci':'🏠 Location SCI','location-comm':'🏢 Location comm.'};
   const TYPE_CLASS = {'comptant':'comptant','financement':'financement','location-sci':'location-sci','location-comm':'location-comm'};
@@ -2736,8 +2846,13 @@ function renderClients(filter){
     const freq=parseInt(v.freq)||12;const n=Math.round(parseInt(v.terme)/12*freq);
     const taux=parseFloat(v.taux)||0;const m=parseFloat(v.montant)||0;
     if(!m||!n) return null;
-    let p;if(taux===0){p=m/n;}else{const r=(taux/100)/freq;p=m*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
-    return {p,n,freq,taux:v.taux,terme:v.terme};
+    const isLoc=(v.type==='location-sci'||v.type==='location-comm');
+    const vr=isLoc?(parseFloat(v.residuelle)||0):0;
+    const r=(taux/100)/freq;
+    let p;
+    if(isLoc){p=(m-vr)/n+(m+vr)/2*r;}
+    else if(taux===0){p=m/n;}else{p=m*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+    return {p,n,freq,taux:v.taux,terme:v.terme,vr:vr||null};
   }
 
   el.innerHTML = list.slice().reverse().map(c=>{
@@ -2754,7 +2869,7 @@ function renderClients(filter){
         </div>
         ${v.stock?`<div class="client-info-row"><i class="ti ti-tag" style="font-size:11px"></i>Stock : <strong>${v.stock}</strong></div>`:''}
         ${v.niv?`<div class="client-info-row"><i class="ti ti-fingerprint" style="font-size:11px"></i><span style="font-family:monospace;font-size:10px">${v.niv}</span></div>`:''}
-        ${paiement?`<div class="client-info-row"><i class="ti ti-credit-card" style="font-size:11px;color:#003DA5"></i><strong style="color:#003DA5">${fmt(paiement.p)} $</strong><span style="color:#94a3b8;font-size:10px">${FREQ_LABEL[String(paiement.freq)]||''} · ${paiement.terme} mois · ${paiement.taux}%</span></div>`:''}
+        ${paiement?`<div class="client-info-row"><i class="ti ti-credit-card" style="font-size:11px;color:#003DA5"></i><strong style="color:#003DA5">${fmt(paiement.p)} $</strong><span style="color:#94a3b8;font-size:10px">${FREQ_LABEL[String(paiement.freq)]||''} · ${paiement.terme} mois · ${paiement.taux}%${paiement.vr?' · VR '+fmt(paiement.vr)+' $':''}</span></div>`:''}
         ${v.type==='comptant'?`<div class="client-info-row"><i class="ti ti-cash" style="font-size:11px;color:#16a34a"></i><span style="color:#16a34a;font-size:11px;">Transaction au comptant</span></div>`:''}
       </div>`;
     }).join('');
@@ -2764,16 +2879,30 @@ function renderClients(filter){
         <div>
           <div class="client-name">${c.nom||'—'}</div>
           ${c.entreprise?`<div style="font-size:11px;color:#6366f1;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:3px;"><i class="ti ti-building" style="font-size:12px"></i>${c.entreprise}</div>`:''}
+          ${c.telephone?`<div style="font-size:11px;color:#64748b;display:flex;align-items:center;gap:4px;margin-top:2px;"><i class="ti ti-phone" style="font-size:11px"></i>${c.telephone}</div>`:''}
         </div>
         <div style="font-size:10px;color:#94a3b8;">${vehs.length} véhicule${vehs.length!==1?'s':''}</div>
       </div>
       ${vehRows||'<div style="font-size:12px;color:#94a3b8;padding:6px 0;">Aucun véhicule enregistré.</div>'}
       <div class="client-actions">
-        <button class="client-btn" onclick="openClientForm('${c.id}')"><i class="ti ti-edit"></i> Modifier</button>
-        <button class="client-btn danger" onclick="deleteClient('${c.id}')"><i class="ti ti-trash"></i> Supprimer</button>
+        <button class="client-btn" data-client-action="edit" data-client-id="${c.id}"><i class="ti ti-edit" style="pointer-events:none;"></i> Modifier</button>
+        <button class="client-btn danger" data-client-action="delete" data-client-id="${c.id}"><i class="ti ti-trash" style="pointer-events:none;"></i> Supprimer</button>
       </div>
     </div>`;
   }).join('');
+
+  // Délégation d'événements — une seule fois sur clients-list
+  if(!el._clientDelegated){
+    el.addEventListener('click', function(e){
+      const btn = e.target.closest('[data-client-action]');
+      if(!btn) return;
+      const id = btn.dataset.clientId;
+      const action = btn.dataset.clientAction;
+      if(action==='edit'){ openClientForm(id); }
+      else if(action==='delete'){ deleteClient(id, btn); }
+    });
+    el._clientDelegated = true;
+  }
 }
 
 function filterClients(){ renderClients(); }
@@ -2783,13 +2912,20 @@ function openClientForm(id){
   const overlay = document.getElementById('client-form-overlay');
   overlay.style.display='flex';
 
+  // Réinitialiser le formulaire
   document.getElementById('cf-id').value='';
   document.getElementById('cf-nom').value='';
+  document.getElementById('cf-telephone').value='';
   document.getElementById('cf-entreprise').value='';
   document.getElementById('cf-is-commercial').checked=false;
   document.getElementById('bloc-entreprise').style.display='none';
-  _cfVehicules=[];
-  _cfVehiculeEdit=null;
+  document.getElementById('cf-error-msg').style.display='none';
+  document.getElementById('cf-stock').value='';
+  document.getElementById('cf-vehicule').value='';
+  document.getElementById('cf-niv').value='';
+  document.getElementById('cf-date').value='';
+  document.getElementById('cf-type').value='';
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));
 
   if(id){
     const c=CLIENTS.find(x=>x.id===id);
@@ -2797,16 +2933,24 @@ function openClientForm(id){
     document.getElementById('client-form-title').textContent='Modifier le client';
     document.getElementById('cf-id').value=c.id;
     document.getElementById('cf-nom').value=c.nom||'';
+    document.getElementById('cf-telephone').value=c.telephone||'';
     if(c.entreprise){
       document.getElementById('cf-entreprise').value=c.entreprise;
       document.getElementById('cf-is-commercial').checked=true;
       document.getElementById('bloc-entreprise').style.display='block';
     }
-    _cfVehicules=(c.vehicles||[]).map(v=>({...v}));
+    // Remplir le premier véhicule s'il existe
+    const v=(c.vehicles||[])[0];
+    if(v){
+      document.getElementById('cf-stock').value=v.stock||'';
+      document.getElementById('cf-vehicule').value=v.vehicule||'';
+      document.getElementById('cf-niv').value=v.niv||'';
+      document.getElementById('cf-date').value=v.date||'';
+      if(v.type) cfSelectType(v.type);
+    }
   } else {
     document.getElementById('client-form-title').textContent='Nouveau client';
   }
-  renderVehiculesList();
 }
 
 function closeClientForm(){
@@ -2819,246 +2963,139 @@ function toggleCommercial(){
   if(!checked) document.getElementById('cf-entreprise').value='';
 }
 
-// ── Rendu de la liste de véhicules dans le formulaire ──
-function renderVehiculesList(){
-  const TYPE_LABEL={'comptant':'💵 Comptant','financement':'📋 Financement','location-sci':'🏠 Location SCI','location-comm':'🏢 Loc. commerciale'};
-  const el=document.getElementById('cf-vehicules-list');
-
-  // Mini-formulaire ajout/édition véhicule
-  const vehFormHtml = `<div id="cf-veh-form" style="background:#f0f7ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;margin-bottom:12px;">
-    <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;">${_cfVehiculeEdit!==null?'✏️ Modifier le véhicule':'🚗 Nouveau véhicule'}</div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-      <div>
-        <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">N° de stock</label>
-        <div style="display:flex;gap:6px;">
-          <input id="vf-stock" type="text" placeholder="ex: 27041" oninput="lookupStockVeh()" style="flex:1;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
-          <span id="vf-stock-status" style="display:flex;align-items:center;font-size:11px;"></span>
-        </div>
-      </div>
-      <div>
-        <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Date d'achat</label>
-        <input id="vf-date" type="date" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
-      </div>
-    </div>
-
-    <div style="margin-bottom:10px;">
-      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Véhicule</label>
-      <input id="vf-vehicule" type="text" placeholder="ex: 2027 RAM 1500 BIG HORN" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
-    </div>
-
-    <div style="margin-bottom:10px;">
-      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">NIV / Numéro de série</label>
-      <input id="vf-niv" type="text" placeholder="ex: 1C6SRFLT0SN123456" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:monospace;outline:none;">
-    </div>
-
-    <div style="margin-bottom:10px;">
-      <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:6px;text-transform:uppercase;">Type d'achat</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="vf-type-btns">
-        <button type="button" class="type-btn" data-type="comptant" onclick="selectTypeVeh('comptant')">💵 Comptant</button>
-        <button type="button" class="type-btn" data-type="financement" onclick="selectTypeVeh('financement')">📋 Financement</button>
-        <button type="button" class="type-btn" data-type="location-sci" onclick="selectTypeVeh('location-sci')">🏠 Location SCI</button>
-        <button type="button" class="type-btn" data-type="location-comm" onclick="selectTypeVeh('location-comm')">🏢 Location commerciale</button>
-      </div>
-      <input type="hidden" id="vf-type">
-    </div>
-
-    <div id="vf-bloc-financement" style="display:none;background:#fff;border:1px solid #bfdbfe;border-radius:8px;padding:12px;margin-bottom:10px;">
-      <div style="font-size:10px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;"><i class="ti ti-calculator"></i> Calculateur de paiement</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">
-        <div>
-          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Montant financé ($)</label>
-          <input id="vf-montant" type="number" min="0" step="100" placeholder="ex: 45000" oninput="calcPaiementVeh()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
-        </div>
-        <div>
-          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Taux d'intérêt (%)</label>
-          <input id="vf-taux" type="number" min="0" step="0.1" placeholder="ex: 6.99" oninput="calcPaiementVeh()" style="width:100%;box-sizing:border-box;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;">
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
-        <div>
-          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Terme</label>
-          <select id="vf-terme" onchange="calcPaiementVeh()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
-            <option value="">-- Choisir --</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:10px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;">Fréquence</label>
-          <select id="vf-freq" onchange="calcPaiementVeh()" style="width:100%;padding:7px 10px;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#111827;background:#fff;font-family:'Inter',sans-serif;outline:none;cursor:pointer;">
-            <option value="26">Aux 2 semaines</option>
-            <option value="12" selected>Mensuel</option>
-            <option value="24">Bi-mensuel (2x/mois)</option>
-            <option value="52">Hebdomadaire</option>
-          </select>
-        </div>
-      </div>
-      <div id="vf-resultat" style="display:none;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;padding:10px;text-align:center;">
-        <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Paiement estimé</div>
-        <div id="vf-paiement-val" style="font-size:22px;font-weight:800;color:#003DA5;"></div>
-        <div id="vf-paiement-freq" style="font-size:11px;color:#64748b;margin-top:2px;"></div>
-        <div id="vf-total-interet" style="font-size:10px;color:#94a3b8;margin-top:5px;border-top:1px solid #dbeafe;padding-top:5px;"></div>
-      </div>
-      <div id="vf-resultat-vide" style="font-size:11px;color:#94a3b8;text-align:center;padding:4px 0;">Remplis les champs pour voir le paiement estimé.</div>
-    </div>
-
-    <div id="vf-bloc-comptant" style="display:none;padding:8px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;font-size:12px;color:#16a34a;margin-bottom:10px;">
-      <i class="ti ti-cash"></i> Transaction au comptant — pas de financement applicable.
-    </div>
-
-    <div style="display:flex;gap:8px;justify-content:flex-end;">
-      <button type="button" onclick="cancelVehEdit()" style="padding:7px 14px;border:1px solid #e2e8f0;border-radius:6px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;font-family:'Inter',sans-serif;">Annuler</button>
-      <button type="button" onclick="confirmVehEdit()" style="padding:7px 14px;background:#003DA5;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;"><i class="ti ti-check"></i> Confirmer</button>
-    </div>
-  </div>`;
-
-  // Liste des véhicules existants
-  const TYPE_LABEL_SHORT={'comptant':'Comptant','financement':'Financement','location-sci':'Loc. SCI','location-comm':'Loc. comm.'};
-  const existingHtml = _cfVehicules.map((v,i)=>`
-    <div style="background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:9px 12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
-      <div style="flex:1;min-width:0;">
-        <div style="font-weight:600;font-size:12px;color:#1a1a2e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${v.vehicule||'Véhicule non spécifié'}</div>
-        <div style="font-size:10px;color:#64748b;margin-top:2px;">${v.type?TYPE_LABEL_SHORT[v.type]||v.type:''} ${v.stock?'· Stock '+v.stock:''} ${v.date?'· '+v.date:''}</div>
-      </div>
-      <div style="display:flex;gap:5px;flex-shrink:0;">
-        <button type="button" onclick="editVeh(${i})" style="padding:4px 9px;border:1px solid #bfdbfe;border-radius:5px;background:#eff6ff;font-size:11px;font-weight:600;cursor:pointer;color:#003DA5;font-family:'Inter',sans-serif;"><i class="ti ti-edit"></i></button>
-        <button type="button" onclick="removeVeh(${i})" style="padding:4px 9px;border:1px solid #fecaca;border-radius:5px;background:#fff5f5;font-size:11px;font-weight:600;cursor:pointer;color:#dc2626;font-family:'Inter',sans-serif;"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>`).join('');
-
-  el.innerHTML = existingHtml + (_cfVehiculeEdit!==null || (_cfVehicules.length===0 && _cfVehiculeEdit===null) || document.getElementById('cf-vehicules-list').dataset.showForm==='1' ? vehFormHtml : '');
-
-  // Si on éditait un véhicule, pré-remplir le formulaire
-  if(_cfVehiculeEdit!==null){
-    const v=_cfVehicules[_cfVehiculeEdit];
-    document.getElementById('vf-stock').value=v.stock||'';
-    document.getElementById('vf-vehicule').value=v.vehicule||'';
-    document.getElementById('vf-niv').value=v.niv||'';
-    document.getElementById('vf-date').value=v.date||'';
-    if(v.type) selectTypeVeh(v.type);
-    if(v.montant) document.getElementById('vf-montant').value=v.montant;
-    if(v.taux) document.getElementById('vf-taux').value=v.taux;
-    if(v.terme){ const sel=document.getElementById('vf-terme'); if([...sel.options].some(o=>o.value===String(v.terme))) sel.value=v.terme; }
-    if(v.freq){ document.getElementById('vf-freq').value=v.freq; }
-    calcPaiementVeh();
-  }
-}
-
-function addVehicule(){
-  _cfVehiculeEdit=null;
-  document.getElementById('cf-vehicules-list').dataset.showForm='1';
-  renderVehiculesList();
-}
-
-function editVeh(i){
-  _cfVehiculeEdit=i;
-  document.getElementById('cf-vehicules-list').dataset.showForm='0';
-  renderVehiculesList();
-}
-
-function removeVeh(i){
-  _cfVehicules.splice(i,1);
-  _cfVehiculeEdit=null;
-  renderVehiculesList();
-}
-
-function cancelVehEdit(){
-  _cfVehiculeEdit=null;
-  document.getElementById('cf-vehicules-list').dataset.showForm='0';
-  renderVehiculesList();
-}
-
-function confirmVehEdit(){
-  const veh={
-    id: (_cfVehiculeEdit!==null && _cfVehicules[_cfVehiculeEdit]?.id) || ('v'+Date.now()+Math.random().toString(36).slice(2)),
-    stock: (document.getElementById('vf-stock').value||'').trim(),
-    vehicule: (document.getElementById('vf-vehicule').value||'').trim(),
-    niv: (document.getElementById('vf-niv').value||'').trim(),
-    date: document.getElementById('vf-date').value||'',
-    type: document.getElementById('vf-type').value||'',
-    montant: document.getElementById('vf-montant')?.value||'',
-    taux: document.getElementById('vf-taux')?.value||'',
-    terme: document.getElementById('vf-terme')?.value||'',
-    freq: document.getElementById('vf-freq')?.value||'12',
-  };
-  if(_cfVehiculeEdit!==null) _cfVehicules[_cfVehiculeEdit]=veh;
-  else _cfVehicules.push(veh);
-  _cfVehiculeEdit=null;
-  document.getElementById('cf-vehicules-list').dataset.showForm='0';
-  renderVehiculesList();
-}
-
-function lookupStockVeh(){
-  const s=(document.getElementById('vf-stock').value||'').trim();
-  const status=document.getElementById('vf-stock-status');
-  if(!s){ status.innerHTML=''; return; }
+function cfLookupStock(){
+  const s=(document.getElementById('cf-stock').value||'').trim();
+  if(!s) return;
   const v=INVENTORY.find(x=>x.s===s);
   if(v){
-    document.getElementById('vf-vehicule').value=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
-    document.getElementById('vf-niv').value=v.v||'';
-    status.innerHTML=`<i class="ti ti-circle-check" style="color:#16a34a;font-size:14px;margin-left:4px;"></i>`;
-  } else {
-    status.innerHTML=`<i class="ti ti-circle-x" style="color:#dc2626;font-size:14px;margin-left:4px;"></i>`;
+    document.getElementById('cf-vehicule').value=`${v.y} ${v.b} ${v.m}${v.t?' '+v.t:''}`;
+    document.getElementById('cf-niv').value=v.v||'';
   }
 }
 
-function selectTypeVeh(t){
-  document.getElementById('vf-type').value=t;
-  document.querySelectorAll('#vf-type-btns .type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type===t));
+function cfSelectType(t){
+  document.getElementById('cf-type').value=t;
+  document.querySelectorAll('.type-btn').forEach(b=>{
+    b.classList.toggle('selected', b.getAttribute('onclick')==="cfSelectType('"+t+"')");
+  });
   if(t==='comptant'){
-    document.getElementById('vf-bloc-financement').style.display='none';
-    document.getElementById('vf-bloc-comptant').style.display='block';
+    document.getElementById('cf-bloc-comptant').style.display='block';
+    document.getElementById('cf-bloc-financement').style.display='none';
   } else {
-    document.getElementById('vf-bloc-comptant').style.display='none';
-    document.getElementById('vf-bloc-financement').style.display='block';
-    const sel=document.getElementById('vf-terme');
-    const termes=TERMES[t]||[];
-    sel.innerHTML='<option value="">-- Choisir --</option>'+termes.map(tm=>`<option value="${tm}">${tm} mois</option>`).join('');
-    calcPaiementVeh();
+    document.getElementById('cf-bloc-comptant').style.display='none';
+    document.getElementById('cf-bloc-financement').style.display='block';
+    const isLoc=(t==='location-sci'||t==='location-comm');
+    document.getElementById('cf-residuelle-row').style.display=isLoc?'block':'none';
+    if(!isLoc){ const ri=document.getElementById('cf-residuelle'); if(ri) ri.value=''; }
+    const sel=document.getElementById('cf-terme');
+    sel.value='';
+    Array.from(sel.options).forEach(opt=>{
+      if(!opt.value){ opt.style.display=''; return; }
+      const types=(opt.dataset.types||'').split(' ');
+      opt.style.display=types.includes(t)?'':'none';
+    });
+    cfCalcPaiement();
   }
 }
 
-function calcPaiementVeh(){
-  const montant=parseFloat(document.getElementById('vf-montant')?.value)||0;
-  const taux=parseFloat(document.getElementById('vf-taux')?.value)||0;
-  const terme=parseInt(document.getElementById('vf-terme')?.value)||0;
-  const freq=parseInt(document.getElementById('vf-freq')?.value)||12;
-  const res=document.getElementById('vf-resultat');
-  const resVide=document.getElementById('vf-resultat-vide');
+function cfCalcPaiement(){
+  const montant=parseFloat(document.getElementById('cf-montant')?.value)||0;
+  const taux=parseFloat(document.getElementById('cf-taux')?.value)||0;
+  const terme=parseInt(document.getElementById('cf-terme')?.value)||0;
+  const freq=parseInt(document.getElementById('cf-freq')?.value)||12;
+  const type=document.getElementById('cf-type')?.value||'';
+  const isLoc=(type==='location-sci'||type==='location-comm');
+  const residuelle=isLoc?(parseFloat(document.getElementById('cf-residuelle')?.value)||0):0;
+  const res=document.getElementById('cf-resultat');
+  const resVide=document.getElementById('cf-resultat-vide');
   if(!res) return;
-  if(!montant||!terme){ res.style.display='none'; resVide.style.display='block'; return; }
+  if(!montant||!terme){ res.style.display='none'; if(resVide) resVide.style.display='block'; return; }
   const n=Math.round(terme/12*freq);
-  let p;if(taux===0){p=montant/n;}else{const r=(taux/100)/freq;p=montant*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
-  const totalPaye=p*n; const totalInteret=totalPaye-montant;
+  const r=(taux/100)/freq;
+  let p, totalPaye, totalInteret, noteExtra='';
+  if(isLoc){
+    const capitalAmorti=montant-residuelle;
+    const interetMoyen=(montant+residuelle)/2*r;
+    p=capitalAmorti/n+interetMoyen;
+    totalPaye=p*n+residuelle;
+    totalInteret=totalPaye-montant;
+    noteExtra=residuelle>0?`VR : ${residuelle.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2})} $ · `:''
+  } else {
+    if(taux===0){p=montant/n;}else{p=montant*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);}
+    totalPaye=p*n;
+    totalInteret=totalPaye-montant;
+  }
   const FREQ_LABEL={'12':'/ mois','26':'/ 2 semaines','24':'/ 2 fois par mois','52':'/ semaine'};
   const fmt=v=>v.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('vf-paiement-val').textContent=fmt(p)+' $';
-  document.getElementById('vf-paiement-freq').textContent=(FREQ_LABEL[String(freq)]||'/ paiement')+' · '+n+' paiements';
-  document.getElementById('vf-total-interet').textContent=`Total payé : ${fmt(totalPaye)} $  ·  Intérêts : ${fmt(totalInteret)} $`;
-  res.style.display='block'; resVide.style.display='none';
+  document.getElementById('cf-paiement-val').textContent=fmt(p)+' $';
+  document.getElementById('cf-paiement-freq').textContent=(FREQ_LABEL[String(freq)]||'/ paiement')+' · '+n+' paiements';
+  document.getElementById('cf-total-interet').textContent=`${noteExtra}Total payé : ${fmt(totalPaye)} $  ·  Intérêts : ${fmt(totalInteret)} $`;
+  res.style.display='block'; if(resVide) resVide.style.display='none';
+}
+
+function showCfError(msg){
+  const el=document.getElementById('cf-error-msg');
+  if(!el) return;
+  el.textContent=msg;
+  el.style.display='block';
+  setTimeout(()=>{ el.style.display='none'; }, 4000);
 }
 
 function saveClient(){
-  const nom=document.getElementById('cf-nom').value.trim();
-  if(!nom){ alert('Le nom du client est requis.'); document.getElementById('cf-nom').focus(); return; }
-  const id=document.getElementById('cf-id').value||'c'+Date.now();
-  const entreprise=document.getElementById('cf-is-commercial').checked ? (document.getElementById('cf-entreprise').value||'').trim() : '';
-  const c={id, nom, entreprise, vehicles:[..._cfVehicules]};
-  const idx=CLIENTS.findIndex(x=>x.id===id);
-  if(idx>=0) CLIENTS[idx]=c; else CLIENTS.push(c);
-  saveClientsToStorage();
-  closeClientForm();
-  renderClients();
-  const toast=document.createElement('div');
-  toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#003DA5;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
-  toast.textContent=`✅ Client "${nom}" enregistré`;
-  document.body.appendChild(toast);
-  setTimeout(()=>toast.remove(),3000);
+  try{
+    const nom=(document.getElementById('cf-nom').value||'').trim();
+    if(!nom){ showCfError('Le nom du client est requis.'); document.getElementById('cf-nom').focus(); return; }
+    const telephone=(document.getElementById('cf-telephone').value||'').trim();
+    if(!telephone){ showCfError('Le numéro de téléphone est requis.'); document.getElementById('cf-telephone').focus(); return; }
+    const vehicule=(document.getElementById('cf-vehicule').value||'').trim();
+    if(!vehicule){ showCfError('Le véhicule est requis avant d\'enregistrer.'); document.getElementById('cf-vehicule').focus(); return; }
+
+    const id=document.getElementById('cf-id').value||'c'+Date.now();
+    const entreprise=document.getElementById('cf-is-commercial').checked ? (document.getElementById('cf-entreprise').value||'').trim() : '';
+    const veh={
+      id: 'v'+Date.now(),
+      stock: (document.getElementById('cf-stock').value||'').trim(),
+      vehicule: vehicule,
+      niv: (document.getElementById('cf-niv').value||'').trim(),
+      date: document.getElementById('cf-date').value||'',
+      type: document.getElementById('cf-type').value||'',
+      montant: (document.getElementById('cf-montant')||{value:''}).value||'',
+      taux: (document.getElementById('cf-taux')||{value:''}).value||'',
+      terme: (document.getElementById('cf-terme')||{value:''}).value||'',
+      freq: (document.getElementById('cf-freq')||{value:'12'}).value||'12',
+      residuelle: (document.getElementById('cf-residuelle')?.value||'')
+    };
+    const c={id, nom, telephone, entreprise, vehicles:[veh]};
+    const idx=CLIENTS.findIndex(x=>x.id===id);
+    if(idx>=0) CLIENTS[idx]=c; else CLIENTS.push(c);
+    saveClientsToStorage();
+    closeClientForm();
+    try{ renderClients(); }catch(re){ console.warn('renderClients err',re); }
+    const toast=document.createElement('div');
+    toast.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#003DA5;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);';
+    toast.textContent='✅ Client "'+nom+'" enregistré ('+CLIENTS.length+' total)';
+    document.body.appendChild(toast);
+    setTimeout(()=>toast.remove(),4000);
+  }catch(err){
+    showCfError('Erreur: '+err.message);
+    let d=document.getElementById('_debug_panel');
+    if(!d){d=document.createElement('div');d.id='_debug_panel';d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#7f1d1d;color:#fca5a5;font-size:11px;font-family:monospace;padding:8px 12px;z-index:99999;max-height:120px;overflow:auto;';document.body.appendChild(d);}
+    d.innerHTML+='<div>❌ saveClient: '+err.message+' @ '+err.stack+'</div>';
+  }
 }
 
-function deleteClient(id){
+function deleteClient(id, btn){
   const c=CLIENTS.find(x=>x.id===id);
   if(!c) return;
-  if(!confirm(`Supprimer le client "${c.nom}" ?`)) return;
+  if(!btn) btn=document.querySelector(`[data-client-id="${id}"][data-client-action="delete"]`);
+  if(btn && btn.dataset.confirmPending!=='1'){
+    btn.dataset.confirmPending='1';
+    btn.innerHTML='⚠️ Confirmer?';
+    btn.style.background='#dc2626';
+    btn.style.color='#fff';
+    setTimeout(()=>{ btn.dataset.confirmPending='0'; btn.innerHTML='<i class="ti ti-trash" style="pointer-events:none;"></i> Supprimer'; btn.style.background=''; btn.style.color=''; },3000);
+    return;
+  }
   CLIENTS=CLIENTS.filter(x=>x.id!==id);
   saveClientsToStorage();
   renderClients();
@@ -3072,7 +3109,7 @@ function calcPaiement(){}
 // ──────────────────────────────────────────
 // MISE À JOUR EXCEL — fonctionnalité client
 // ──────────────────────────────────────────
-const VITRE_BRANDS = new Set(['JEEP','RAM','DODGE','CHRYSLER']);
+var VITRE_BRANDS = new Set(['JEEP','RAM','DODGE','CHRYSLER']);
 const VITRE_BASE = 'https://www.dodge.com/hostd/windowsticker/getWindowStickerPdf.do?vin=';
 
 let _excelPending = null; // {toAdd:[], toUpdate:[]}
@@ -3234,3 +3271,4 @@ function applyExcelChanges(){
 </script>
 </body>
 </html>
+</body></html>
